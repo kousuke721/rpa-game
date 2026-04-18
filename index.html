@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPA脳トレ Mobile</title>
+    <style>
+        :root {
+            --primary: #5A67D8;
+            --bg: #F0F4F8;
+            --accent: #ED64A6;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .app-container { width: 92%; max-width: 400px; background: white; margin: 20px 0; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 20px; overflow: hidden; }
+        h1 { font-size: 1.2rem; text-align: center; color: var(--primary); margin-top: 0; }
+        .progress { height: 6px; background: #E2E8F0; border-radius: 3px; margin-bottom: 20px; }
+        .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: 0.5s; }
+        .instruction { font-size: 0.9rem; background: #F7FAFC; border-left: 4px solid var(--primary); padding: 10px; margin-bottom: 20px; line-height: 1.4; }
+        
+        /* タップで選択するエリア */
+        .option-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .chip { background: #EDF2F7; border: 1px solid #CBD5E0; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+        .chip:active { transform: scale(0.95); background: #E2E8F0; }
+        
+        /* 組み立てエリア */
+        .drop-zone { border: 2px dashed #CBD5E0; min-height: 150px; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .selected-chip { background: var(--primary); color: white; padding: 10px; border-radius: 8px; font-size: 0.85rem; animation: slideIn 0.3s ease; }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-group { margin-top: 20px; display: flex; gap: 10px; }
+        button { flex: 1; padding: 15px; border-radius: 12px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        .btn-check { background: var(--primary); color: white; }
+        .btn-reset { background: #E2E8F0; color: #4A5568; }
+        
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 80%; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h1>🤖 RPA思考トレ Mobile</h1>
+    <div class="progress"><div class="progress-bar" id="pb"></div></div>
+
+    <div id="game-view">
+        <div class="instruction" id="hint">手順をタップして、正しい実行順に並べてください。</div>
+        
+        <div class="option-pool" id="pool"></div>
+        
+        <p style="font-size: 0.8rem; color: #718096; margin-bottom: 5px;">【実行する順番】</p>
+        <div class="drop-zone" id="zone"></div>
+
+        <div class="btn-group">
+            <button class="btn-reset" onclick="resetStage()">やり直し</button>
+            <button class="btn-check" onclick="checkAnswer()">判定する</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-title"></h2>
+        <p id="modal-body"></p>
+        <button class="btn-check" onclick="closeModal()">次へ進む</button>
+    </div>
+</div>
+
+<script>
+    const stages = [
+        {
+            hint: "Lv.1：ブラウザで検索する時のロボットの動きを完成させよう！",
+            options: [
+                {id: 3, text: "検索ボタンを押す"},
+                {id: 1, text: "ブラウザを起動する"},
+                {id: 2, text: "検索ワードを入力する"}
+            ],
+            answer: "1,2,3"
+        },
+        {
+            hint: "Lv.2：条件分岐。3000円以上の時だけ実行するには？",
+            options: [
+                {id: "end", text: "判断を終了する"},
+                {id: "if", text: "もし金額 ≧ 3000 なら"},
+                {id: "do", text: "保存アクション"}
+            ],
+            answer: "if,do,end"
+        },
+        {
+            hint: "Lv.3：繰り返し。10行分のデータを処理する時の枠組みは？",
+            options: [
+                {id: "loop", text: "10回繰り返す"},
+                {id: "next", text: "繰り返しの終わり"},
+                {id: "act", text: "データをコピー"}
+            ],
+            answer: "loop,act,next"
+        }
+    ];
+
+    let current = 0;
+    let selectedIds = [];
+
+    function loadStage() {
+        const s = stages[current];
+        document.getElementById('hint').textContent = s.hint;
+        document.getElementById('pb').style.width = `${(current / stages.length) * 100}%`;
+        
+        const pool = document.getElementById('pool');
+        pool.innerHTML = '';
+        s.options.forEach(opt => {
+            const div = document.createElement('div');
+            div.className = 'chip';
+            div.textContent = opt.text;
+            div.onclick = () => selectOption(opt);
+            div.id = `opt-${opt.id}`;
+            pool.appendChild(div);
+        });
+        resetStage();
+    }
+
+    function selectOption(opt) {
+        if (selectedIds.includes(opt.id)) return;
+        selectedIds.push(opt.id);
+        const zone = document.getElementById('zone');
+        const div = document.createElement('div');
+        div.className = 'selected-chip';
+        div.textContent = opt.text;
+        zone.appendChild(div);
+        document.getElementById(`opt-${opt.id}`).style.opacity = '0.3';
+    }
+
+    function resetStage() {
+        selectedIds = [];
+        document.getElementById('zone').innerHTML = '';
+        document.querySelectorAll('.chip').forEach(c => c.style.opacity = '1');
+    }
+
+    function checkAnswer() {
+        if (selectedIds.join(',') === stages[current].answer) {
+            showModal("正解！", "その調子です。ロボットへの指示が明確になりました。");
+        } else {
+            alert("順番が違うようです。もう一度考えてみましょう！");
+            resetStage();
+        }
+    }
+
+    function showModal(title, body) {
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-body').textContent = body;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        current++;
+        if (current < stages.length) {
+            loadStage();
+        } else {
+            document.getElementById('pb').style.width = '100%';
+            document.getElementById('game-view').innerHTML = `
+                <div style="text-align:center; padding: 20px;">
+                    <h2 style="color:var(--accent)">ALL CLEAR!</h2>
+                    <p>これでスマホでもRPA思考がマスターできました。次はPCでPADを開いてみましょう！</p>
+                    <button class="btn-check" onclick="location.reload()">最初から遊ぶ</button>
+                </div>
+            `;
+        }
+    }
+
+    loadStage();
+</script>
+</body>
+</html>
