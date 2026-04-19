@@ -303,8 +303,19 @@ code{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent)
   <div class="ni" onclick="goToMap()" id="nav-map">
     <span class="ni-ico">📚</span><span class="ni-lbl">学習</span>
   </div>
-  <div class="ni" onclick="goToMap()" id="nav-prog">
-    <span class="ni-ico">📈</span><span class="ni-lbl">進捗</span>
+  <div class="ni" onclick="showReset()" id="nav-prog">
+    <span class="ni-ico">🔄</span><span class="ni-lbl">リセット</span>
+  </div>
+</div>
+
+<!-- RESET MODAL -->
+<div id="reset-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;justify-content:center;align-items:center;">
+  <div style="background:#111827;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:80%;max-width:340px;text-align:center;">
+    <div style="font-size:2.5rem;margin-bottom:12px">🔄</div>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:8px">進捗をリセット</div>
+    <div style="font-size:0.82rem;color:#8892A4;margin-bottom:24px;line-height:1.6">すべての学習進捗が削除されます。<br>この操作は取り消せません。</div>
+    <button onclick="confirmReset()" style="display:block;width:100%;padding:14px;background:#F72585;color:white;border:none;border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-bottom:10px">リセットする</button>
+    <button onclick="closeReset()" style="display:block;width:100%;padding:14px;background:#1A2438;color:white;border:1px solid rgba(255,255,255,0.1);border-radius:12px;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif">キャンセル</button>
   </div>
 </div>
 
@@ -1044,6 +1055,24 @@ function showComplete(){
     };
   }
   showPage('complete');
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function showReset(){
+  document.getElementById('reset-modal').style.display='flex';
+}
+function closeReset(){
+  document.getElementById('reset-modal').style.display='none';
+}
+function confirmReset(){
+  completed=new Set();
+  save();
+  closeReset();
+  showPage('home');
+  renderHome();
+  alert('進捗をリセットしました！');
 }
 
 // ============================================================
