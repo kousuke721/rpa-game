@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Segoe UI',sans-serif;background:#f7f5ff;min-height:100vh;padding:12px;color:#1e1530}
+.shell{max-width:480px;margin:0 auto}
+
+/* header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 14px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#5b21b6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.logo-txt{font-size:14px;font-weight:700;color:#1e1530}
+.hdr-right{display:flex;align-items:center;gap:7px}
+.badge{background:#fff;border:1px solid #ddd6fe;border-radius:99px;padding:4px 10px;font-size:12px;color:#7c3aed;font-weight:600}
+.hdr-btn{background:#fff;border:1px solid #e0d5f5;border-radius:99px;padding:4px 10px;font-size:11px;color:#9a7fc5;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s}
+.hdr-btn:hover{background:#f5f3ff;color:#7c3aed}
+
+/* bottom tab */
+.tab-bar{display:flex;background:#fff;border:1px solid #ede9fe;border-radius:16px;padding:5px;margin-bottom:16px;gap:4px;box-shadow:0 2px 10px rgba(124,58,237,.07)}
+.tab-item{flex:1;padding:9px 6px;border-radius:12px;border:none;background:transparent;font-size:12px;font-family:inherit;font-weight:600;color:#9986c0;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab-item.active{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.28)}
+.tab-icon{font-size:16px;line-height:1}
+.tab-label{font-size:10px;letter-spacing:.2px}
+
+/* hero */
+.hero{background:linear-gradient(135deg,#5b21b6 0%,#7c3aed 55%,#a855f7 100%);border-radius:18px;padding:20px 18px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(124,58,237,.3)}
+.hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hero::after{content:"";position:absolute;left:-30px;bottom:-60px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.05)}
+.hero-tag{font-size:10px;letter-spacing:2px;opacity:.8;margin-bottom:6px;font-weight:700;position:relative;z-index:1;text-transform:uppercase}
+.hero-title{font-size:21px;font-weight:700;margin-bottom:5px;position:relative;z-index:1;letter-spacing:-.3px}
+.hero-sub{font-size:12px;opacity:.88;line-height:1.65;margin-bottom:16px;position:relative;z-index:1}
+.hero-row{display:flex;gap:8px;margin-bottom:14px;position:relative;z-index:1}
+.hero-stat{flex:1;background:rgba(255,255,255,.15);border-radius:11px;padding:9px 10px;text-align:center;border:1px solid rgba(255,255,255,.2)}
+.hero-stat-n{font-size:18px;font-weight:700;line-height:1}
+.hero-stat-l{font-size:10px;opacity:.8;margin-top:2px;letter-spacing:.3px}
+.pbar-bg{background:rgba(255,255,255,.2);border-radius:99px;height:6px;overflow:hidden;position:relative;z-index:1}
+.pbar-fill{height:100%;background:#fff;border-radius:99px;transition:width .5s}
+
+/* section label */
+.sec-label{font-size:11px;font-weight:700;color:#7c3aed;letter-spacing:.5px;margin:2px 2px 10px;display:flex;align-items:center;gap:6px;text-transform:uppercase}
+.sec-label::before{content:"";width:3px;height:11px;background:linear-gradient(180deg,#7c3aed,#a855f7);border-radius:2px}
+
+/* level cards */
+.lv-card{background:#fff;border:1px solid #ede9fe;border-radius:14px;padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 1px 4px rgba(124,58,237,.06)}
+.lv-card:hover:not(.locked){transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.12)}
+.lv-card:active:not(.locked){transform:scale(.98)}
+.lv-card.done{background:linear-gradient(135deg,#fff 0%,#f5f3ff 100%);border-color:#c4b5fd}
+.lv-card.current{border:2px solid #7c3aed;box-shadow:0 4px 14px rgba(124,58,237,.18)}
+.lv-card.locked{opacity:.48;cursor:default}
+.lv-num{width:46px;height:46px;border-radius:13px;background:#f5f3ff;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;border:1px solid #ede9fe}
+.lv-card.done .lv-num{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.lv-card.current .lv-num{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;border-color:transparent}
+.lv-body{flex:1;min-width:0}
+.lv-name{font-size:14px;font-weight:600;color:#1e1530;margin-bottom:2px}
+.lv-desc{font-size:11px;color:#6b6080;line-height:1.4}
+.lv-pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;margin-bottom:3px}
+.lv-pill.done{background:#ede9fe;color:#5b21b6}
+.lv-pill.current{background:#fae8ff;color:#86198f;animation:pulse 2s infinite}
+.lv-pill.locked{background:#f1eff8;color:#9986c0}
+.lv-pill.none{background:#f1eff8;color:#9986c0}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.lv-arr{color:#c4b5fd;font-size:20px;flex-shrink:0;transition:transform .15s,color .15s}
+.lv-card:hover:not(.locked) .lv-arr{color:#7c3aed;transform:translateX(3px)}
+
+/* ===== LESSON PAGE ===== */
+.lesson-hero{background:linear-gradient(135deg,#4c1d95 0%,#6d28d9 60%,#8b5cf6 100%);border-radius:18px;padding:20px 18px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(109,40,217,.3)}
+.lesson-hero::before{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.06)}
+.lesson-hero-tag{font-size:10px;letter-spacing:2px;opacity:.8;margin-bottom:6px;font-weight:700;text-transform:uppercase}
+.lesson-hero-title{font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-.3px}
+.lesson-hero-sub{font-size:12px;opacity:.88;line-height:1.65}
+
+.lesson-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
+.lesson-card{background:#fff;border:1px solid #ede9fe;border-radius:14px;overflow:hidden;cursor:pointer;box-shadow:0 1px 4px rgba(124,58,237,.06);transition:box-shadow .15s}
+.lesson-card:hover{box-shadow:0 4px 14px rgba(124,58,237,.12)}
+.lesson-card-head{display:flex;align-items:center;gap:12px;padding:13px 15px}
+.lesson-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.lesson-card-body{flex:1;min-width:0}
+.lesson-card-title{font-size:14px;font-weight:600;color:#1e1530;margin-bottom:2px}
+.lesson-card-desc{font-size:11px;color:#6b6080;line-height:1.4}
+.lesson-card-arr{color:#c4b5fd;font-size:18px;flex-shrink:0}
+.lesson-card.read .lesson-icon{opacity:.85}
+.lesson-read-pill{font-size:9px;padding:2px 7px;border-radius:99px;background:#ede9fe;color:#5b21b6;font-weight:700;display:inline-block;margin-top:3px}
+
+/* lesson detail */
+.lesson-back{background:#fff;border:1px solid #ddd6fe;border-radius:99px;padding:7px 14px;font-size:12px;color:#7c3aed;cursor:pointer;font-family:inherit;font-weight:600;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px}
+.lesson-back:hover{background:#f5f3ff}
+
+.lesson-content{background:#fff;border-radius:16px;border:1px solid #ede9fe;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 10px rgba(124,58,237,.06)}
+.lesson-content-hero{padding:18px 18px 14px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-bottom:1px solid #ede9fe}
+.lesson-content-icon{font-size:28px;margin-bottom:8px}
+.lesson-content-title{font-size:17px;font-weight:700;color:#1e1530;margin-bottom:5px}
+.lesson-content-lead{font-size:12px;color:#4a3f6b;line-height:1.75}
+
+.lesson-section{padding:16px 18px;border-bottom:1px solid #f5f3ff}
+.lesson-section:last-child{border-bottom:none}
+.lesson-section-title{font-size:13px;font-weight:700;color:#5b21b6;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.lesson-section-title::before{content:"";width:3px;height:12px;background:linear-gradient(180deg,#7c3aed,#a855f7);border-radius:2px;flex-shrink:0}
+.lesson-body{font-size:13px;color:#2e2040;line-height:1.8}
+.lesson-body p{margin-bottom:10px}
+.lesson-body p:last-child{margin-bottom:0}
+
+.info-box{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12px;color:#2e1065;line-height:1.7}
+.info-box strong{color:#5b21b6;font-weight:700}
+.warn-box{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12px;color:#7c2d12;line-height:1.7}
+.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12px;color:#14532d;line-height:1.7}
+.tip-box strong{font-weight:700;color:#15803d}
+
+.usecase-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.usecase-item{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:10px 12px}
+.usecase-icon{font-size:18px;margin-bottom:5px}
+.usecase-title{font-size:12px;font-weight:600;color:#1e1530;margin-bottom:2px}
+.usecase-desc{font-size:10px;color:#6b6080;line-height:1.4}
+
+.code-preview{background:#1e1a2e;border-radius:10px;padding:12px 14px;margin:10px 0;font-family:'SF Mono','Consolas',monospace;font-size:11.5px;line-height:1.7;color:#e2d9f3;overflow-x:auto;white-space:pre;border:1px solid #3d3560}
+.kw{color:#c084fc}.str{color:#86efac}.cm{color:#6b7280;font-style:italic}.num{color:#fcd34d}
+
+.step-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.step-item{display:flex;gap:10px;align-items:flex-start}
+.step-num{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-text{font-size:12px;color:#2e2040;line-height:1.7;flex:1}
+.step-text strong{color:#5b21b6;font-weight:600}
+
+.compare-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
+.compare-table th{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;padding:8px 10px;font-weight:600;font-size:11px;letter-spacing:.3px}
+.compare-table td{padding:8px 10px;border-bottom:1px solid #ede9fe;color:#2e2040;vertical-align:top;line-height:1.55}
+.compare-table tr:nth-child(even) td{background:#faf9ff}
+.compare-table .good{color:#15803d;font-weight:600}
+.compare-table .bad{color:#9d174d;font-weight:600}
+
+.lesson-done-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(124,58,237,.3);transition:all .15s;margin-top:4px}
+.lesson-done-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(124,58,237,.4)}
+.lesson-done-btn.read{background:linear-gradient(135deg,#6d28d9,#4c1d95)}
+
+/* practice page */
+.back{background:#fff;border:1px solid #ddd6fe;border-radius:99px;padding:7px 14px;font-size:12px;color:#7c3aed;cursor:pointer;font-family:inherit;font-weight:600;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px}
+.back:hover{background:#f5f3ff}
+.sum-card{background:#fff;border-radius:13px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;border:1px solid #ede9fe;box-shadow:0 1px 4px rgba(124,58,237,.06)}
+.sum-num{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.sum-tag{font-size:10px;color:#9986c0;letter-spacing:.8px;font-weight:700;text-transform:uppercase}
+.sum-name{font-size:14px;font-weight:600;color:#1e1530}
+.sce-card{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:12px;border-left:4px solid #7c3aed;border-top:1px solid #ede9fe;border-right:1px solid #ede9fe;border-bottom:1px solid #ede9fe;box-shadow:0 1px 6px rgba(124,58,237,.06)}
+.sce-tag{font-size:10px;background:#f5f3ff;color:#5b21b6;padding:3px 9px;border-radius:99px;font-weight:700;letter-spacing:.5px;display:inline-block;margin-bottom:7px;border:1px solid #ddd6fe}
+.sce-title{font-size:15px;font-weight:600;color:#1e1530;margin-bottom:6px}
+.sce-story{font-size:12px;color:#4a3f6b;line-height:1.75}
+.prog-wrap{background:#fff;border-radius:11px;padding:11px 14px;margin-bottom:12px;border:1px solid #ede9fe}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:#9986c0;font-weight:600;margin-bottom:7px}
+.prog-bar{height:5px;background:#f5f3ff;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#a855f7);border-radius:99px;transition:width .4s}
+.ch-card{background:#fff;border-radius:15px;padding:17px;margin-bottom:10px;border:1px solid #ede9fe;box-shadow:0 2px 10px rgba(124,58,237,.06)}
+.ch-head{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.ch-type{font-size:10px;padding:3px 10px;border-radius:99px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.ch-type.order{background:#EEEDFE;color:#3C3489}
+.ch-type.choice{background:#fce7f3;color:#9d174d}
+.ch-type.fill{background:#fef3c7;color:#92400e}
+.ch-type.code{background:#ede9fe;color:#5b21b6}
+.ch-qnum{font-size:11px;color:#c4b5fd;font-weight:600}
+.ch-q{font-size:13px;font-weight:500;color:#1e1530;line-height:1.75;margin-bottom:15px}
+.ch-q code{font-family:'SF Mono','Consolas',monospace;font-size:11.5px;background:#f5f3ff;color:#5b21b6;padding:1px 5px;border-radius:3px;border:1px solid #ede9fe}
+.ord-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.ord-item{background:#1e1a2e;border:1px solid #3d3560;border-radius:10px;padding:10px 12px;font-size:11.5px;display:flex;align-items:flex-start;gap:9px;cursor:grab;line-height:1.55;color:#e2d9f3;font-family:'SF Mono','Consolas',monospace}
+.ord-item:hover{border-color:#7c3aed}
+.ord-item:active{cursor:grabbing;opacity:.5}
+.ord-item.drag-over-top{border-top:3px solid #a855f7;padding-top:8px}
+.ord-item.drag-over-bot{border-bottom:3px solid #a855f7;padding-bottom:8px}
+.ord-n{flex-shrink:0;width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;font-family:'Hiragino Sans',sans-serif}
+.ord-txt{flex:1;white-space:pre-wrap}
+.ord-hdl{color:#6b5f9e;font-size:13px;flex-shrink:0;margin-top:1px;letter-spacing:-1px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:13px}
+.opt{padding:12px 14px;border:1px solid #ede9fe;border-radius:12px;font-size:13px;background:#faf9ff;text-align:left;color:#1e1530;line-height:1.55;display:flex;align-items:flex-start;gap:10px;width:100%;font-family:inherit;cursor:pointer;transition:all .12s}
+.opt:hover:not(:disabled){background:#f5f3ff;border-color:#c4b5fd}
+.opt-mk{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:#fff;border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9986c0;margin-top:1px}
+.opt-txt{flex:1}
+.opt-txt code{font-family:'SF Mono','Consolas',monospace;font-size:11.5px;background:#1e1a2e;color:#c4b5fd;padding:1px 5px;border-radius:3px}
+.opt.correct{background:#f5f3ff;border-color:#7c3aed;color:#2e1065}
+.opt.correct .opt-mk{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.opt.wrong{background:#fff0f5;border-color:#ec4899;color:#500724}
+.opt.wrong .opt-mk{background:#ec4899;color:#fff;border-color:#ec4899}
+.opt:disabled{cursor:default}
+.fill-row{display:flex;gap:8px;margin-bottom:13px;flex-wrap:wrap}
+.fill-row input{flex:1;min-width:160px;padding:11px 13px;border:1px solid #ddd6fe;border-radius:10px;font-size:13px;font-family:'SF Mono',monospace;background:#faf9ff;color:#1e1530;transition:all .15s}
+.fill-row input:focus{outline:none;border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.fill-row input.correct{border-color:#7c3aed;background:#f5f3ff;color:#2e1065}
+.fill-row input.wrong{border-color:#ec4899;background:#fff0f5;color:#500724}
+.code-area{margin-bottom:12px}
+.code-area textarea{width:100%;min-height:110px;padding:13px;border:1px solid #3d3560;border-radius:11px;font-size:12.5px;font-family:'SF Mono','Consolas',monospace;background:#1e1a2e;color:#e2d9f3;line-height:1.7;resize:vertical;transition:border-color .15s}
+.code-area textarea:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.code-area textarea.correct{border-color:#7c3aed}
+.code-area textarea.wrong{border-color:#ec4899}
+.code-hint{font-size:11px;color:#9986c0;margin-top:6px;padding:6px 10px;background:#f5f3ff;border-radius:7px;line-height:1.55;border:1px solid #ede9fe}
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{padding:10px 18px;border:1px solid #ddd6fe;border-radius:10px;background:#fff;font-size:13px;color:#1e1530;font-family:inherit;font-weight:600;cursor:pointer;transition:all .12s}
+.btn:hover:not(:disabled){background:#f5f3ff;border-color:#c4b5fd}
+.btn-p{background:linear-gradient(135deg,#7c3aed,#5b21b6);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(124,58,237,.3)}
+.btn-p:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+.btn-s{background:#faf9ff;border-color:#ede9fe;font-size:11px;padding:7px 12px;color:#7c3aed}
+.fb{padding:13px 14px;border-radius:12px;display:flex;gap:10px;align-items:flex-start;margin-top:11px;font-size:12px;line-height:1.7}
+.fb.ok{background:#f5f3ff;border:1px solid #c4b5fd;color:#2e1065}
+.fb.ng{background:#fff0f5;border:1px solid #fbcfe8;color:#500724}
+.fb-icon{flex-shrink:0;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+.fb.ok .fb-icon{background:#7c3aed;color:#fff}
+.fb.ng .fb-icon{background:#ec4899;color:#fff}
+.fb-head{font-weight:700;font-size:13px;margin-bottom:3px}
+.fb-code{margin-top:9px;background:#1e1a2e;color:#e2d9f3;padding:10px 12px;border-radius:8px;font-family:'SF Mono',monospace;font-size:11.5px;line-height:1.65;white-space:pre-wrap;overflow-x:auto;border:1px solid #3d3560}
+.nav{display:flex;justify-content:flex-end;margin-top:13px}
+.comp{background:#fff;border-radius:18px;padding:30px 20px;text-align:center;border:1px solid #ddd6fe;box-shadow:0 4px 20px rgba(124,58,237,.1)}
+.comp-ic{width:68px;height:68px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:30px;color:#fff;margin-bottom:13px;box-shadow:0 6px 20px rgba(124,58,237,.35);animation:pop .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.comp-title{font-size:19px;font-weight:700;color:#1e1530;margin-bottom:4px}
+.comp-sub{font-size:12px;color:#9986c0;margin-bottom:18px}
+.comp-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.final{margin-top:18px;padding:14px;background:#f5f3ff;border-radius:12px;font-size:12px;color:#2e1065;line-height:1.75;border:1px solid #ddd6fe}
+.modal-overlay{position:fixed;inset:0;background:rgba(30,21,48,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:#fff;border-radius:18px;padding:24px 22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 32px rgba(124,58,237,.25)}
+.modal-ic{font-size:32px;margin-bottom:10px}
+.modal-title{font-size:16px;font-weight:700;color:#1e1530;margin-bottom:8px}
+.modal-sub{font-size:12px;color:#9986c0;line-height:1.65;margin-bottom:18px}
+.modal-btns{display:flex;gap:8px;justify-content:center}
+.btn-danger{background:linear-gradient(135deg,#ec4899,#be185d);border-color:transparent;color:#fff}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-icon">V</div>
+      <div class="logo-txt">VBA Trainer</div>
+    </div>
+    <div class="hdr-right">
+      <div class="badge" id="badge">0/7</div>
+      <button class="hdr-btn" onclick="confirmReset()">リセット</button>
+    </div>
+  </div>
+  <div id="modal"></div>
+
+  <div class="tab-bar">
+    <button class="tab-item active" id="tab-lesson" onclick="switchTab('lesson')">
+      <span class="tab-icon">📖</span>
+      <span class="tab-label">概念講座</span>
+    </button>
+    <button class="tab-item" id="tab-practice" onclick="switchTab('practice')">
+      <span class="tab-icon">⌨️</span>
+      <span class="tab-label">実践問題</span>
+    </button>
+  </div>
+
+  <div id="app"></div>
+</div>
+
+<script>
+/* ===== LESSON DATA ===== */
+const LESSONS = [
+  {
+    id:'ls1', icon:'🤖', color:'#ede9fe',
+    title:'VBAとは何か？',
+    desc:'RPAの前にまず基本を理解しよう',
+    content:{
+      lead:'VBA（Visual Basic for Applications）はMicrosoft Officeに内蔵されたプログラミング言語です。Excelの操作をコードで自動化できます。',
+      sections:[
+        {title:'VBAってどんなもの？', body:`
+<p>VBAは<strong>Excelに最初から入っている自動化ツール</strong>です。追加でソフトをインストールする必要がなく、会社のパソコンでもすぐ使えます。</p>
+<p>簡単に言うと「Excelで普段やっている操作を、コードで自動でやってもらう」仕組みです。</p>
+<div class="info-box"><strong>例えば…</strong><br>毎月100行のデータを整理する作業→ボタン1つで3秒で完了<br>毎週メールに添付するレポート→自動で集計・書式設定まで完了</div>`},
+        {title:'VBAで何ができるの？', body:`
+<div class="usecase-grid">
+  <div class="usecase-item"><div class="usecase-icon">📊</div><div class="usecase-title">データ集計</div><div class="usecase-desc">売上・在庫を自動で集計・グラフ化</div></div>
+  <div class="usecase-item"><div class="usecase-icon">📋</div><div class="usecase-title">書類作成</div><div class="usecase-desc">請求書・報告書を自動生成</div></div>
+  <div class="usecase-item"><div class="usecase-icon">🔄</div><div class="usecase-title">データ整理</div><div class="usecase-desc">重複削除・並び替え・転記</div></div>
+  <div class="usecase-item"><div class="usecase-icon">📧</div><div class="usecase-title">メール送信</div><div class="usecase-desc">Outlookと連携して一括送信</div></div>
+</div>`},
+        {title:'VBAとRPAの違い', body:`
+<p>よく比較されるRPA（Power Automate等）との違いを整理しておきましょう。</p>
+<table class="compare-table">
+<tr><th></th><th>VBA</th><th>RPA</th></tr>
+<tr><td>対象</td><td>主にExcel・Office</td><td>あらゆるアプリ・Web</td></tr>
+<tr><td>習得難度</td><td class="bad">やや高い（コード）</td><td class="good">低い（GUI操作）</td></tr>
+<tr><td>処理速度</td><td class="good">速い</td><td>普通</td></tr>
+<tr><td>費用</td><td class="good">無料（Office付属）</td><td>有料が多い</td></tr>
+<tr><td>向いている場面</td><td>大量データ処理</td><td>複数システム連携</td></tr>
+</table>
+<div class="tip-box"><strong>💡 まとめ</strong><br>Excelでの大量データ処理はVBAが得意。複数のシステムをまたぐ業務はRPAが得意です。</div>`}
+      ]
+    }
+  },
+  {
+    id:'ls2', icon:'🏗️', color:'#fae8ff',
+    title:'VBAの基本構造',
+    desc:'Subプロシージャ・変数・コメントの役割',
+    content:{
+      lead:'VBAのコードは「プロシージャ」という単位で書きます。まず基本の骨格を覚えれば、あとは中身を埋めるだけです。',
+      sections:[
+        {title:'Subプロシージャとは', body:`
+<p><strong>Sub〜End Sub</strong>はVBAの基本単位です。人間で言えば「仕事の手順書1枚」のようなものです。</p>
+<div class="code-preview"><span class="cm">' Subプロシージャの基本形</span>
+<span class="kw">Sub</span> 作業名()
+    <span class="cm">' ここに処理を書く</span>
+    Range(<span class="str">"A1"</span>).Value = <span class="str">"Hello"</span>
+<span class="kw">End Sub</span></div>
+<div class="info-box"><strong>ポイント</strong><br>・Sub と End Sub でひとかたまり<br>・名前は英語または日本語でOK<br>・Alt+F8 で一覧から選んで実行できる</div>`},
+        {title:'変数とデータ型', body:`
+<p>変数は「値を入れておく箱」です。使う前に<strong>Dim</strong>で宣言します。</p>
+<div class="code-preview"><span class="kw">Dim</span> name <span class="kw">As</span> <span class="kw">String</span>   <span class="cm">' 文字列</span>
+<span class="kw">Dim</span> count <span class="kw">As</span> <span class="kw">Long</span>     <span class="cm">' 整数（大きい数）</span>
+<span class="kw">Dim</span> price <span class="kw">As</span> <span class="kw">Double</span>    <span class="cm">' 小数あり数値</span>
+<span class="kw">Dim</span> flag <span class="kw">As</span> <span class="kw">Boolean</span>    <span class="cm">' True/False</span></div>
+<div class="warn-box">⚠️ <strong>Option Explicit を使おう</strong><br>モジュールの先頭に書くと、宣言していない変数を使ったときにエラーが出るようになります。バグを早期発見できるため実務では必須です。</div>`},
+        {title:'コメントの書き方', body:`
+<p>シングルクォート（<code>'</code>）の後ろはコメントとして扱われ、実行されません。</p>
+<div class="code-preview"><span class="kw">Sub</span> Sample()
+    <span class="cm">' A1に今日の日付を入力する</span>
+    Range(<span class="str">"A1"</span>).Value = Now()  <span class="cm">' 現在日時を取得</span>
+<span class="kw">End Sub</span></div>
+<div class="tip-box"><strong>💡 コメントの習慣をつけよう</strong><br>「何をするコードか」を書いておくと、1ヶ月後の自分や他の人が読んでもわかるコードになります。</div>`}
+      ]
+    }
+  },
+  {
+    id:'ls3', icon:'📌', color:'#fef9c3',
+    title:'セルの操作方法',
+    desc:'Range・Cells・値の読み書きを理解する',
+    content:{
+      lead:'VBAの仕事の9割はセル操作です。2種類の指定方法と基本的な読み書きをマスターしましょう。',
+      sections:[
+        {title:'RangeとCellsの使い分け', body:`
+<p>セルを指定する方法は主に2種類あります。</p>
+<div class="code-preview"><span class="cm">' Range：アドレスで指定（わかりやすい）</span>
+Range(<span class="str">"A1"</span>).Value = <span class="str">"Hello"</span>
+Range(<span class="str">"A1:C10"</span>).Value = <span class="num">0</span>  <span class="cm">' 範囲指定も可</span>
+
+<span class="cm">' Cells：行・列の数字で指定（ループ向き）</span>
+Cells(<span class="num">1</span>, <span class="num">1</span>).Value = <span class="str">"Hello"</span>  <span class="cm">' 1行1列=A1</span>
+Cells(i, <span class="num">2</span>).Value = <span class="str">"データ"</span>  <span class="cm">' i行目を動的に</span></div>
+<div class="info-box"><strong>使い分けのコツ</strong><br>固定のセルを指定するとき→ Range<br>ループで行番号を変えたいとき→ Cells</div>`},
+        {title:'値の読み取りと書き込み', body:`
+<div class="code-preview"><span class="kw">Dim</span> val <span class="kw">As</span> <span class="kw">String</span>
+
+<span class="cm">' 読み取り（セル→変数）</span>
+val = Range(<span class="str">"A1"</span>).Value
+
+<span class="cm">' 書き込み（変数→セル）</span>
+Range(<span class="str">"B1"</span>).Value = val
+
+<span class="cm">' 直接書き込みもOK</span>
+Range(<span class="str">"C1"</span>).Value = <span class="str">"完了"</span></div>`},
+        {title:'よく使うプロパティ', body:`
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>.Value</strong>　セルの値を取得・設定（最も基本）</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>.Interior.Color</strong>　背景色を設定（例：vbYellow）</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>.Font.Bold = True</strong>　文字を太字にする</div></div>
+  <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>.ClearContents</strong>　セルの値だけを消去する</div></div>
+</div>`}
+      ]
+    }
+  },
+  {
+    id:'ls4', icon:'🔀', color:'#dcfce7',
+    title:'条件分岐とループ',
+    desc:'If文・For文で処理を制御する',
+    content:{
+      lead:'「条件によって処理を変える」「繰り返す」——これが使えると、手作業を一気に自動化できます。',
+      sections:[
+        {title:'If文（条件分岐）', body:`
+<p>条件が True のときだけ実行したい処理をくくります。</p>
+<div class="code-preview"><span class="kw">If</span> Range(<span class="str">"A1"</span>).Value >= <span class="num">70</span> <span class="kw">Then</span>
+    Range(<span class="str">"B1"</span>).Value = <span class="str">"合格"</span>
+<span class="kw">ElseIf</span> Range(<span class="str">"A1"</span>).Value >= <span class="num">50</span> <span class="kw">Then</span>
+    Range(<span class="str">"B1"</span>).Value = <span class="str">"再試験"</span>
+<span class="kw">Else</span>
+    Range(<span class="str">"B1"</span>).Value = <span class="str">"不合格"</span>
+<span class="kw">End If</span></div>`},
+        {title:'For文（繰り返し）', body:`
+<p>決まった回数繰り返す処理に使います。</p>
+<div class="code-preview"><span class="kw">Dim</span> i <span class="kw">As Long</span>
+
+<span class="cm">' 2行目〜最終行まで処理</span>
+<span class="kw">Dim</span> lastRow <span class="kw">As Long</span>
+lastRow = Cells(Rows.Count, <span class="num">1</span>).End(xlUp).Row
+
+<span class="kw">For</span> i = <span class="num">2</span> <span class="kw">To</span> lastRow
+    Cells(i, <span class="num">2</span>).Value = Cells(i, <span class="num">1</span>).Value * <span class="num">1.1</span>
+<span class="kw">Next</span> i</div>
+<div class="tip-box"><strong>💡 最終行の取得</strong><br><code>Cells(Rows.Count, 1).End(xlUp).Row</code> はデータの最終行を自動で取得する定番コード。件数が変わっても対応できます。</div>`},
+        {title:'フローをイメージしよう', body:`
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text">Excelを開く・変数を宣言する</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text">最終行を取得する</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text">For ループで1行ずつ処理する</div></div>
+  <div class="step-item"><div class="step-num">4</div><div class="step-text">If で条件に応じた書き込みをする</div></div>
+  <div class="step-item"><div class="step-num">5</div><div class="step-text">ループ終了・MsgBox で完了通知</div></div>
+</div>
+<div class="info-box">この5ステップが実務のVBAマクロの基本骨格です。実践問題でこの流れを体で覚えましょう！</div>`}
+      ]
+    }
+  },
+  {
+    id:'ls5', icon:'🚀', color:'#e0f2fe',
+    title:'実務で使うテクニック',
+    desc:'エラー処理・高速化・シート操作',
+    content:{
+      lead:'知っているだけで「できる人」と思われるテクニックをまとめました。実務ですぐ使えます。',
+      sections:[
+        {title:'エラー処理', body:`
+<div class="code-preview"><span class="cm">' エラーを無視して次へ進む</span>
+<span class="kw">On Error Resume Next</span>
+    <span class="cm">' エラーが起きるかもしれない処理</span>
+    Worksheets(<span class="str">"集計"</span>).Delete
+<span class="kw">On Error GoTo 0</span>  <span class="cm">' エラー処理を元に戻す</span></div>
+<div class="warn-box">⚠️ <code>On Error Resume Next</code> は必要な部分だけに使い、すぐに <code>On Error GoTo 0</code> で戻しましょう。広い範囲に使うとバグに気づけなくなります。</div>`},
+        {title:'高速化の黄金パターン', body:`
+<p>セルを1つずつ操作するのではなく、<strong>配列にまとめて一括処理</strong>すると劇的に速くなります。</p>
+<div class="code-preview"><span class="cm">' 遅い書き方（セルを1つずつ操作）</span>
+<span class="kw">For</span> i = <span class="num">1</span> <span class="kw">To</span> <span class="num">1000</span>
+    Cells(i, <span class="num">1</span>).Value = i
+<span class="kw">Next</span> i
+
+<span class="cm">' 速い書き方（配列に入れて一括書き込み）</span>
+<span class="kw">Dim</span> arr() <span class="kw">As Long</span>
+<span class="kw">ReDim</span> arr(<span class="num">1</span> <span class="kw">To</span> <span class="num">1000</span>)
+<span class="kw">For</span> i = <span class="num">1</span> <span class="kw">To</span> <span class="num">1000</span>
+    arr(i) = i
+<span class="kw">Next</span> i
+Range(<span class="str">"A1:A1000"</span>).Value = Application.Transpose(arr)</div>`},
+        {title:'シート・ブック操作の鉄則', body:`
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>シートは名前で指定</strong>　<code>Worksheets("Sheet1")</code> → リネームされても壊れない</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>Selectは使わない</strong>　<code>.Select</code> を省いて直接操作する方が速い</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>ファイルは閉じる前に保存</strong>　<code>Workbook.Save</code> を忘れずに</div></div>
+  <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>画面更新を止めて高速化</strong>　処理前に <code>Application.ScreenUpdating = False</code>、終了後に <code>True</code> に戻す</div></div>
+</div>`}
+      ]
+    }
+  }
+];
+
+/* ===== PRACTICE DATA ===== */
+const L=[
+{id:'l1',n:'01',tag:'Lv.1',name:'基礎文法',desc:'変数・データ型・代入・出力 · 5問',
+ sc:{title:'変数と基本構文を身につける',story:'VBAは「変数を宣言→値を入れる→使う」が基本の流れ。型を正しく選ぶことが、壊れにくいコードへの第一歩です。'},
+ ch:[
+  {t:'choice',k:'考え方',q:'VBAで整数型の変数 i を宣言する正しい書き方はどれですか？',opts:['<code>Var i As Integer</code>','<code>Dim i As Integer</code>','<code>Declare i Integer</code>','<code>Integer i</code>'],ans:1,exp:'変数宣言は <code>Dim 変数名 As 型</code> が基本形。モジュール冒頭に <code>Option Explicit</code> を書いて宣言を強制するのが実務の鉄則です。'},
+  {t:'choice',k:'考え方',q:'文字列を扱う変数の型として最も適切なのはどれですか？',opts:['<code>Integer</code>','<code>Long</code>','<code>String</code>','<code>Variant</code>'],ans:2,exp:'文字列は <code>String</code> 型。Variant は何でも入りますがメモリを消費するため、型が明確な場合は使いません。'},
+  {t:'fill',k:'穴埋め',q:'セル B3 の値を変数 val に代入する1行を書いてください（<code>Range</code> を使用）。',ph:'val = ...',correct:['val = Range("B3")','val = range("B3")','val = Range("B3").Value','val = range("B3").Value'],exp:'<code>val = Range("B3")</code> で代入できます。<code>.Value</code> は省略可能ですが、明示した方が可読性が上がります。'},
+  {t:'code',k:'コード記述',q:'セル A1 に「こんにちは」と書き込む Sub プロシージャ <code>WriteMsg</code> を記述してください。',ph:'Sub WriteMsg()\n    \nEnd Sub',check:/Sub\s+WriteMsg\s*\(\s*\)[\s\S]*?(Range\s*\(\s*["']A1["']\s*\)|Cells\s*\(\s*1\s*,\s*1\s*\))\s*(\.Value\s*)?=\s*["']こんにちは["'][\s\S]*?End\s+Sub/i,sample:'Sub WriteMsg()\n    Range("A1").Value = "こんにちは"\nEnd Sub',exp:'<code>Range("A1")</code> または <code>Cells(1,1)</code> でセル指定、<code>= "文字列"</code> で書き込み。文字列は必ずダブルクォートで囲みます。'},
+  {t:'order',k:'並び替え',q:'「変数 name に A1 の値を代入し、MsgBox で表示する」コードを正しい順序に並べてください。',items:['Sub ShowName()','    Dim name As String','    name = Range("A1").Value','    MsgBox name','End Sub'],correct:[0,1,2,3,4],exp:'Sub の中では宣言→代入→使用の順。MsgBox は引数に変数をそのまま渡せます。'}
+ ]},
+{id:'l2',n:'02',tag:'Lv.2',name:'セル操作',desc:'Range・Cells・値の読み書き · 5問',
+ sc:{title:'自在にセルを操る',story:'VBAの大半はセル操作。Range/Cells の使い分け、範囲選択、値のコピーを押さえれば実務の土台ができます。'},
+ ch:[
+  {t:'choice',k:'考え方',q:'A列5行目のセルを指定する方法として、同じ結果になる組み合わせはどれ？',opts:['<code>Range("A5")</code> と <code>Cells(5,1)</code>','<code>Range("A5")</code> と <code>Cells(1,5)</code>','<code>Range(5,1)</code> と <code>Cells("A5")</code>','<code>Range("5A")</code> と <code>Cells(1,5)</code>'],ans:0,exp:'Cells は <code>Cells(行, 列)</code> の順。A列は1列目なので <code>Cells(5,1)</code> が <code>Range("A5")</code> と等価です。'},
+  {t:'fill',k:'穴埋め',q:'A1 から C10 までの範囲を指定する式を書いてください。',ph:'Range(...)',correct:['Range("A1:C10")','range("A1:C10")'],exp:'<code>Range("A1:C10")</code> でコロンつなぎで矩形範囲を指定します。'},
+  {t:'choice',k:'考え方',q:'セルの背景色を変えるプロパティはどれですか？',opts:['<code>Range("A1").Color = vbYellow</code>','<code>Range("A1").Interior.Color = vbYellow</code>','<code>Range("A1").Fill.Color = vbYellow</code>','<code>Range("A1").Background = vbYellow</code>'],ans:1,exp:'背景色は <code>.Interior.Color</code> で設定します。<code>vbYellow</code> などの定数や <code>RGB(255,255,0)</code> で色を指定できます。'},
+  {t:'order',k:'並び替え',q:'「A1〜A3 に 1, 2, 3 を入力する」Sub のコード行を正しい順序に並べてください。',items:['Sub InputNumbers()','    Range("A1").Value = 1','    Range("A2").Value = 2','    Range("A3").Value = 3','End Sub'],correct:[0,1,2,3,4],exp:'Sub は <code>Sub 名前()</code> で始まり <code>End Sub</code> で閉じます。処理は上から順に実行されます。'},
+  {t:'code',k:'コード記述',q:'B2 セルの値を B3 セルにコピーするコードを1行で書いてください（代入で実装、<code>.Copy</code> は使わない）。',ph:'',check:/(Range\s*\(\s*["']B3["']\s*\)|Cells\s*\(\s*3\s*,\s*2\s*\))\s*(\.Value\s*)?=\s*(Range\s*\(\s*["']B2["']\s*\)|Cells\s*\(\s*2\s*,\s*2\s*\))/i,sample:'Range("B3").Value = Range("B2").Value',exp:'代入式でのコピーはクリップボードを使わないため高速かつ安全。書式ごとコピーしたい場合だけ <code>.Copy</code> を使います。'}
+ ]},
+{id:'l3',n:'03',tag:'Lv.3',name:'制御構造',desc:'If・Select Case・For・Do While · 6問',
+ sc:{title:'条件分岐と繰り返しで業務を自動化',story:'「スコアに応じてランクを付ける」「100行を一括処理する」——この力がつけば作業時間は劇的に縮まります。'},
+ ch:[
+  {t:'order',k:'並び替え',q:'「A2の値が70以上なら B2 に"合格"、未満なら"不合格"と書き込む」コードを並べてください。',items:['If Range("A2").Value >= 70 Then','    Range("B2").Value = "合格"','Else','    Range("B2").Value = "不合格"','End If'],correct:[0,1,2,3,4],exp:'If〜Then〜Else〜End If が基本形。複数行形式の方が可読性が高く、実務では推奨です。'},
+  {t:'fill',k:'穴埋め',q:'1〜10 を繰り返す For ループの開始行を書いてください（変数は i、<code>Next i</code> で閉じる前提）。',ph:'For i = ...',correct:['For i = 1 To 10','for i = 1 to 10','For i = 1 To 10 Step 1'],exp:'<code>For カウンタ = 開始 To 終了 [Step 増分]</code>。Step を省略すると1ずつ増えます。逆順は <code>Step -1</code>。'},
+  {t:'choice',k:'考え方',q:'「A1 から最終行まで」件数が可変のループに最も適しているのはどれ？',opts:['<code>For i = 1 To 100</code>（固定）','<code>For i = 1 To Cells(Rows.Count, 1).End(xlUp).Row</code>','<code>Do While i < 100</code>','<code>GoTo</code> で無限ループ'],ans:1,exp:'<code>Cells(Rows.Count, 1).End(xlUp).Row</code> は A列の最終行を動的に取得する定番イディオム。件数が変わっても自動対応できます。'},
+  {t:'choice',k:'考え方',q:'Select Case 文でA1の値が 1,2,3 以外のとき処理するには？',opts:['<code>Case Other</code>','<code>Case Else</code>','<code>Default:</code>','<code>Case Not</code>'],ans:1,exp:'Select Case の「それ以外」は <code>Case Else</code> です。If 文の Else に相当します。'},
+  {t:'fill',k:'穴埋め',q:'<code>Do While</code> ループでセル A1 の値が空でない間処理を繰り返す条件式を書いてください（<code>Do While</code> の後の部分だけ）。',ph:'Do While ...',correct:['Do While Range("A1").Value <> ""','Do While Range("A1") <> ""','Do While Range("A1").Value <> Empty'],exp:'<code><> ""</code> で「空でない」を判定。<code>Range("A1").Value</code> が空欄になったらループを抜けます。'},
+  {t:'code',k:'コード記述',q:'A2〜A11 の10セルを見て、50以上なら B列に "OK"、未満なら "NG" と書き込む Sub <code>CheckScores</code> を書いてください。',ph:'Sub CheckScores()\n    Dim i As Long\n    For i = 2 To 11\n        \n    Next i\nEnd Sub',check:/For\s+i\s*=\s*2\s+To\s+11[\s\S]*?If\s+Cells\s*\(\s*i\s*,\s*1\s*\)\s*(\.Value\s*)?>=?\s*50\s+Then[\s\S]*?Cells\s*\(\s*i\s*,\s*2\s*\)\s*(\.Value\s*)?=\s*["']OK["'][\s\S]*?Else[\s\S]*?Cells\s*\(\s*i\s*,\s*2\s*\)\s*(\.Value\s*)?=\s*["']NG["'][\s\S]*?End\s+If[\s\S]*?Next/i,sample:'Sub CheckScores()\n    Dim i As Long\n    For i = 2 To 11\n        If Cells(i, 1).Value >= 50 Then\n            Cells(i, 2).Value = "OK"\n        Else\n            Cells(i, 2).Value = "NG"\n        End If\n    Next i\nEnd Sub',exp:'ループ変数 i を <code>Cells(i, 列)</code> に使うのが定石。2行目スタートはヘッダ除外のためです。'}
+ ]},
+{id:'l4',n:'04',tag:'Lv.4',name:'プロシージャと関数',desc:'Sub・Function・引数・戻り値 · 4問',
+ sc:{title:'処理を部品化して再利用する',story:'同じ処理を繰り返し書かない——それが Function 化。引数と戻り値を使えるとコードは一気にプロっぽくなります。'},
+ ch:[
+  {t:'choice',k:'考え方',q:'Sub と Function の最も重要な違いは？',opts:['Sub は速い、Function は遅い','Function は戻り値を返せる、Sub は返せない','Sub しかセル操作できない','Function しかワークシート関数から呼べない'],ans:1,exp:'Function は戻り値あり（関数名に値を代入して返す）、Sub は戻り値なし。シート上から直接呼べるのは Function だけです。'},
+  {t:'order',k:'並び替え',q:'「引数 a, b を受け取り合計を返す Function <code>AddNum</code>」のコードを並べてください。',items:['Function AddNum(a As Long, b As Long) As Long','    AddNum = a + b','End Function'],correct:[0,1,2],exp:'Function 名に値を代入することで戻り値を返します。引数は <code>(名前 As 型, ...)</code>、戻り値の型は末尾の <code>As 型</code> で宣言。'},
+  {t:'fill',k:'穴埋め',q:'Sub から別の Sub <code>FormatSheet</code> を呼び出す1行を書いてください。',ph:'',correct:['Call FormatSheet','FormatSheet','call FormatSheet'],exp:'<code>Call Sub名</code> または Sub 名だけで呼び出せます。引数がある場合は <code>Call Sub名(引数)</code> の形。'},
+  {t:'code',k:'コード記述',q:'引数に税抜金額（Long）を受け取り、消費税10%込みの整数金額を返す Function <code>WithTax</code> を書いてください。',ph:'Function WithTax(price As Long) As Long\n    \nEnd Function',check:/Function\s+WithTax\s*\(\s*price\s+As\s+Long\s*\)\s+As\s+Long[\s\S]*?WithTax\s*=\s*(Int\s*\(|CLng\s*\()?price\s*\*\s*1\.1[\s\S]*?End\s+Function/i,sample:'Function WithTax(price As Long) As Long\n    WithTax = Int(price * 1.1)\nEnd Function',exp:'<code>関数名 = 値</code> で戻り値を設定。<code>Int()</code> で小数点以下切り捨て。'}
+ ]},
+{id:'l5',n:'05',tag:'Lv.5',name:'実用テクニック',desc:'最終行取得・エラー処理・配列 · 5問',
+ sc:{title:'実務で使える定番テクニック',story:'動的な最終行取得、エラーが起きても止まらないコード、配列による高速処理——これを押さえれば戦力レベルです。'},
+ ch:[
+  {t:'fill',k:'穴埋め',q:'A列の最終行番号を変数 lastRow に取得する1行を書いてください。',ph:'lastRow = ...',correct:['lastRow = Cells(Rows.Count, 1).End(xlUp).Row','lastrow = Cells(Rows.Count, 1).End(xlUp).Row','lastRow = Cells(Rows.Count,1).End(xlUp).Row'],exp:'<code>Cells(Rows.Count, 1).End(xlUp).Row</code> は「最下行から Ctrl+↑」と同じ動作。実務で最も使う定番イディオムです。'},
+  {t:'choice',k:'考え方',q:'エラーが発生しても処理を継続したいとき使うのは？',opts:['<code>On Error GoTo 0</code>','<code>On Error Resume Next</code>','<code>Try ... Catch</code>','<code>Error Handler Begin</code>'],ans:1,exp:'<code>On Error Resume Next</code> でエラーを無視して次行へ。使いすぎは危険なので、必要な範囲だけに使い <code>On Error GoTo 0</code> で戻すのが実務の作法です。'},
+  {t:'choice',k:'考え方',q:'VBA で配列を宣言するとき、要素数を後から変えるには？',opts:['<code>Dim arr() As Variant</code> + <code>ReDim arr(n)</code>','<code>Dim arr[n] As Variant</code>','<code>Array.Resize(arr, n)</code>','<code>Dim arr As Variant(n)</code>'],ans:0,exp:'動的配列は <code>Dim arr() As Variant</code> で宣言し、実行時に <code>ReDim arr(n)</code> でサイズを決定。既存の値を保持したいときは <code>ReDim Preserve</code> を使います。'},
+  {t:'order',k:'並び替え',q:'「A列を一括で配列に読み込み、全部大文字に変換してB列に書き出す」高速処理コードを並べてください。',items:['Dim arr As Variant','Dim lastRow As Long, i As Long','lastRow = Cells(Rows.Count, 1).End(xlUp).Row','arr = Range("A1:A" & lastRow).Value','For i = 1 To UBound(arr, 1)','    arr(i, 1) = UCase(arr(i, 1))','Next i','Range("B1:B" & lastRow).Value = arr'],correct:[0,1,2,3,4,5,6,7],exp:'範囲を一括で配列に読み込んで加工し、一括書き戻す——これが VBA 高速化の黄金パターン。セル1つずつ操作するより10〜100倍速いです。'},
+  {t:'code',k:'コード記述',q:'A列の最終行までループして、各セルの値を2倍にして B列に書き込む Sub <code>DoubleValues</code> を書いてください。',ph:'Sub DoubleValues()\n    Dim lastRow As Long, i As Long\n    \nEnd Sub',check:/lastRow\s*=\s*Cells\s*\(\s*Rows\.Count\s*,\s*1\s*\)\s*\.End\s*\(\s*xlUp\s*\)\s*\.Row[\s\S]*?For\s+i\s*=\s*1\s+To\s+lastRow[\s\S]*?Cells\s*\(\s*i\s*,\s*2\s*\)\s*(\.Value\s*)?=\s*Cells\s*\(\s*i\s*,\s*1\s*\)\s*(\.Value\s*)?\*\s*2[\s\S]*?Next/i,sample:'Sub DoubleValues()\n    Dim lastRow As Long, i As Long\n    lastRow = Cells(Rows.Count, 1).End(xlUp).Row\n    For i = 1 To lastRow\n        Cells(i, 2).Value = Cells(i, 1).Value * 2\n    Next i\nEnd Sub',exp:'動的最終行取得＋ループ＋セル操作の組み合わせ。実務のデータ加工の7割はこのパターンで書けます。'}
+ ]},
+{id:'l6',n:'06',tag:'Lv.6',name:'ファイル・シート操作',desc:'ブック・シート間のデータ処理 · 5問',
+ sc:{title:'複数シート・ブックを横断する',story:'請求書ブックから集計シートへ転記、月別シートの自動生成——シート間操作ができると業務自動化の幅が一気に広がります。'},
+ ch:[
+  {t:'choice',k:'考え方',q:'「Sheet2 の A1」を参照する正しい書き方はどれ？',opts:['<code>Sheet2.Range("A1")</code>','<code>Sheets("Sheet2").Range("A1")</code>','<code>Worksheets("Sheet2").Range("A1")</code>','すべて正しい'],ans:3,exp:'3つとも有効です。実務では名前で指定する <code>Sheets("Sheet2")</code> が可読性高め。Sheet2（オブジェクト名）はユーザーがリネームしても変わらないため最も堅牢です。'},
+  {t:'fill',k:'穴埋め',q:'新しいシートを末尾に追加する1行を書いてください。',ph:'Worksheets.Add ...',correct:['Worksheets.Add After:=Worksheets(Worksheets.Count)','Sheets.Add After:=Sheets(Sheets.Count)','Worksheets.Add After:=Sheets(Sheets.Count)','Sheets.Add After:=Worksheets(Worksheets.Count)'],exp:'<code>After:=</code> で追加位置を指定。<code>Worksheets.Count</code> で最後のシートを指定するのが定番です。'},
+  {t:'choice',k:'考え方',q:'シートを削除するとき確認ダイアログを出さない方法は？',opts:['<code>Worksheets("Sheet1").Delete(False)</code>','<code>Application.DisplayAlerts = False</code> の後に Delete','<code>Worksheets("Sheet1").Remove</code>','<code>Worksheets("Sheet1").ForceDelete</code>'],ans:1,exp:'<code>Application.DisplayAlerts = False</code> で警告を抑制してから削除。必ず終了後に <code>Application.DisplayAlerts = True</code> で戻すことが重要です。'},
+  {t:'order',k:'並び替え',q:'「すべてのシートの A1 に "処理済" と書き込む」コードを並べてください。',items:['Sub MarkAllSheets()','    Dim ws As Worksheet','    For Each ws In Worksheets','        ws.Range("A1").Value = "処理済"','    Next ws','End Sub'],correct:[0,1,2,3,4,5],exp:'<code>For Each ws In Worksheets</code> でシートを全列挙。<code>ws.Range</code> のようにシートオブジェクト経由でセル指定します。'},
+  {t:'code',k:'コード記述',q:'「元データ」シートのA列を「集計」シートのA列にコピーする Sub <code>CopyColumn</code> を書いてください（最終行まで値のみ代入）。',ph:'Sub CopyColumn()\n    Dim lastRow As Long\n    \nEnd Sub',check:/lastRow\s*=\s*(Worksheets|Sheets)\s*\(\s*["']元データ["']\s*\)\s*\.Cells\s*\(\s*Rows\.Count\s*,\s*1\s*\)\s*\.End\s*\(\s*xlUp\s*\)\s*\.Row[\s\S]*?(Worksheets|Sheets)\s*\(\s*["']集計["']\s*\)\s*\.Range[\s\S]*?(Worksheets|Sheets)\s*\(\s*["']元データ["']\s*\)\s*\.Range/i,sample:'Sub CopyColumn()\n    Dim lastRow As Long\n    lastRow = Worksheets("元データ").Cells(Rows.Count, 1).End(xlUp).Row\n    Worksheets("集計").Range("A1:A" & lastRow).Value = Worksheets("元データ").Range("A1:A" & lastRow).Value\nEnd Sub',exp:'シート指定は毎回 <code>Worksheets("名前")</code> を付けること。省略するとアクティブシートが対象になり、思わぬバグの原因になります。'}
+ ]},
+{id:'l7',n:'07',tag:'Lv.7',name:'総合演習',desc:'実務シナリオの完成フロー · 5問',
+ sc:{title:'請求書データ処理を丸ごと自動化',story:'A列に顧客ID、B列に金額が並ぶ実データ。税込換算・ランク付け・集計・抽出まで——これまでの技術をフル活用する実務レベルの課題です。'},
+ ch:[
+  {t:'code',k:'総合課題',q:'A列(顧客ID)・B列(税抜金額)の最終行までループし、C列に税込金額（×1.1、<code>Int</code>で切り捨て）を書き込む Sub <code>TaxConvert</code> を書いてください。2行目からスタート。',ph:'Sub TaxConvert()\n    Dim lastRow As Long, i As Long\n    \nEnd Sub',check:/lastRow\s*=\s*Cells\s*\(\s*Rows\.Count\s*,\s*[12]\s*\)\s*\.End\s*\(\s*xlUp\s*\)\s*\.Row[\s\S]*?For\s+i\s*=\s*2\s+To\s+lastRow[\s\S]*?Cells\s*\(\s*i\s*,\s*3\s*\)\s*(\.Value\s*)?=\s*Int\s*\(\s*Cells\s*\(\s*i\s*,\s*2\s*\)\s*(\.Value\s*)?\*\s*1\.1\s*\)[\s\S]*?Next/i,sample:'Sub TaxConvert()\n    Dim lastRow As Long, i As Long\n    lastRow = Cells(Rows.Count, 2).End(xlUp).Row\n    For i = 2 To lastRow\n        Cells(i, 3).Value = Int(Cells(i, 2).Value * 1.1)\n    Next i\nEnd Sub',exp:'<code>Int()</code> で小数点以下切り捨て。lastRow は B列（2）基準で取るとより堅牢です。'},
+  {t:'choice',k:'考え方',q:'B列の金額に応じて D列にランクを付けたい。50000以上→"S"、30000以上→"A"、それ以外→"B" の分岐に最適な構造は？',opts:['If のみ3つ並べる','If → ElseIf → Else → End If','Select Case（数値比較）','Do While ループ'],ans:1,exp:'3段階の分岐は <code>If → ElseIf → Else → End If</code> が最適。上から順に評価し、最初に当てはまった条件だけ実行されます。'},
+  {t:'order',k:'並び替え',q:'「B列が10000以上の行だけ「抽出」シートへコピー」するコードを並べてください。',items:['Sub ExtractHigh()','    Dim lastRow As Long, i As Long, k As Long','    lastRow = Cells(Rows.Count, 1).End(xlUp).Row','    k = 1','    For i = 2 To lastRow','        If Cells(i, 2).Value >= 10000 Then','            Worksheets("抽出").Rows(k).Value = Rows(i).Value','            k = k + 1','        End If','    Next i','End Sub'],correct:[0,1,2,3,4,5,6,7,8,9,10],exp:'抽出先カウンタ k を別管理するのがポイント。条件合致時だけ k を増やすことで、抽出シートに隙間なくデータが入ります。'},
+  {t:'fill',k:'穴埋め',q:'B2 から最終行までの合計を <code>WorksheetFunction</code> を使って求める1行を書いてください（lastRow は取得済み）。',ph:'total = ...',correct:['total = WorksheetFunction.Sum(Range("B2:B" & lastRow))','total = Application.WorksheetFunction.Sum(Range("B2:B" & lastRow))'],exp:'<code>WorksheetFunction.Sum(範囲)</code> でシート関数を VBA から呼び出せます。'},
+  {t:'code',k:'最終課題',q:'B列の平均を計算し、MsgBox に「平均金額：○○円」と表示する Sub <code>ShowAverage</code> を書いてください。2行目から最終行が対象です。',ph:'Sub ShowAverage()\n    Dim lastRow As Long\n    Dim avg As Double\n    \nEnd Sub',check:/lastRow\s*=\s*Cells\s*\(\s*Rows\.Count\s*,\s*2\s*\)\s*\.End\s*\(\s*xlUp\s*\)\s*\.Row[\s\S]*?(Application\.)?WorksheetFunction\.Average[\s\S]*?MsgBox[\s\S]*?avg/i,sample:'Sub ShowAverage()\n    Dim lastRow As Long\n    Dim avg As Double\n    lastRow = Cells(Rows.Count, 2).End(xlUp).Row\n    avg = WorksheetFunction.Average(Range("B2:B" & lastRow))\n    MsgBox "平均金額：" & avg & "円"\nEnd Sub',exp:'文字列連結は <code>&</code>。これができれば実務で VBA を書ける戦力です！'}
+ ]}
+];
+
+/* ===== STATE ===== */
+let S={
+ tab:'lesson', view:'home', lessonView:'list', currentLesson:null,
+ li:0,ci:0,ord:[],ans:{},sel:null,fill:'',code:'',showSample:{},
+ done:(()=>{try{return JSON.parse(localStorage.getItem('vba_v3')||'{}')}catch(e){return{}}})(),
+ lessonRead:(()=>{try{return JSON.parse(localStorage.getItem('vba_v3_ls')||'{}')}catch(e){return{}}})()
+};
+function save(){try{localStorage.setItem('vba_v3',JSON.stringify(S.done));localStorage.setItem('vba_v3_ls',JSON.stringify(S.lessonRead))}catch(e){}}
+
+function upBadge(){
+ const d=L.filter(l=>S.done[l.id]).length;
+ const el=document.getElementById('badge');
+ if(el) el.textContent=d+'/'+L.length;
+}
+
+function switchTab(tab){
+ S.tab=tab;
+ ['lesson','practice'].forEach(t=>{
+  document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+ });
+ if(tab==='lesson'){S.lessonView='list';renderLesson();}
+ else{S.view='home';renderPractice();}
+}
+
+function render(){
+ if(S.tab==='lesson') renderLesson();
+ else renderPractice();
+ upBadge();
+}
+
+/* ===== LESSON ===== */
+function renderLesson(){
+ if(S.lessonView==='list') renderLessonList();
+ else renderLessonDetail();
+}
+
+function renderLessonList(){
+ const readCount=LESSONS.filter(l=>S.lessonRead[l.id]).length;
+ let h=`<div class="lesson-hero">
+  <div class="lesson-hero-tag">概念講座</div>
+  <div class="lesson-hero-title">VBAの基礎を理解しよう</div>
+  <div class="lesson-hero-sub">実践問題に進む前に、VBAの概念と仕組みをしっかり把握しましょう。全${LESSONS.length}章 · 読了 ${readCount}/${LESSONS.length}</div>
+ </div>
+ <div class="sec-label">講座一覧</div>
+ <div class="lesson-list">`;
+
+ LESSONS.forEach((ls,i)=>{
+  const read=S.lessonRead[ls.id];
+  h+=`<div class="lesson-card${read?' read':''}" onclick="openLesson(${i})">
+   <div class="lesson-card-head">
+    <div class="lesson-icon" style="background:${ls.color}">${ls.icon}</div>
+    <div class="lesson-card-body">
+     ${read?'<span class="lesson-read-pill">✓ 読了</span>':''}
+     <div class="lesson-card-title">${ls.title}</div>
+     <div class="lesson-card-desc">${ls.desc}</div>
+    </div>
+    <div class="lesson-card-arr">›</div>
+   </div>
+  </div>`;
+ });
+
+ h+=`</div>`;
+ document.getElementById('app').innerHTML=h;
+}
+
+function openLesson(i){
+ S.lessonView='detail';
+ S.currentLesson=i;
+ renderLessonDetail();
+}
+
+function renderLessonDetail(){
+ const ls=LESSONS[S.currentLesson];
+ const read=S.lessonRead[ls.id];
+ let h=`<button class="lesson-back" onclick="backToLessonList()">← 講座一覧に戻る</button>
+ <div class="lesson-content">
+  <div class="lesson-content-hero">
+   <div class="lesson-content-icon">${ls.icon}</div>
+   <div class="lesson-content-title">${ls.title}</div>
+   <div class="lesson-content-lead">${ls.content.lead}</div>
+  </div>`;
+
+ ls.content.sections.forEach(sec=>{
+  h+=`<div class="lesson-section">
+   <div class="lesson-section-title">${sec.title}</div>
+   <div class="lesson-body">${sec.body}</div>
+  </div>`;
+ });
+
+ h+=`</div>
+ <button class="lesson-done-btn${read?' read':''}" onclick="markLessonRead(${S.currentLesson})">
+  ${read?'✓ 読了済み — もう一度読む':'この章を読了にする'}
+ </button>`;
+
+ document.getElementById('app').innerHTML=h;
+}
+
+function backToLessonList(){
+ S.lessonView='list';
+ renderLessonList();
+}
+
+function markLessonRead(i){
+ const ls=LESSONS[i];
+ S.lessonRead[ls.id]=true;
+ save();
+ renderLessonDetail();
+}
+
+/* ===== PRACTICE ===== */
+function renderPractice(){
+ if(S.view==='home') rHome();
+ else if(S.view==='scenario') rScenario();
+ else rComplete();
+}
+
+function rHome(){
+ const dc=L.filter(l=>S.done[l.id]).length;
+ const tc=L.reduce((a,l)=>a+l.ch.length,0);
+ const dch=L.filter(l=>S.done[l.id]).reduce((a,l)=>a+l.ch.length,0);
+ const pct=Math.round(dc/L.length*100);
+ const ci=L.findIndex(l=>!S.done[l.id]);
+ let h=`<div class="hero">
+  <div class="hero-tag">Excel VBA</div>
+  <div class="hero-title">実務レベル実践トレーニング</div>
+  <div class="hero-sub">実際にコードを書いて戦力レベルまで引き上げます</div>
+  <div class="hero-row">
+   <div class="hero-stat"><div class="hero-stat-n">${dc}/${L.length}</div><div class="hero-stat-l">Level</div></div>
+   <div class="hero-stat"><div class="hero-stat-n">${dch}/${tc}</div><div class="hero-stat-l">課題</div></div>
+   <div class="hero-stat"><div class="hero-stat-n">${pct}%</div><div class="hero-stat-l">達成率</div></div>
+  </div>
+  <div class="pbar-bg"><div class="pbar-fill" style="width:${pct}%"></div></div>
+ </div>
+ <div class="sec-label">学習レベル</div>`;
+ L.forEach((lv,i)=>{
+  const prev=i===0||S.done[L[i-1].id];
+  const done=S.done[lv.id];const locked=!prev;
+  const cur=i===ci&&!done;
+  const sc=done?'done':cur?'current':locked?'locked':'';
+  const pt=done?'✓ 完了':cur?'次はここ':locked?'🔒':'-';
+  const pc=done?'done':cur?'current':locked?'locked':'none';
+  h+=`<div class="lv-card ${sc}" ${!locked?`onclick="startL(${i})"`:''}>
+   <div class="lv-num">${done?'✓':lv.n}</div>
+   <div class="lv-body">
+    <div class="lv-pill ${pc}">${pt}</div>
+    <div class="lv-name">${lv.name}</div>
+    <div class="lv-desc">${lv.desc}</div>
+   </div>
+   <div class="lv-arr">›</div>
+  </div>`;
+ });
+ document.getElementById('app').innerHTML=h;
+}
+
+function startL(i){
+ S.view='scenario';S.li=i;S.ci=0;S.ans={};S.sel=null;S.fill='';S.code='';S.showSample={};
+ initCh();renderPractice();
+}
+function initCh(){
+ const ch=L[S.li].ch[S.ci];
+ if(ch.t==='order'){
+  const a=ch.items.map((_,i)=>i);
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  let t=0;while(a.every((v,i)=>v===ch.correct[i])&&t++<5)for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  S.ord=a;
+ }
+ if(ch.t==='code') S.code=ch.ph||'';
+}
+
+function rScenario(){
+ const lv=L[S.li];const ch=lv.ch[S.ci];const tot=lv.ch.length;
+ const ansd=S.ans[S.ci]!==undefined;
+ const pct=Math.round(((S.ci+(ansd?1:0))/tot)*100);
+ let h=`<button class="back" onclick="goHome()">← ホーム</button>
+ <div class="sum-card">
+  <div class="sum-num">${lv.n}</div>
+  <div><div class="sum-tag">${lv.tag}</div><div class="sum-name">${lv.name}</div></div>
+ </div>
+ <div class="sce-card">
+  <span class="sce-tag">Scenario</span>
+  <div class="sce-title">${lv.sc.title}</div>
+  <div class="sce-story">${lv.sc.story}</div>
+ </div>
+ <div class="prog-wrap">
+  <div class="prog-label"><span>課題 ${S.ci+1}/${tot}</span><span>${pct}%</span></div>
+  <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+ </div>
+ <div class="ch-card">
+  <div class="ch-head"><span class="ch-type ${ch.t}">${ch.k}</span><span class="ch-qnum">Q${S.ci+1}</span></div>
+  <div class="ch-q">${ch.q}</div>`;
+
+ if(ch.t==='order'){
+  h+=`<div class="ord-list" id="ordlist">`;
+  S.ord.forEach((oi,pos)=>{
+   h+=`<div class="ord-item" draggable="true" data-pos="${pos}"><span class="ord-n">${pos+1}</span><span class="ord-txt">${esc(ch.items[oi])}</span><span class="ord-hdl">⋮⋮</span></div>`;
+  });
+  h+=`</div>`;
+  if(!ansd) h+=`<button class="btn btn-p" onclick="chkOrd()">答え合わせ</button>`;
+ }else if(ch.t==='choice'){
+  h+=`<div class="opts">`;
+  ch.opts.forEach((o,i)=>{
+   let c='opt';
+   if(ansd){if(i===ch.ans)c+=' correct';else if(i===S.sel&&i!==ch.ans)c+=' wrong';}
+   h+=`<button class="${c}" ${ansd?'disabled':''} onclick="chkC(${i})"><span class="opt-mk">${['A','B','C','D'][i]}</span><span class="opt-txt">${o}</span></button>`;
+  });
+  h+=`</div>`;
+ }else if(ch.t==='fill'){
+  const a=S.ans[S.ci];const ic=a===undefined?'':a?'correct':'wrong';
+  h+=`<div class="fill-row"><input id="fi" type="text" placeholder="${ch.ph||''}" value="${esca(S.fill)}" ${a!==undefined?'disabled':''} class="${ic}">${a===undefined?`<button class="btn btn-p" onclick="chkF()">確認</button>`:''}</div>`;
+ }else if(ch.t==='code'){
+  const a=S.ans[S.ci];const ic=a===undefined?'':a?'correct':'wrong';
+  h+=`<div class="code-area"><textarea id="ct" ${a!==undefined?'disabled':''} class="${ic}" spellcheck="false">${esc(S.code)}</textarea><div class="code-hint">💡 Tab キーでインデントできます。動作する完全なコードを書いてください。</div></div>`;
+  if(a===undefined){
+   h+=`<div class="btn-row"><button class="btn btn-p" onclick="chkCode()">答え合わせ</button><button class="btn btn-s" onclick="toggleSample()">${S.showSample[S.ci]?'模範解答を隠す':'模範解答を見る'}</button></div>`;
+   if(S.showSample[S.ci]) h+=`<div class="fb-code" style="margin-top:10px">${esc(ch.sample)}</div>`;
+  }
+ }
+
+ if(ansd){
+  const ok=S.ans[S.ci];
+  h+=`<div class="fb ${ok?'ok':'ng'}"><span class="fb-icon">${ok?'✓':'×'}</span><div><div class="fb-head">${ok?'正解！':'不正解'}</div><div>${ch.exp}</div>${ch.sample&&!ok?`<div class="fb-code">${esc(ch.sample)}</div>`:''}</div></div>
+  <div class="nav"><button class="btn btn-p" onclick="nextCh()">${S.ci+1<tot?'次の課題 →':'レベル完了 →'}</button></div>`;
+ }
+ h+=`</div>`;
+ document.getElementById('app').innerHTML=h;
+
+ if(ch.t==='order') setupDD();
+ if(ch.t==='fill'){
+  const inp=document.getElementById('fi');
+  if(inp&&S.ans[S.ci]===undefined){inp.addEventListener('input',e=>S.fill=e.target.value);inp.addEventListener('keydown',e=>{if(e.key==='Enter')chkF()});inp.focus();}
+ }
+ if(ch.t==='code'){
+  const ta=document.getElementById('ct');
+  if(ta&&S.ans[S.ci]===undefined){
+   ta.addEventListener('input',e=>S.code=e.target.value);
+   ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart,en=ta.selectionEnd;ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(en);ta.selectionStart=ta.selectionEnd=s+4;S.code=ta.value;}});
+  }
+ }
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function esca(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}
+
+function setupDD(){
+ const area=document.getElementById('ordlist');if(!area)return;
+ let dp=null;
+ area.querySelectorAll('.ord-item').forEach(el=>{
+  el.addEventListener('dragstart',e=>{dp=+el.dataset.pos;el.style.opacity='.4';e.dataTransfer.effectAllowed='move'});
+  el.addEventListener('dragend',e=>{el.style.opacity='1';area.querySelectorAll('.ord-item').forEach(x=>x.classList.remove('drag-over-top','drag-over-bot'))});
+  el.addEventListener('dragover',e=>{e.preventDefault();area.querySelectorAll('.ord-item').forEach(x=>x.classList.remove('drag-over-top','drag-over-bot'));const mid=el.getBoundingClientRect().top+el.offsetHeight/2;el.classList.add(e.clientY<mid?'drag-over-top':'drag-over-bot')});
+  el.addEventListener('drop',e=>{e.preventDefault();const mid=el.getBoundingClientRect().top+el.offsetHeight/2;let tp=+el.dataset.pos;if(e.clientY>=mid)tp++;if(dp===null)return;const it=S.ord.splice(dp,1)[0];if(tp>dp)tp--;S.ord.splice(tp,0,it);dp=null;renderPractice()});
+ });
+}
+
+function chkOrd(){S.ans[S.ci]=S.ord.every((v,i)=>v===L[S.li].ch[S.ci].correct[i]);renderPractice()}
+function chkC(i){S.sel=i;S.ans[S.ci]=(i===L[S.li].ch[S.ci].ans);renderPractice()}
+function chkF(){
+ const ch=L[S.li].ch[S.ci];const v=S.fill.trim();
+ const n=s=>s.toLowerCase().replace(/\s+/g,' ').trim();
+ S.ans[S.ci]=ch.correct.some(c=>n(c)===n(v));renderPractice();
+}
+function chkCode(){S.ans[S.ci]=L[S.li].ch[S.ci].check.test(S.code);renderPractice()}
+function toggleSample(){S.showSample[S.ci]=!S.showSample[S.ci];renderPractice()}
+function nextCh(){
+ if(S.ci+1<L[S.li].ch.length){S.ci++;S.sel=null;S.fill='';S.code='';initCh();renderPractice();}
+ else{S.done[L[S.li].id]=true;save();S.view='complete';renderPractice();}
+}
+function rComplete(){
+ const lv=L[S.li];const isLast=S.li===L.length-1;const allDone=L.every(l=>S.done[l.id]);
+ let h=`<div class="comp"><div class="comp-ic">✓</div><div class="comp-title">${lv.tag} クリア！</div><div class="comp-sub">${lv.name}</div>
+ <div class="comp-btns">${!isLast?`<button class="btn btn-p" onclick="startL(${S.li+1})">次のレベルへ →</button>`:''}<button class="btn" onclick="goHome()">ホームへ</button></div>`;
+ if(isLast&&allDone) h+=`<div class="final">🏆 <strong>全レベル完走おめでとうございます！</strong><br>これで実務で VBA を書ける戦力です。あとは現場で手を動かすのみ！</div>`;
+ h+=`</div>`;
+ document.getElementById('app').innerHTML=h;
+}
+function goHome(){S.view='home';renderPractice()}
+
+/* ===== RESET ===== */
+function confirmReset(){
+ document.getElementById('modal').innerHTML=`<div class="modal-overlay" onclick="closeModal(event)"><div class="modal"><div class="modal-ic">⚠️</div><div class="modal-title">進捗をリセットしますか？</div><div class="modal-sub">全レベルの完了状態と講座の読了状態が消去されます。この操作は取り消せません。</div><div class="modal-btns"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-danger" onclick="doReset()">リセットする</button></div></div></div>`;
+}
+function closeModal(e){if(!e||e.target.classList.contains('modal-overlay'))document.getElementById('modal').innerHTML=''}
+function doReset(){
+ S.done={};S.lessonRead={};save();
+ document.getElementById('modal').innerHTML='';
+ render();
+}
+
+render();
+</script>
+</body>
+</html>
