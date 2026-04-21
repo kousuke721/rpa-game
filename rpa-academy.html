@@ -63,7 +63,7 @@ body::before{
 .fitem:last-child{border-bottom:none}
 .fdot{width:7px;height:7px;border-radius:50%;background:var(--primary);flex-shrink:0}
 .ch-mini{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;backdrop-filter:blur(8px)}
-.ch-mini-ico{font-size:1.3rem}
+.ch-mini-ico{width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
 .ch-mini-info .n{font-size:.68rem;color:var(--pale)}
 .ch-mini-info .t{font-size:.86rem;font-weight:700;color:var(--text)}
 .ch-mini-info .s{font-size:.72rem;color:var(--muted)}
@@ -179,8 +179,12 @@ body::before{
 .stat-lbl{font-size:.7rem;color:var(--muted);margin-top:2px}
 
 /* NAV */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:440px;background:rgba(26,10,46,.92);backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;z-index:100}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 14px;cursor:pointer;gap:3px;transition:color .2s}
+.bnav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:408px;background:rgba(26,10,46,.85);backdrop-filter:blur(24px);border:1px solid rgba(168,85,247,.25);border-radius:24px;display:flex;z-index:100;padding:0 4px;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;cursor:pointer;gap:4px;transition:all .2s;border-radius:16px;margin:5px 3px;}
+.ni.act{color:#fff;background:linear-gradient(135deg,rgba(107,63,160,.5),rgba(224,64,251,.3));border:1px solid rgba(224,64,251,.35);}
+.ni:not(.act){color:var(--dim)}
+.ni.act svg{stroke:#fff;}
+.ni:not(.act) svg{stroke:rgba(195,155,211,.45);}
 .ni-ico{font-size:1.15rem}
 .ni-lbl{font-size:.58rem;letter-spacing:.05em}
 .ni.act{color:var(--accent)}
@@ -302,13 +306,16 @@ code{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--pale)}
 <!-- BOTTOM NAV -->
 <div class="bnav">
   <div class="ni act" onclick="showPage('home')" id="nav-home">
-    <span class="ni-ico">🏠</span><span class="ni-lbl">ホーム</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="ni-lbl">ホーム</span>
   </div>
   <div class="ni" onclick="goToMap()" id="nav-map">
-    <span class="ni-ico">📚</span><span class="ni-lbl">学習</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+    <span class="ni-lbl">学習</span>
   </div>
   <div class="ni" onclick="showReset()" id="nav-prog">
-    <span class="ni-ico">🔄</span><span class="ni-lbl">リセット</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+    <span class="ni-lbl">リセット</span>
   </div>
 </div>
 
@@ -326,7 +333,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--pale)}
 <script>
 const CUR = [
   {
-    id:1, title:"RPAの基礎", icon:"⚙️", color:"#A855F7",
+    id:1, title:"RPAの基礎", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>`, color:"#A855F7",
     lessons:[
       {
         id:"1-1", title:"RPAって何だろう？", exType:"choice",
@@ -376,7 +383,7 @@ const CUR = [
     ]
   },
   {
-    id:2, title:"ワークフロー設計", icon:"🔄", color:"#C084FC",
+    id:2, title:"ワークフロー設計", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>`, color:"#C084FC",
     lessons:[
       {
         id:"2-1", title:"アクティビティとワークフロー", exType:"choice",
@@ -433,7 +440,7 @@ const CUR = [
     ]
   },
   {
-    id:3, title:"変数とデータ型", icon:"📦", color:"#818CF8",
+    id:3, title:"変数とデータ型", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>`, color:"#818CF8",
     lessons:[
       {
         id:"3-1", title:"変数を使いこなす", exType:"choice",
@@ -506,7 +513,7 @@ Double.Parse(row("率").ToString)</div>
     ]
   },
   {
-    id:4, title:"制御フロー", icon:"🔀", color:"#6ee7b7",
+    id:4, title:"制御フロー", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>`, color:"#6ee7b7",
     lessons:[
       {
         id:"4-1", title:"条件分岐（If / Else）", exType:"ordering",
@@ -569,7 +576,7 @@ Next row</div></div>
     ]
   },
   {
-    id:5, title:"セレクターとUI操作", icon:"🖱️", color:"#fbbf24",
+    id:5, title:"セレクターとUI操作", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`, color:"#fbbf24",
     lessons:[
       {
         id:"5-1", title:"セレクターの仕組み", exType:"choice",
@@ -620,7 +627,7 @@ Next row</div></div>
     ]
   },
   {
-    id:6, title:"Excelとデータ処理", icon:"📊", color:"#34d399",
+    id:6, title:"Excelとデータ処理", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>`, color:"#34d399",
     lessons:[
       {
         id:"6-1", title:"Excel操作の基本", exType:"ordering",
@@ -681,7 +688,7 @@ dt.Columns.Count           → 列数</div></div>
     ]
   },
   {
-    id:7, title:"エラーハンドリング", icon:"🛡️", color:"#f87171",
+    id:7, title:"エラーハンドリング", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`, color:"#f87171",
     lessons:[
       {
         id:"7-1", title:"エラーの種類と対処法", exType:"choice",
@@ -738,7 +745,7 @@ Finally
     ]
   },
   {
-    id:8, title:"実務レベルへ", icon:"🚀", color:"#E040FB",
+    id:8, title:"実務レベルへ", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E040FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`, color:"#E040FB",
     lessons:[
       {
         id:"8-1", title:"業務分析とRPA化判断", exType:"choice",
