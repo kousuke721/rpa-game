@@ -9,58 +9,68 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#F7F5F0;--surface:#FFFFFF;--card:#FEFCF8;
-  --border:#E8E2D9;--border2:#D4CCB8;
-  --ink:#1A1612;--muted:#7A7065;--dim:#B8AFA0;
-  --primary:#2D5BE3;--primary-bg:#EEF2FF;
-  --green:#1A7A4A;--green-bg:#EDFAF3;
-  --orange:#C45D00;--orange-bg:#FFF4E6;
-  --red:#C4001A;--red-bg:#FFF0F2;
-  --purple:#6B21A8;--purple-bg:#F5F0FF;
-  --code-bg:#1C1917;--code-text:#A8D8A8;
+  --bg-grad-start:#1a0a2e;--bg-grad-mid:#2d1b69;--bg-grad-end:#6b3fa0;
+  --surface:rgba(237,228,255,.1);--card:rgba(237,228,255,.1);
+  --border:rgba(168,85,247,.22);--border2:rgba(168,85,247,.35);
+  --ink:#FDFAFF;--muted:rgba(195,155,211,.85);--dim:#C39BD3;
+  --primary:#A855F7;--primary-bg:rgba(168,85,247,.2);
+  --green:#6ee7b7;--green-bg:rgba(52,211,153,.15);
+  --orange:#fbbf24;--orange-bg:rgba(251,191,36,.15);
+  --red:#f87171;--red-bg:rgba(248,113,113,.15);
+  --purple:#d8b4fe;--purple-bg:rgba(216,180,254,.15);
+  --code-bg:#0d0718;--code-text:#a8d8a8;
+  --acc:#E040FB;--pale:#C39BD3;
 }
 html{scroll-behavior:smooth}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(45,91,227,.04) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(107,33,168,.04) 0%,transparent 50%);pointer-events:none;z-index:0}
-
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:linear-gradient(135deg,var(--bg-grad-start) 0%,var(--bg-grad-mid) 45%,var(--bg-grad-end) 100%);
+  color:var(--ink);min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 65% 25%,rgba(168,85,247,.14) 0%,transparent 55%),
+             radial-gradient(ellipse at 20% 75%,rgba(224,64,251,.09) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
 .wrap{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 60px}
 
 /* HERO */
-.hero{padding:40px 20px 32px;border-bottom:2px solid var(--border)}
-.hero-eyebrow{font-size:.68rem;letter-spacing:.25em;color:var(--primary);text-transform:uppercase;margin-bottom:10px;font-weight:500}
-.hero-title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;line-height:1.15;color:var(--ink);margin-bottom:10px}
-.hero-title span{color:var(--primary)}
+.hero{padding:36px 20px 28px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-size:.68rem;letter-spacing:.22em;color:var(--pale);text-transform:uppercase;margin-bottom:10px;font-weight:500}
+.hero-title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;line-height:1.15;color:var(--ink);margin-bottom:10px;text-shadow:0 0 24px rgba(168,85,247,.45)}
+.hero-title span{color:var(--acc)}
 .hero-sub{font-size:.83rem;color:var(--muted);line-height:1.7}
 .hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
-.tag{font-size:.68rem;padding:4px 10px;border-radius:99px;font-weight:500;border:1px solid}
-.tag-blue{background:var(--primary-bg);color:var(--primary);border-color:#C7D4F9}
-.tag-green{background:var(--green-bg);color:var(--green);border-color:#B6EDCF}
-.tag-purple{background:var(--purple-bg);color:var(--purple);border-color:#DDD0F5}
+.tag{font-size:.68rem;padding:4px 10px;border-radius:99px;font-weight:600;border:1px solid}
+.tag-blue{background:rgba(99,102,241,.2);color:#a5b4fc;border-color:rgba(99,102,241,.35)}
+.tag-green{background:var(--green-bg);color:var(--green);border-color:rgba(52,211,153,.3)}
+.tag-purple{background:var(--purple-bg);color:var(--purple);border-color:rgba(216,180,254,.35)}
 
 /* TOC */
-.toc{margin:20px;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.toc-title{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:14px 16px 10px;border-bottom:1px solid var(--border)}
-.toc-item{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;text-decoration:none;color:var(--ink)}
+.toc{margin:18px 20px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.toc-title{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--pale);padding:12px 16px 10px;border-bottom:1px solid var(--border)}
+.toc-item{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;transition:background .15s;text-decoration:none;color:rgba(255,255,255,.85)}
 .toc-item:last-child{border-bottom:none}
-.toc-item:active{background:var(--bg)}
-.toc-num{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--dim);width:20px;flex-shrink:0}
+.toc-item:active,.toc-item:hover{background:rgba(255,255,255,.06)}
+.toc-num{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--pale);width:20px;flex-shrink:0}
 .toc-text{font-size:.83rem;font-weight:500}
-.toc-arrow{margin-left:auto;color:var(--dim);font-size:.8rem}
+.toc-arrow{margin-left:auto;color:var(--pale);font-size:.8rem}
 
 /* SECTIONS */
 .section{padding:28px 20px 0}
 .section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.section-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--dim)}
+.section-num{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--pale)}
 .section-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--ink)}
 .section-icon{font-size:1.2rem}
 .divider{height:1px;background:var(--border);margin:28px 20px 0}
 
 /* CARDS */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden}
-.card-header{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;backdrop-filter:blur(8px)}
+.card-header{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border);cursor:pointer}
 .card-header-icon{font-size:1rem;flex-shrink:0}
-.card-header-title{font-size:.88rem;font-weight:700;flex:1}
-.card-header-badge{font-size:.65rem;padding:3px 8px;border-radius:99px;font-weight:600;white-space:nowrap}
+.card-header-title{font-size:.88rem;font-weight:700;flex:1;color:var(--ink)}
+.card-header-badge{font-size:.65rem;padding:3px 9px;border-radius:99px;font-weight:600;white-space:nowrap}
 .badge-green{background:var(--green-bg);color:var(--green)}
 .badge-orange{background:var(--orange-bg);color:var(--orange)}
 .badge-blue{background:var(--primary-bg);color:var(--primary)}
@@ -70,22 +80,29 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .card-desc:last-child{margin-bottom:0}
 
 /* CODE BLOCKS */
-.code-block{background:var(--code-bg);border-radius:10px;padding:14px;margin:10px 0;position:relative}
+.code-block{background:var(--code-bg);border-radius:10px;padding:14px;margin:10px 0;position:relative;border:1px solid rgba(168,85,247,.2)}
 .code-block code{font-family:'DM Mono',monospace;font-size:.78rem;color:var(--code-text);line-height:1.85;display:block;white-space:pre-wrap;word-break:break-all}
 .code-comment{color:#6B7280}
 .code-cmd{color:#93C5FD}
 .code-str{color:#FCD34D}
 .code-flag{color:#F9A8D4}
-.copy-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.1);border:none;color:#9CA3AF;border-radius:6px;padding:4px 8px;font-size:.65rem;cursor:pointer;font-family:'DM Mono',monospace;transition:background .2s}
-.copy-btn:active{background:rgba(255,255,255,.2)}
+.copy-btn{
+  position:absolute;top:10px;right:10px;
+  background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.45);
+  color:#d8b4fe;border-radius:7px;padding:4px 10px;
+  font-size:.65rem;cursor:pointer;font-family:'DM Mono',monospace;
+  transition:all .2s;white-space:nowrap;
+}
+.copy-btn:hover{background:rgba(168,85,247,.4);}
+.copy-btn.copied{background:rgba(52,211,153,.25);border-color:rgba(52,211,153,.45);color:#6ee7b7;}
 
 /* STEP LIST */
 .step-list{counter-reset:step}
 .step{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
 .step:last-child{border-bottom:none}
-.step-num{width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace}
+.step-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;box-shadow:0 0 8px rgba(224,64,251,.35)}
 .step-content{flex:1}
-.step-title{font-size:.85rem;font-weight:700;margin-bottom:3px}
+.step-title{font-size:.85rem;font-weight:700;margin-bottom:3px;color:var(--ink)}
 .step-desc{font-size:.78rem;color:var(--muted);line-height:1.6}
 
 /* SHORTCUT TABLE */
@@ -94,33 +111,34 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .shortcut-item:last-child{border-bottom:none}
 .shortcut-desc{font-size:.82rem;color:var(--ink)}
 .shortcut-keys{display:flex;gap:4px;align-items:center;flex-shrink:0}
-.key{background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--ink);box-shadow:0 1px 0 var(--border2)}
-.key-plus{font-size:.7rem;color:var(--dim)}
+.key{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:6px;padding:3px 8px;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.1)}
+.key-plus{font-size:.7rem;color:var(--pale)}
 
 /* ERROR CARDS */
-.error-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.error-card{background:rgba(237,228,255,.07);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:12px;padding:14px 16px;margin-bottom:10px;backdrop-filter:blur(8px)}
 .error-card.warn{border-left-color:var(--orange)}
 .error-card.info{border-left-color:var(--primary)}
-.error-title{font-size:.85rem;font-weight:700;margin-bottom:6px;font-family:'DM Mono',monospace}
+.error-title{font-size:.85rem;font-weight:700;margin-bottom:6px;font-family:'DM Mono',monospace;color:var(--ink)}
 .error-cause{font-size:.78rem;color:var(--muted);margin-bottom:8px;line-height:1.6}
 .error-fix-label{font-size:.68rem;font-weight:700;color:var(--green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
-.error-fix{font-size:.78rem;color:var(--ink);line-height:1.6}
+.error-fix{font-size:.78rem;color:var(--muted);line-height:1.6}
 
 /* BRANCH VISUAL */
-.branch-visual{background:var(--code-bg);border-radius:10px;padding:16px;margin:10px 0;font-family:'DM Mono',monospace;font-size:.76rem;line-height:2}
+.branch-visual{background:var(--code-bg);border-radius:10px;padding:16px;margin:10px 0;font-family:'DM Mono',monospace;font-size:.76rem;line-height:2;border:1px solid rgba(168,85,247,.2)}
 .b-main{color:#93C5FD}
 .b-branch{color:#FCD34D}
-.b-merge{color:#A8D8A8}
+.b-merge{color:#a8d8a8}
 .b-dot{color:#6B7280}
 
 /* HIGHLIGHT BOX */
 .hbox{border-radius:10px;padding:12px 14px;font-size:.8rem;line-height:1.7;margin:10px 0}
-.hbox-blue{background:var(--primary-bg);border:1px solid #C7D4F9;color:#1E3A8A}
-.hbox-green{background:var(--green-bg);border:1px solid #B6EDCF;color:#14532D}
-.hbox-orange{background:var(--orange-bg);border:1px solid #FDDCAA;color:#7C2D12}
+.hbox-blue{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#a5b4fc}
+.hbox-green{background:var(--green-bg);border:1px solid rgba(52,211,153,.3);color:var(--green)}
+.hbox-orange{background:var(--orange-bg);border:1px solid rgba(251,191,36,.3);color:var(--orange)}
 
 /* BACK TO TOP */
-.back-top{display:block;text-align:center;padding:20px;font-size:.8rem;color:var(--primary);cursor:pointer;text-decoration:none}
+.back-top{display:block;text-align:center;padding:20px;font-size:.8rem;color:var(--pale);cursor:pointer;text-decoration:none;transition:color .2s}
+.back-top:hover{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -156,7 +174,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <span class="section-num">01</span>
     <span class="section-title">HTMLファイルの追加手順</span>
   </div>
-
   <div class="card">
     <div class="card-body">
       <div class="step-list">
@@ -171,7 +188,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
           <div class="step-num">2</div>
           <div class="step-content">
             <div class="step-title">ターミナルでrpa-gameに移動</div>
-            <div class="code-block"><code><span class="code-cmd">cd</span> ~/Desktop/rpa-game</code></div>
+            <div class="code-block"><code><span class="code-cmd">cd</span> ~/Desktop/rpa-game</code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
           </div>
         </div>
         <div class="step">
@@ -180,7 +197,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
             <div class="step-title">変更をステージング・コミット・プッシュ</div>
             <div class="code-block"><code><span class="code-cmd">git add</span> .
 <span class="code-cmd">git commit</span> <span class="code-flag">-m</span> <span class="code-str">"新しいページを追加"</span>
-<span class="code-cmd">git push</span></code></div>
+<span class="code-cmd">git push</span></code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
           </div>
         </div>
         <div class="step">
@@ -188,13 +205,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
           <div class="step-content">
             <div class="step-title">スマホからアクセス確認</div>
             <div class="step-desc">数分後に以下のURLでアクセス可能になる</div>
-            <div class="code-block"><code><span class="code-str">https://kousuke721.github.io/rpa-game/ファイル名.html</span></code></div>
+            <div class="code-block"><code><span class="code-str">https://kousuke721.github.io/rpa-game/ファイル名.html</span></code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
   <div class="hbox hbox-green">💡 ファイルを<strong>上書き</strong>したいときも同じ手順でOK。git が差分を自動で検出してくれる。</div>
 </div>
 
@@ -207,7 +223,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <span class="section-num">02</span>
     <span class="section-title">よく使うGitコマンド</span>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">📋</span>
@@ -233,10 +248,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 <span class="code-comment"># GitHubから最新を取得（他の端末で変更した後）</span>
 <span class="code-cmd">git pull</span></code>
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">🕐</span>
@@ -253,10 +268,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 <span class="code-comment"># 直前のコミットを取り消す（ファイルは残る）</span>
 <span class="code-cmd">git reset</span> <span class="code-flag">--soft</span> HEAD~1</code>
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">🔙</span>
@@ -270,6 +285,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 <span class="code-comment"># ステージングを取り消す（git addを取り消す）</span>
 <span class="code-cmd">git reset</span> HEAD ファイル名.html</code>
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
       </div>
       <div class="hbox hbox-orange">⚠️ checkout で元に戻すと変更内容は<strong>完全に消える</strong>ので注意。</div>
     </div>
@@ -285,7 +301,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <span class="section-num">03</span>
     <span class="section-title">ブランチの基本</span>
   </div>
-
   <div class="card">
     <div class="card-body">
       <div class="card-desc">ブランチとは「作業用のコピー」です。mainブランチを壊さずに新機能を試せます。</div>
@@ -309,10 +324,10 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 <span class="code-comment"># 不要なブランチを削除</span>
 <span class="code-cmd">git branch</span> <span class="code-flag">-d</span> dev</code>
+        <button class="copy-btn" onclick="copyCode(this)">コピー</button>
       </div>
     </div>
   </div>
-
   <div class="hbox hbox-blue">💡 今は一人運用なのでブランチは必須ではありません。「新機能を試したい」「壊したくない」ときに使い始めるとよいです。</div>
 </div>
 
@@ -325,7 +340,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <span class="section-num">04</span>
     <span class="section-title">VS Codeショートカット</span>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">🔍</span>
@@ -348,7 +362,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">✏️</span>
@@ -379,7 +392,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">🖥️</span>
@@ -417,31 +429,27 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <span class="section-num">05</span>
     <span class="section-title">よくあるエラーと解決法</span>
   </div>
-
   <div class="error-card">
     <div class="error-title">Host key verification failed.</div>
     <div class="error-cause">SSHの接続先が未登録のため発生。初回接続時によく出る。</div>
     <div class="error-fix-label">解決法</div>
     <div class="code-block"><code><span class="code-cmd">ssh-keyscan</span> github.com >> ~/.ssh/known_hosts
-<span class="code-cmd">ssh</span> <span class="code-flag">-T</span> git@github.com</code></div>
+<span class="code-cmd">ssh</span> <span class="code-flag">-T</span> git@github.com</code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
   </div>
-
   <div class="error-card warn">
     <div class="error-title">error: failed to push some refs</div>
     <div class="error-cause">GitHubのリモートが手元より新しい状態。GitHub上で直接編集した後によく出る。</div>
     <div class="error-fix-label">解決法</div>
     <div class="code-block"><code><span class="code-comment"># まずpullしてから再度push</span>
 <span class="code-cmd">git pull</span>
-<span class="code-cmd">git push</span></code></div>
+<span class="code-cmd">git push</span></code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
   </div>
-
   <div class="error-card warn">
     <div class="error-title">nothing to commit, working tree clean</div>
     <div class="error-cause">エラーではなく「変更がない」という意味。commitするものがない状態。</div>
     <div class="error-fix-label">対応</div>
     <div class="error-fix">ファイルを編集・保存してから git add . をやり直す。</div>
   </div>
-
   <div class="error-card">
     <div class="error-title">Permission denied (publickey)</div>
     <div class="error-cause">SSHキーがGitHubに登録されていないか、接続設定がおかしい。</div>
@@ -450,9 +458,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <span class="code-cmd">ssh</span> <span class="code-flag">-T</span> git@github.com
 
 <span class="code-comment"># 公開鍵をコピーしてGitHubに再登録</span>
-<span class="code-cmd">pbcopy</span> < ~/.ssh/id_ed25519.pub</code></div>
+<span class="code-cmd">pbcopy</span> < ~/.ssh/id_ed25519.pub</code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
   </div>
-
   <div class="error-card info">
     <div class="error-title">zsh: command not found: code</div>
     <div class="error-cause">VS CodeのCLIコマンドが有効になっていない。</div>
@@ -470,7 +477,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <span class="section-num">06</span>
     <span class="section-title">GitHub Pages の確認・更新</span>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">🔗</span>
@@ -483,10 +489,9 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <span class="code-comment"># 各ファイル</span>
 <span class="code-str">https://kousuke721.github.io/rpa-game/index.html</span>
 <span class="code-str">https://kousuke721.github.io/rpa-game/rpa-academy.html</span>
-<span class="code-str">https://kousuke721.github.io/rpa-game/git-guide.html</span></code></div>
+<span class="code-str">https://kousuke721.github.io/rpa-game/git-guide.html</span></code><button class="copy-btn" onclick="copyCode(this)">コピー</button></div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header">
       <span class="card-header-icon">⏱️</span>
@@ -513,12 +518,29 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       </div>
     </div>
   </div>
-
   <div class="hbox hbox-blue">📌 GitHub Pages の設定確認：リポジトリ → Settings → Pages → Branch: main / /(root) になっていればOK</div>
 </div>
 
 <a class="back-top" href="#">↑ 上に戻る</a>
 
 </div>
+
+<script>
+function copyCode(btn) {
+  const codeEl = btn.closest('.code-block').querySelector('code');
+  const text = codeEl.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ コピー済';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピー';
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'コピー失敗';
+    setTimeout(() => { btn.textContent = 'コピー'; }, 1800);
+  });
+}
+</script>
 </body>
 </html>
