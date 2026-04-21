@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Segoe UI',sans-serif;background:#f7f5ff;min-height:100vh;padding:12px;color:#1e1530}
+.shell{max-width:480px;margin:0 auto}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 14px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-icon{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#7c3aed,#5b21b6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.logo-txt{font-size:14px;font-weight:700}
+.hdr-right{display:flex;gap:7px;align-items:center}
+.badge{background:#fff;border:1px solid #ddd6fe;border-radius:99px;padding:4px 10px;font-size:11px;color:#7c3aed;font-weight:600}
+.reset-btn{background:#fff;border:1px solid #e0d5f5;border-radius:99px;padding:4px 10px;font-size:11px;color:#9a7fc5;font-weight:600;cursor:pointer;font-family:inherit}
+.reset-btn:hover{background:#f5f3ff;color:#7c3aed}
+
+.tab-bar{display:flex;background:#fff;border:1px solid #ede9fe;border-radius:16px;padding:5px;margin-bottom:16px;gap:4px;box-shadow:0 2px 10px rgba(124,58,237,.07)}
+.tab-item{flex:1;padding:9px 6px;border-radius:12px;border:none;background:transparent;font-size:11px;font-family:inherit;font-weight:600;color:#9986c0;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab-item.active{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.28)}
+.tab-icon{font-size:15px;line-height:1}
+.tab-label{font-size:10px}
+
+.hero{background:linear-gradient(135deg,#5b21b6 0%,#7c3aed 55%,#a855f7 100%);border-radius:18px;padding:20px 18px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;box-shadow:0 6px 24px rgba(124,58,237,.3)}
+.hero::before{content:"";position:absolute;right:-50px;top:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.07)}
+.hero-tag{font-size:10px;letter-spacing:2px;opacity:.8;margin-bottom:6px;font-weight:700;text-transform:uppercase;position:relative;z-index:1}
+.hero-title{font-size:20px;font-weight:700;margin-bottom:5px;position:relative;z-index:1}
+.hero-sub{font-size:12px;opacity:.88;line-height:1.65;margin-bottom:14px;position:relative;z-index:1}
+.hero-row{display:flex;gap:8px;margin-bottom:12px;position:relative;z-index:1}
+.hero-stat{flex:1;background:rgba(255,255,255,.15);border-radius:11px;padding:9px 10px;text-align:center;border:1px solid rgba(255,255,255,.2)}
+.hero-stat-n{font-size:17px;font-weight:700}
+.hero-stat-l{font-size:10px;opacity:.8;margin-top:2px}
+.pbar-bg{background:rgba(255,255,255,.2);border-radius:99px;height:5px;overflow:hidden;position:relative;z-index:1}
+.pbar-fill{height:100%;background:#fff;border-radius:99px;transition:width .5s}
+
+.sec-label{font-size:11px;font-weight:700;color:#7c3aed;letter-spacing:.5px;margin:2px 2px 10px;display:flex;align-items:center;gap:6px;text-transform:uppercase}
+.sec-label::before{content:"";width:3px;height:11px;background:linear-gradient(180deg,#7c3aed,#a855f7);border-radius:2px}
+
+.lesson-card{background:#fff;border:1px solid #ede9fe;border-radius:14px;margin-bottom:10px;cursor:pointer;box-shadow:0 1px 4px rgba(124,58,237,.06);transition:box-shadow .15s,transform .15s;overflow:hidden}
+.lesson-card:hover{box-shadow:0 4px 14px rgba(124,58,237,.12);transform:translateY(-1px)}
+.lesson-card.read{background:linear-gradient(135deg,#fff,#f5f3ff);border-color:#c4b5fd}
+.lesson-card-head{display:flex;align-items:center;gap:12px;padding:13px 15px}
+.lesson-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.lesson-card-body{flex:1;min-width:0}
+.lesson-read-pill{font-size:9px;padding:2px 7px;border-radius:99px;background:#ede9fe;color:#5b21b6;font-weight:700;display:inline-block;margin-bottom:3px}
+.lesson-card-title{font-size:14px;font-weight:600;color:#1e1530;margin-bottom:2px}
+.lesson-card-desc{font-size:11px;color:#6b6080;line-height:1.4}
+.lesson-card-arr{color:#c4b5fd;font-size:18px;flex-shrink:0}
+
+.lesson-back{background:#fff;border:1px solid #ddd6fe;border-radius:99px;padding:7px 14px;font-size:12px;color:#7c3aed;cursor:pointer;font-family:inherit;font-weight:600;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px}
+.lesson-back:hover{background:#f5f3ff}
+.lesson-content{background:#fff;border-radius:16px;border:1px solid #ede9fe;overflow:hidden;margin-bottom:14px}
+.lesson-content-hero{padding:18px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-bottom:1px solid #ede9fe}
+.lesson-content-icon{font-size:28px;margin-bottom:8px}
+.lesson-content-title{font-size:17px;font-weight:700;color:#1e1530;margin-bottom:5px}
+.lesson-content-lead{font-size:12px;color:#4a3f6b;line-height:1.75}
+.lesson-section{padding:16px 18px;border-bottom:1px solid #f5f3ff}
+.lesson-section:last-child{border-bottom:none}
+.lesson-section-title{font-size:13px;font-weight:700;color:#5b21b6;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.lesson-section-title::before{content:"";width:3px;height:12px;background:linear-gradient(180deg,#7c3aed,#a855f7);border-radius:2px;flex-shrink:0}
+.lesson-body{font-size:13px;color:#2e2040;line-height:1.8}
+.lesson-body p{margin-bottom:10px}
+.lesson-body p:last-child{margin-bottom:0}
+
+.info-box{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12px;color:#2e1065;line-height:1.7}
+.info-box strong{color:#5b21b6;font-weight:700}
+.tip-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12px;color:#14532d;line-height:1.7}
+.tip-box strong{font-weight:700;color:#15803d}
+.warn-box{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;margin:10px 0;font-size:12px;color:#78350f;line-height:1.7}
+
+.boki-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:12px}
+.boki-table th{padding:8px 10px;font-weight:700;font-size:11px;color:#fff}
+.boki-table th.karikata{background:#7c3aed}
+.boki-table th.kashikata{background:#a855f7}
+.boki-table td{padding:8px 10px;border-bottom:1px solid #ede9fe;color:#2e2040;line-height:1.55;text-align:center}
+.boki-table tr:nth-child(even) td{background:#faf9ff}
+
+.jiwake-box{background:#1e1a2e;border-radius:12px;padding:14px 16px;margin:10px 0;font-family:'SF Mono','Consolas',monospace;font-size:12px;line-height:1.8;color:#e2d9f3}
+.jiwake-box .kari{color:#c084fc;font-weight:700}
+.jiwake-box .kashi{color:#86efac;font-weight:700}
+.jiwake-box .amt{color:#fcd34d}
+.jiwake-box .label{color:#9986c0;font-size:11px}
+
+.fs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.fs-card{border-radius:10px;padding:10px 12px}
+.fs-card.bs{background:#ede9fe;border:1px solid #ddd6fe}
+.fs-card.pl{background:#fae8ff;border:1px solid #f5d0fe}
+.fs-card-title{font-size:11px;font-weight:700;color:#5b21b6;margin-bottom:6px;text-align:center}
+.fs-item{font-size:11px;color:#2e2040;padding:3px 0;border-bottom:1px solid rgba(124,58,237,.1)}
+.fs-item:last-child{border-bottom:none}
+.fs-item.plus{color:#15803d;font-weight:600}
+.fs-item.minus{color:#9d174d;font-weight:600}
+
+.step-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.step-item{display:flex;gap:10px;align-items:flex-start}
+.step-num{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.step-text{font-size:12px;color:#2e2040;line-height:1.7;flex:1}
+.step-text strong{color:#5b21b6;font-weight:600}
+
+.lesson-done-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(124,58,237,.3);transition:all .15s;margin-top:4px}
+.lesson-done-btn:hover{transform:translateY(-1px)}
+.lesson-done-btn.read{background:linear-gradient(135deg,#6d28d9,#4c1d95)}
+
+/* quiz */
+.back{background:#fff;border:1px solid #ddd6fe;border-radius:99px;padding:7px 14px;font-size:12px;color:#7c3aed;cursor:pointer;font-family:inherit;font-weight:600;margin-bottom:12px;display:inline-flex;align-items:center;gap:4px}
+.back:hover{background:#f5f3ff}
+.sum-card{background:#fff;border-radius:13px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;border:1px solid #ede9fe}
+.sum-num{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.sum-tag{font-size:10px;color:#9986c0;letter-spacing:.8px;font-weight:700;text-transform:uppercase}
+.sum-name{font-size:14px;font-weight:600;color:#1e1530}
+.prog-wrap{background:#fff;border-radius:11px;padding:11px 14px;margin-bottom:12px;border:1px solid #ede9fe}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:#9986c0;font-weight:600;margin-bottom:7px}
+.prog-bar{height:5px;background:#f5f3ff;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#a855f7);border-radius:99px;transition:width .4s}
+.ch-card{background:#fff;border-radius:15px;padding:17px;margin-bottom:10px;border:1px solid #ede9fe;box-shadow:0 2px 10px rgba(124,58,237,.06)}
+.ch-head{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.ch-type{font-size:10px;padding:3px 10px;border-radius:99px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.ch-type.choice{background:#fce7f3;color:#9d174d}
+.ch-type.fill{background:#fef3c7;color:#92400e}
+.ch-type.order{background:#ede9fe;color:#3730a3}
+.ch-type.jiwake{background:#dcfce7;color:#14532d}
+.ch-qnum{font-size:11px;color:#c4b5fd;font-weight:600}
+.ch-q{font-size:13px;font-weight:500;color:#1e1530;line-height:1.75;margin-bottom:15px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-bottom:13px}
+.opt{padding:12px 14px;border:1px solid #ede9fe;border-radius:12px;font-size:13px;background:#faf9ff;text-align:left;color:#1e1530;line-height:1.55;display:flex;align-items:flex-start;gap:10px;width:100%;font-family:inherit;cursor:pointer;transition:all .12s}
+.opt:hover:not(:disabled){background:#f5f3ff;border-color:#c4b5fd}
+.opt-mk{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:#fff;border:1px solid #ddd6fe;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#9986c0;margin-top:1px}
+.opt.correct{background:#f5f3ff;border-color:#7c3aed;color:#2e1065}
+.opt.correct .opt-mk{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.opt.wrong{background:#fff0f5;border-color:#ec4899;color:#500724}
+.opt.wrong .opt-mk{background:#ec4899;color:#fff;border-color:#ec4899}
+.opt:disabled{cursor:default}
+.fill-row{display:flex;gap:8px;margin-bottom:13px;flex-wrap:wrap}
+.fill-row input{flex:1;min-width:180px;padding:11px 13px;border:1px solid #ddd6fe;border-radius:10px;font-size:13px;background:#faf9ff;color:#1e1530;transition:all .15s;font-family:inherit}
+.fill-row input:focus{outline:none;border-color:#7c3aed;background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+.fill-row input.correct{border-color:#7c3aed;background:#f5f3ff;color:#2e1065}
+.fill-row input.wrong{border-color:#ec4899;background:#fff0f5;color:#500724}
+
+/* 仕訳問題用 */
+.jiwake-q{background:#1e1a2e;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#e2d9f3;line-height:1.7}
+.jiwake-inputs{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:12px}
+.jiwake-inputs input{padding:10px 12px;border:1px solid #ddd6fe;border-radius:10px;font-size:13px;background:#faf9ff;color:#1e1530;font-family:inherit;text-align:center}
+.jiwake-inputs input:focus{outline:none;border-color:#7c3aed;background:#fff}
+.jiwake-inputs input.correct{border-color:#7c3aed;background:#f5f3ff;color:#2e1065}
+.jiwake-inputs input.wrong{border-color:#ec4899;background:#fff0f5;color:#500724}
+.jiwake-sep{text-align:center;font-size:18px;color:#9986c0;font-weight:700}
+.jiwake-label{text-align:center;font-size:10px;color:#9986c0;font-weight:600;margin-bottom:4px}
+
+.ord-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.ord-item{background:#faf9ff;border:1px solid #ede9fe;border-radius:10px;padding:10px 12px;font-size:12.5px;display:flex;align-items:flex-start;gap:9px;cursor:grab;line-height:1.55;color:#1e1530}
+.ord-item:hover{border-color:#c4b5fd}
+.ord-item:active{cursor:grabbing;opacity:.5}
+.ord-item.drag-over-top{border-top:3px solid #7c3aed;padding-top:8px}
+.ord-item.drag-over-bot{border-bottom:3px solid #7c3aed;padding-bottom:8px}
+.ord-n{flex-shrink:0;width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.ord-txt{flex:1}
+.ord-hdl{color:#c4b5fd;font-size:13px;flex-shrink:0;letter-spacing:-1px}
+
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{padding:10px 18px;border:1px solid #ddd6fe;border-radius:10px;background:#fff;font-size:13px;color:#1e1530;font-family:inherit;font-weight:600;cursor:pointer;transition:all .12s}
+.btn:hover:not(:disabled){background:#f5f3ff;border-color:#c4b5fd}
+.btn-p{background:linear-gradient(135deg,#7c3aed,#5b21b6);border-color:transparent;color:#fff;box-shadow:0 3px 10px rgba(124,58,237,.3)}
+.btn-p:hover:not(:disabled){transform:translateY(-1px)}
+.fb{padding:13px 14px;border-radius:12px;display:flex;gap:10px;align-items:flex-start;margin-top:11px;font-size:12px;line-height:1.7}
+.fb.ok{background:#f5f3ff;border:1px solid #c4b5fd;color:#2e1065}
+.fb.ng{background:#fff0f5;border:1px solid #fbcfe8;color:#500724}
+.fb-icon{flex-shrink:0;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+.fb.ok .fb-icon{background:#7c3aed;color:#fff}
+.fb.ng .fb-icon{background:#ec4899;color:#fff}
+.fb-head{font-weight:700;font-size:13px;margin-bottom:3px}
+.fb-code{margin-top:8px;background:#1e1a2e;color:#e2d9f3;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.65}
+.nav{display:flex;justify-content:flex-end;margin-top:13px}
+
+.comp{background:#fff;border-radius:18px;padding:30px 20px;text-align:center;border:1px solid #ddd6fe;box-shadow:0 4px 20px rgba(124,58,237,.1)}
+.comp-ic{width:68px;height:68px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:20px;display:inline-flex;align-items:center;justify-content:center;font-size:30px;color:#fff;margin-bottom:13px;animation:pop .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.comp-title{font-size:19px;font-weight:700;color:#1e1530;margin-bottom:4px}
+.comp-sub{font-size:12px;color:#9986c0;margin-bottom:18px;line-height:1.65}
+.comp-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.final{margin-top:18px;padding:14px;background:#f5f3ff;border-radius:12px;font-size:12px;color:#2e1065;line-height:1.75;border:1px solid #ddd6fe}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(30,21,48,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:#fff;border-radius:18px;padding:24px 22px;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 32px rgba(124,58,237,.25)}
+.modal-ic{font-size:32px;margin-bottom:10px}
+.modal-title{font-size:16px;font-weight:700;color:#1e1530;margin-bottom:8px}
+.modal-sub{font-size:12px;color:#9986c0;line-height:1.65;margin-bottom:18px}
+.modal-btns{display:flex;gap:8px;justify-content:center}
+.btn-danger{background:linear-gradient(135deg,#ec4899,#be185d);border-color:transparent;color:#fff}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-icon">簿</div>
+      <div class="logo-txt">会計・簿記 超入門</div>
+    </div>
+    <div class="hdr-right">
+      <div class="badge" id="badge">0/4</div>
+      <button class="reset-btn" onclick="confirmReset()">リセット</button>
+    </div>
+  </div>
+  <div id="modal"></div>
+
+  <div class="tab-bar">
+    <button class="tab-item active" id="tab-lesson" onclick="switchTab('lesson')">
+      <span class="tab-icon">📖</span>
+      <span class="tab-label">講座</span>
+    </button>
+    <button class="tab-item" id="tab-quiz" onclick="switchTab('quiz')">
+      <span class="tab-icon">✅</span>
+      <span class="tab-label">練習問題</span>
+    </button>
+    <button class="tab-item" id="tab-jiwake" onclick="switchTab('jiwake')">
+      <span class="tab-icon">📝</span>
+      <span class="tab-label">仕訳練習</span>
+    </button>
+    <button class="tab-item" id="tab-glossary" onclick="switchTab('glossary')">
+      <span class="tab-icon">📚</span>
+      <span class="tab-label">用語集</span>
+    </button>
+  </div>
+
+  <div id="app"></div>
+</div>
+
+<script>
+const LESSONS=[
+  {id:'ls1',icon:'🏦',color:'#ede9fe',title:'お金の流れを記録する',desc:'簿記とは何か・なぜ必要か',
+   lead:'簿記とは、会社のお金の出入りをルールに沿って記録する技術です。家計簿の企業版だと思ってください。',
+   sections:[
+     {title:'簿記が必要な理由',body:`
+<p>会社はたくさんの取引をします。商品を売る、材料を買う、給料を払う……これらを<strong>正確に記録しないと</strong>、いくら儲かっているか・借金がいくらあるかがわかりません。</p>
+<div class="info-box"><strong>簿記がないと…</strong><br>・税金の計算ができない<br>・銀行にお金を借りられない<br>・経営判断ができない<br>・不正や横領が発覚しない</div>
+<p>だから全ての会社は、法律で帳簿（きちんとした記録）をつけることが義務付けられています。</p>`},
+     {title:'簿記の基本ルール',body:`
+<p>簿記では、お金の取引を<strong>必ず2つの面から記録</strong>します。これを「複式簿記」といいます。</p>
+<div class="jiwake-box"><span class="label">例）現金100円で商品を買った</span>
+<br><span class="kari">（借方）仕入 100円</span>　／　<span class="kashi">（貸方）現金 100円</span></div>
+<div class="tip-box"><strong>💡 ポイント</strong><br>「何かが増えたら、何かが減る」または「何かが増えたら、別の何かも増える」という2面性を必ず記録するのが複式簿記の特徴です。</div>`},
+     {title:'簿記でわかること',body:`
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>会社の財産状況</strong>　何がいくらあるか（資産・負債・純資産）</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>儲けの状況</strong>　いくら売れていくら費用がかかったか（収益・費用）</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>現金の動き</strong>　どこからお金が入りどこに出ていったか</div></div>
+</div>`}
+   ]},
+  {id:'ls2',icon:'⚖️',color:'#ede9fe',title:'借方・貸方とは何か',desc:'簿記で一番つまずく概念を理解する',
+   lead:'借方（かりかた）・貸方（かしかた）は簿記の超基本ルール。意味より「左が借方・右が貸方」と体で覚えることが大事です。',
+   sections:[
+     {title:'左右の約束事',body:`
+<p>簿記では、記録を必ず<strong>左（借方）と右（貸方）</strong>に分けて書きます。</p>
+<table class="boki-table">
+<tr><th class="karikata">借方（かりかた）＝左</th><th class="kashikata">貸方（かしかた）＝右</th></tr>
+<tr><td>資産の増加</td><td>資産の減少</td></tr>
+<tr><td>負債の減少</td><td>負債の増加</td></tr>
+<tr><td>費用の発生</td><td>収益の発生</td></tr>
+<tr><td>純資産の減少</td><td>純資産の増加</td></tr>
+</table>
+<div class="warn-box">⚠️ <strong>「借方＝借りた」ではありません！</strong><br>借方・貸方は単なる「左・右」の呼び名です。意味から理解しようとすると混乱するので、まず「左＝借方」「右＝貸方」と機械的に覚えましょう。</div>`},
+     {title:'5つの勘定科目グループ',body:`
+<p>簿記では取引を<strong>5つのグループ</strong>に分類します。</p>
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>資産</strong>　会社が持っているもの（現金・売掛金・建物など）</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>負債</strong>　会社が返さなければならないもの（借入金・買掛金など）</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>純資産</strong>　資産から負債を引いた正味の財産（資本金など）</div></div>
+  <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>収益</strong>　会社の稼ぎ（売上・受取利息など）</div></div>
+  <div class="step-item"><div class="step-num">5</div><div class="step-text"><strong>費用</strong>　会社が使ったお金（仕入・給料・家賃など）</div></div>
+</div>
+<div class="tip-box"><strong>💡 覚え方</strong><br>「資・負・純・収・費」と唱えて覚えましょう。面接では「5つの勘定科目グループを理解しています」と言えるだけで十分です。</div>`},
+     {title:'仕訳の例を見てみよう',body:`
+<p>商品を10,000円で売り、現金でもらった場合：</p>
+<div class="jiwake-box"><span class="kari">（借方）現金 <span class="amt">10,000円</span></span>　／　<span class="kashi">（貸方）売上 <span class="amt">10,000円</span></span>
+<br><span class="label">※現金（資産）が増えた ／ 売上（収益）が発生した</span></div>
+<p style="margin-top:10px">銀行から50,000円借りた場合：</p>
+<div class="jiwake-box"><span class="kari">（借方）現金 <span class="amt">50,000円</span></span>　／　<span class="kashi">（貸方）借入金 <span class="amt">50,000円</span></span>
+<br><span class="label">※現金（資産）が増えた ／ 借入金（負債）が増えた</span></div>`}
+   ]},
+  {id:'ls3',icon:'📊',color:'#ede9fe',title:'貸借対照表（BS）とは',desc:'会社の財産状況を一枚で見る',
+   lead:'貸借対照表（Balance Sheet／BS）は、ある時点での会社の財産・借金・正味の財産を一覧にした表です。',
+   sections:[
+     {title:'BSの基本構造',body:`
+<p>貸借対照表は<strong>左右に分かれた表</strong>です。</p>
+<div class="fs-grid">
+  <div class="fs-card bs">
+    <div class="fs-card-title">左側（資産）</div>
+    <div class="fs-item">現金・預金</div>
+    <div class="fs-item">売掛金</div>
+    <div class="fs-item">商品・在庫</div>
+    <div class="fs-item">建物・土地</div>
+  </div>
+  <div class="fs-card bs" style="background:#f5f3ff">
+    <div class="fs-card-title" style="color:#7c3aed">右側（負債＋純資産）</div>
+    <div class="fs-item">買掛金</div>
+    <div class="fs-item">借入金</div>
+    <div class="fs-item" style="border-top:2px solid #c4b5fd;margin-top:4px;padding-top:4px">資本金</div>
+    <div class="fs-item">利益剰余金</div>
+  </div>
+</div>
+<div class="info-box"><strong>大原則：左右の合計は必ず一致する</strong><br>資産の合計 ＝ 負債の合計 ＋ 純資産の合計<br>これが「貸借対照表」の名前の由来です。</div>`},
+     {title:'BSで何がわかる？',body:`
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>会社の体力がわかる</strong>　資産が多く負債が少ない＝財務的に健全</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>借金の多さがわかる</strong>　負債が大きすぎると倒産リスクが高い</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>投資家・銀行が判断に使う</strong>　お金を貸してもいい会社かを判断する材料</div></div>
+</div>
+<div class="tip-box"><strong>💡 HUEとの関係</strong><br>HUEは財務・債権・債務・固定資産などを管理するERPです。これらはすべてBSの項目です。BSを理解しているとHUEの機能理解がスムーズになります。</div>`}
+   ]},
+  {id:'ls4',icon:'📈',color:'#ede9fe',title:'損益計算書（PL）とは',desc:'会社の儲けを一枚で見る',
+   lead:'損益計算書（Profit and Loss Statement／PL）は、一定期間の会社の収益と費用、そして最終的な利益を示す表です。',
+   sections:[
+     {title:'PLの基本構造',body:`
+<p>損益計算書はシンプルです。<strong>「いくら稼いで・いくら使って・いくら残ったか」</strong>を示します。</p>
+<div class="fs-card pl" style="margin:10px 0">
+  <div class="fs-card-title" style="color:#86198f">損益計算書のイメージ</div>
+  <div class="fs-item plus">売上高（収益）　　　1,000万円</div>
+  <div class="fs-item minus">▲ 売上原価（費用）　　600万円</div>
+  <div class="fs-item" style="font-weight:600;border-top:2px solid #f5d0fe;padding-top:6px">売上総利益　　　　　400万円</div>
+  <div class="fs-item minus">▲ 販管費（費用）　　　200万円</div>
+  <div class="fs-item" style="font-weight:700;color:#5b21b6;border-top:2px solid #f5d0fe;padding-top:6px">営業利益　　　　　　200万円</div>
+</div>
+<div class="info-box"><strong>利益の計算式</strong><br>収益（売上）－ 費用（コスト）＝ 利益（もうけ）<br>これがPLの基本です。</div>`},
+     {title:'BSとPLの関係',body:`
+<p>BSとPLは切り離せない関係にあります。</p>
+<div class="step-list">
+  <div class="step-item"><div class="step-num">1</div><div class="step-text">PL で計算された<strong>当期純利益</strong>が</div></div>
+  <div class="step-item"><div class="step-num">2</div><div class="step-text">BS の<strong>純資産（利益剰余金）</strong>に加算される</div></div>
+  <div class="step-item"><div class="step-num">3</div><div class="step-text">これで<strong>会社の財産が積み上がっていく</strong></div></div>
+</div>
+<div class="tip-box"><strong>💡 面接で使える一言</strong><br>「BSは財産の写真、PLは1年間の映像と理解しています」——この比喩は面接官に「わかっているな」という印象を与えます。</div>`}
+   ]}
+];
+
+const QUIZZES=[
+  {id:'q1',tag:'Ch.1',name:'簿記の基礎',
+   ch:[
+    {t:'choice',k:'4択',q:'簿記とは何ですか？最も正確な説明を選んでください。',
+     opts:['銀行でお金を借りるための手続き','会社のお金の出入りをルールに沿って記録する技術','税金を計算するための政府の制度','株価を予測するための分析手法'],
+     ans:1,exp:'簿記とは会社の取引（お金の動き）を正確に記録する技術です。家計簿の企業版と考えるとわかりやすいです。'},
+    {t:'choice',k:'4択',q:'複式簿記の特徴として正しいのはどれですか？',
+     opts:['収入だけを記録する','支出だけを記録する','必ず2つの面（左右）から取引を記録する','1年に1回まとめて記録する'],
+     ans:2,exp:'複式簿記は必ず借方（左）と貸方（右）の2面から取引を記録します。「現金が増えた＝売上が発生した」のように、原因と結果の両方を記録します。'},
+    {t:'fill',k:'穴埋め',q:'簿記の記録では、左側を「＿方」、右側を「＿方」と呼びます。左側を答えてください。',
+     ph:'〇方',correct:['借方','かりかた'],
+     exp:'左側が「借方（かりかた）」、右側が「貸方（かしかた）」です。意味より「左＝借方・右＝貸方」と覚えることが重要です。'},
+    {t:'order',k:'並び替え',q:'会社が儲かった流れを正しい順序に並べてください。',
+     items:['商品を仕入れる（費用が発生）','商品を顧客に売る（収益が発生）','現金が入ってくる（資産が増える）','帳簿に取引を記録する（仕訳）'],
+     correct:[0,1,2,3],exp:'仕入→販売→入金→記録という流れが基本的な商取引のサイクルです。簿記はこの各ステップを記録します。'}
+   ]},
+  {id:'q2',tag:'Ch.2',name:'借方・貸方と仕訳',
+   ch:[
+    {t:'choice',k:'4択',q:'資産が増えたとき、仕訳の記載場所はどこですか？',
+     opts:['貸方（右）','借方（左）','どちらでもよい','取引の種類による'],
+     ans:1,exp:'資産が増えたときは借方（左）に記載します。「資産の増加＝借方」は仕訳の基本ルールです。'},
+    {t:'choice',k:'4択',q:'現金10,000円で文房具を買ったとき、費用（消耗品費）の仕訳はどこに入りますか？',
+     opts:['貸方（右）に消耗品費10,000円','借方（左）に消耗品費10,000円','どちらにも記載しない','収益として記録する'],
+     ans:1,exp:'費用が発生したときは借方（左）に記録します。同時に現金（資産）が減ったので貸方（右）に現金10,000円を記録します。'},
+    {t:'choice',k:'4択',q:'売上（収益）が発生したとき、仕訳の記載場所はどこですか？',
+     opts:['借方（左）','貸方（右）','収益は記録しない','費用と相殺する'],
+     ans:1,exp:'収益が発生したときは貸方（右）に記録します。「収益の発生＝貸方」です。'},
+    {t:'choice',k:'4択',q:'5つの勘定科目グループとして正しい組み合わせはどれですか？',
+     opts:['資産・負債・利益・損失・現金','資産・負債・純資産・収益・費用','収入・支出・利益・損失・資本','現金・借金・株式・売上・給料'],
+     ans:1,exp:'5つの勘定科目グループは「資産・負債・純資産・収益・費用」です。「資負純収費」と覚えましょう。'}
+   ]},
+  {id:'q3',tag:'Ch.3',name:'貸借対照表（BS）',
+   ch:[
+    {t:'choice',k:'4択',q:'貸借対照表（BS）はいつの状態を示しますか？',
+     opts:['1年間の収益と費用の合計','ある特定の時点での財産状況','毎日の現金の出入り','将来の売上予測'],
+     ans:1,exp:'BSは「ある時点のスナップショット（写真）」です。決算日など特定の日付の会社の財産・借金・正味財産を示します。'},
+    {t:'fill',k:'穴埋め',q:'BSの大原則として「資産の合計 ＝ 負債の合計 ＋ ＿＿の合計」が成り立ちます。空欄を答えてください。',
+     ph:'〇〇〇〇',correct:['純資産','じゅんしさん'],
+     exp:'資産＝負債＋純資産 が貸借対照表の大原則です。左右の合計は必ず一致します。これが「貸借（たいしゃく）対照表」という名前の由来です。'},
+    {t:'choice',k:'4択',q:'BSの左側（借方）に記載されるのはどれですか？',
+     opts:['借入金','資本金','現金・預金','売上高'],
+     ans:2,exp:'BSの左側は「資産」です。現金・預金・売掛金・建物など会社が持っているものが左側に並びます。借入金は負債（右側）、資本金は純資産（右側）、売上高はPLの項目です。'},
+    {t:'order',k:'並び替え',q:'BSの左側（資産）に並ぶ項目を、流動性（現金化しやすい順）に並べてください。',
+     items:['現金・預金','売掛金（後から入ってくるお金）','商品・在庫','建物・土地'],
+     correct:[0,1,2,3],exp:'BSは現金化しやすいものから順に並べます。現金→売掛金→在庫→固定資産の順が基本です。'}
+   ]},
+  {id:'q4',tag:'Ch.4',name:'損益計算書（PL）',
+   ch:[
+    {t:'choice',k:'4択',q:'損益計算書（PL）が示すのはどれですか？',
+     opts:['ある時点の財産状況','一定期間の収益・費用・利益','毎月の現金残高','会社の株価の変動'],
+     ans:1,exp:'PLは「一定期間（通常1年間）の映像」です。売上・費用・利益がどう動いたかを示します。BSが写真なら、PLは映像と覚えましょう。'},
+    {t:'fill',k:'穴埋め',q:'利益の基本計算式を答えてください。「収益（売上）－ ＿＿ ＝ 利益」',
+     ph:'〇〇',correct:['費用','ひよう'],
+     exp:'収益（売上）－ 費用（コスト）＝ 利益 がPLの基本式です。この式だけ覚えれば損益計算書の本質は理解できます。'},
+    {t:'choice',k:'4択',q:'PLで計算された利益は最終的にどこに影響しますか？',
+     opts:['BSの資産が減る','BSの純資産（利益剰余金）が増える','負債が増える','現金が自動的に増える'],
+     ans:1,exp:'PLで計算された当期純利益はBSの純資産（利益剰余金）に加算されます。これがBSとPLがつながっている理由です。'},
+    {t:'choice',k:'4択',q:'売上1,000万円・費用700万円のとき、利益はいくらですか？',
+     opts:['1,700万円','700万円','300万円','1,000万円'],
+     ans:2,exp:'1,000万円（収益）－700万円（費用）＝300万円（利益）です。利益＝収益－費用の公式をそのまま使います。'}
+   ]}
+];
+
+const JIWAKES=[
+  {q:'現金20,000円で商品を仕入れた',kari:'仕入',kashi:'現金',amt:20000,exp:'費用（仕入）が発生→借方。現金（資産）が減った→貸方。'},
+  {q:'商品を30,000円で売り、現金で受け取った',kari:'現金',kashi:'売上',amt:30000,exp:'現金（資産）が増えた→借方。売上（収益）が発生→貸方。'},
+  {q:'銀行から100,000円を借り入れた',kari:'現金',kashi:'借入金',amt:100000,exp:'現金（資産）が増えた→借方。借入金（負債）が増えた→貸方。'},
+  {q:'給料50,000円を現金で支払った',kari:'給料',kashi:'現金',amt:50000,exp:'給料（費用）が発生→借方。現金（資産）が減った→貸方。'},
+  {q:'家賃15,000円を現金で支払った',kari:'支払家賃',kashi:'現金',amt:15000,exp:'支払家賃（費用）が発生→借方。現金（資産）が減った→貸方。'},
+  {q:'売掛金（後で受け取るお金）25,000円が現金で回収できた',kari:'現金',kashi:'売掛金',amt:25000,exp:'現金（資産）が増えた→借方。売掛金（資産）が減った→貸方。両方とも資産の変化です。'},
+  {q:'備品10,000円を現金で購入した',kari:'備品',kashi:'現金',amt:10000,exp:'備品（資産）が増えた→借方。現金（資産）が減った→貸方。どちらも資産ですが種類が変わります。'},
+  {q:'借入金40,000円を現金で返済した',kari:'借入金',kashi:'現金',amt:40000,exp:'借入金（負債）が減った→借方。現金（資産）が減った→貸方。負債が減ったら借方です。'}
+];
+
+const GLOSSARY=[
+  {term:'簿記',read:'ぼき',def:'会社のお金の出入りをルールに沿って記録する技術。企業の家計簿。'},
+  {term:'借方',read:'かりかた',def:'仕訳の左側。資産の増加・費用の発生・負債の減少を記録する。'},
+  {term:'貸方',read:'かしかた',def:'仕訳の右側。資産の減少・収益の発生・負債の増加を記録する。'},
+  {term:'仕訳',read:'しわけ',def:'取引を借方と貸方に分けて記録すること。簿記の基本作業。'},
+  {term:'資産',read:'しさん',def:'会社が持っているもの。現金・預金・売掛金・建物・土地など。'},
+  {term:'負債',read:'ふさい',def:'会社が返さなければならないもの。借入金・買掛金・未払金など。'},
+  {term:'純資産',read:'じゅんしさん',def:'資産から負債を引いた正味の財産。資本金・利益剰余金など。'},
+  {term:'収益',read:'しゅうえき',def:'会社の稼ぎ。売上高・受取利息・受取配当金など。'},
+  {term:'費用',read:'ひよう',def:'会社が使ったお金。仕入・給料・家賃・減価償却費など。'},
+  {term:'貸借対照表（BS）',read:'たいしゃくたいしょうひょう',def:'ある時点の財産・借金・正味財産を示す表。資産＝負債＋純資産が成り立つ。'},
+  {term:'損益計算書（PL）',read:'そんえきけいさんしょ',def:'一定期間の収益・費用・利益を示す表。収益－費用＝利益。'},
+  {term:'売掛金',read:'うりかけきん',def:'商品を売ったがまだ代金を受け取っていないお金。後で入ってくる資産。'},
+  {term:'買掛金',read:'かいかけきん',def:'商品を買ったがまだ代金を支払っていないお金。後で払う負債。'},
+  {term:'仕入',read:'しいれ',def:'販売する商品を購入すること。費用の一種。'},
+  {term:'利益剰余金',read:'りえきじょうよきん',def:'これまでに稼いで会社に残してきた利益の累積。BSの純資産に含まれる。'}
+];
+
+let S={
+  tab:'lesson',
+  lessonView:'list',currentLesson:null,
+  quizView:'list',quizLi:0,quizCi:0,ord:[],ans:{},sel:null,fill:'',
+  jiwakeIdx:0,jiwakeAns:null,jiwakeKari:'',jiwakeKashi:'',
+  read:(()=>{try{return JSON.parse(localStorage.getItem('boki_read')||'{}')}catch(e){return{}}})(),
+  done:(()=>{try{return JSON.parse(localStorage.getItem('boki_done')||'{}')}catch(e){return{}}})()
+};
+function save(){try{localStorage.setItem('boki_read',JSON.stringify(S.read));localStorage.setItem('boki_done',JSON.stringify(S.done))}catch(e){}}
+
+function upBadge(){
+  const d=QUIZZES.filter(q=>S.done[q.id]).length;
+  document.getElementById('badge').textContent=d+'/'+QUIZZES.length;
+}
+
+function switchTab(tab){
+  S.tab=tab;
+  ['lesson','quiz','jiwake','glossary'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('active',t===tab));
+  render();
+}
+
+function render(){
+  if(S.tab==='lesson') renderLesson();
+  else if(S.tab==='quiz') renderQuiz();
+  else if(S.tab==='jiwake') renderJiwake();
+  else renderGlossary();
+  upBadge();
+}
+
+/* ===== LESSON ===== */
+function renderLesson(){
+  if(S.lessonView==='list') renderLessonList();
+  else renderLessonDetail();
+}
+function renderLessonList(){
+  const rc=LESSONS.filter(l=>S.read[l.id]).length;
+  let h=`<div class="hero">
+    <div class="hero-tag">Accounting Basics</div>
+    <div class="hero-title">会計・簿記 超入門講座</div>
+    <div class="hero-sub">知識ゼロから始める会計の基礎。4章で面接に必要な知識が身につきます。</div>
+    <div class="hero-row">
+      <div class="hero-stat"><div class="hero-stat-n">${rc}/4</div><div class="hero-stat-l">読了章数</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">約60</div><div class="hero-stat-l">分で完成</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">${Math.round(rc/4*100)}%</div><div class="hero-stat-l">達成率</div></div>
+    </div>
+    <div class="pbar-bg"><div class="pbar-fill" style="width:${Math.round(rc/4*100)}%"></div></div>
+  </div>
+  <div class="sec-label">4章構成</div>`;
+  LESSONS.forEach((ls,i)=>{
+    const r=S.read[ls.id];
+    h+=`<div class="lesson-card${r?' read':''}" onclick="openLesson(${i})">
+      <div class="lesson-card-head">
+        <div class="lesson-icon" style="background:${ls.color}">${ls.icon}</div>
+        <div class="lesson-card-body">
+          ${r?'<span class="lesson-read-pill">✓ 読了</span>':''}
+          <div class="lesson-card-title">Chapter ${i+1}｜${ls.title}</div>
+          <div class="lesson-card-desc">${ls.desc}</div>
+        </div>
+        <div class="lesson-card-arr">›</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('app').innerHTML=h;
+}
+function openLesson(i){S.lessonView='detail';S.currentLesson=i;renderLessonDetail()}
+function renderLessonDetail(){
+  const ls=LESSONS[S.currentLesson];const r=S.read[ls.id];
+  let h=`<button class="lesson-back" onclick="backLesson()">← 一覧に戻る</button>
+  <div class="lesson-content">
+    <div class="lesson-content-hero">
+      <div class="lesson-content-icon">${ls.icon}</div>
+      <div class="lesson-content-title">Chapter ${S.currentLesson+1}｜${ls.title}</div>
+      <div class="lesson-content-lead">${ls.lead}</div>
+    </div>`;
+  ls.sections.forEach(sec=>{
+    h+=`<div class="lesson-section">
+      <div class="lesson-section-title">${sec.title}</div>
+      <div class="lesson-body">${sec.body}</div>
+    </div>`;
+  });
+  h+=`</div>
+  <button class="lesson-done-btn${r?' read':''}" onclick="markRead(${S.currentLesson})">${r?'✓ 読了済み':'この章を読了にする'}</button>`;
+  document.getElementById('app').innerHTML=h;
+}
+function backLesson(){S.lessonView='list';renderLessonList()}
+function markRead(i){S.read[LESSONS[i].id]=true;save();renderLessonDetail()}
+
+/* ===== QUIZ ===== */
+function renderQuiz(){
+  if(S.quizView==='list') renderQuizList();
+  else if(S.quizView==='playing') renderQuizPlay();
+  else renderQuizComp();
+}
+function renderQuizList(){
+  const dc=QUIZZES.filter(q=>S.done[q.id]).length;
+  let h=`<div class="hero">
+    <div class="hero-tag">Quiz</div>
+    <div class="hero-title">理解度チェック</div>
+    <div class="hero-sub">4章・計16問で知識を定着させましょう</div>
+    <div class="hero-row">
+      <div class="hero-stat"><div class="hero-stat-n">${dc}/4</div><div class="hero-stat-l">完了章数</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">16</div><div class="hero-stat-l">総問題数</div></div>
+    </div>
+    <div class="pbar-bg"><div class="pbar-fill" style="width:${Math.round(dc/4*100)}%"></div></div>
+  </div>
+  <div class="sec-label">チャプター選択</div>`;
+  QUIZZES.forEach((qz,i)=>{
+    const done=S.done[qz.id];const prev=i===0||S.done[QUIZZES[i-1].id];const locked=!prev;
+    h+=`<div class="lesson-card${done?' read':''}" ${!locked?`onclick="startQuiz(${i})"`:''} style="${locked?'opacity:.5;cursor:default':''}">
+      <div class="lesson-card-head">
+        <div class="lesson-icon" style="background:#ede9fe">${done?'✅':'📝'}</div>
+        <div class="lesson-card-body">
+          ${done?'<span class="lesson-read-pill">✓ 完了</span>':locked?'<span class="lesson-read-pill" style="background:#f1f5f9;color:#64748b">🔒</span>':''}
+          <div class="lesson-card-title">${qz.tag}｜${qz.name}</div>
+          <div class="lesson-card-desc">${qz.ch.length}問</div>
+        </div>
+        <div class="lesson-card-arr">›</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('app').innerHTML=h;
+}
+function startQuiz(i){S.quizView='playing';S.quizLi=i;S.quizCi=0;S.ans={};S.sel=null;S.fill='';initQ();renderQuizPlay()}
+function initQ(){
+  const ch=QUIZZES[S.quizLi].ch[S.quizCi];
+  if(ch.t==='order'){
+    const a=ch.items.map((_,i)=>i);
+    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    let t=0;while(a.every((v,i)=>v===ch.correct[i])&&t++<5)for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    S.ord=a;
+  }
+}
+function renderQuizPlay(){
+  const qz=QUIZZES[S.quizLi];const ch=qz.ch[S.quizCi];const tot=qz.ch.length;
+  const ansd=S.ans[S.quizCi]!==undefined;
+  const pct=Math.round(((S.quizCi+(ansd?1:0))/tot)*100);
+  let h=`<button class="back" onclick="backQuiz()">← 一覧に戻る</button>
+  <div class="sum-card">
+    <div class="sum-num">${S.quizLi+1}</div>
+    <div><div class="sum-tag">${qz.tag}</div><div class="sum-name">${qz.name}</div></div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Q${S.quizCi+1}/${tot}</span><span>${pct}%</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+  </div>
+  <div class="ch-card">
+    <div class="ch-head"><span class="ch-type ${ch.t}">${ch.k}</span><span class="ch-qnum">Q${S.quizCi+1}</span></div>
+    <div class="ch-q">${ch.q}</div>`;
+  if(ch.t==='choice'){
+    h+=`<div class="opts">`;
+    ch.opts.forEach((o,i)=>{
+      let c='opt';
+      if(ansd){if(i===ch.ans)c+=' correct';else if(i===S.sel&&i!==ch.ans)c+=' wrong';}
+      h+=`<button class="${c}" ${ansd?'disabled':''} onclick="chkC(${i})"><span class="opt-mk">${['A','B','C','D'][i]}</span><span class="opt-txt">${o}</span></button>`;
+    });
+    h+=`</div>`;
+  }else if(ch.t==='fill'){
+    const a=S.ans[S.quizCi];const ic=a===undefined?'':a?'correct':'wrong';
+    h+=`<div class="fill-row"><input id="fi" type="text" placeholder="${ch.ph||''}" value="${esca(S.fill)}" ${a!==undefined?'disabled':''} class="${ic}"><${a===undefined?`button class="btn btn-p" onclick="chkF()">確認</button`:'span'}></div>`;
+  }else if(ch.t==='order'){
+    h+=`<div class="ord-list" id="ordlist">`;
+    S.ord.forEach((oi,pos)=>{
+      h+=`<div class="ord-item" draggable="true" data-pos="${pos}"><span class="ord-n">${pos+1}</span><span class="ord-txt">${esc(ch.items[oi])}</span><span class="ord-hdl">⋮⋮</span></div>`;
+    });
+    h+=`</div>`;
+    if(!ansd) h+=`<button class="btn btn-p" onclick="chkOrd()">答え合わせ</button>`;
+  }
+  if(ansd){
+    const ok=S.ans[S.quizCi];
+    h+=`<div class="fb ${ok?'ok':'ng'}"><span class="fb-icon">${ok?'✓':'×'}</span><div><div class="fb-head">${ok?'正解！':'不正解'}</div><div>${ch.exp}</div></div></div>
+    <div class="nav"><button class="btn btn-p" onclick="nextQ()">${S.quizCi+1<tot?'次の問題 →':'完了 →'}</button></div>`;
+  }
+  h+=`</div>`;
+  document.getElementById('app').innerHTML=h;
+  if(ch.t==='fill'){
+    const inp=document.getElementById('fi');
+    if(inp&&S.ans[S.quizCi]===undefined){inp.addEventListener('input',e=>S.fill=e.target.value);inp.addEventListener('keydown',e=>{if(e.key==='Enter')chkF()});inp.focus();}
+  }
+  if(ch.t==='order') setupDD();
+}
+function backQuiz(){S.quizView='list';renderQuizList()}
+function chkC(i){S.sel=i;S.ans[S.quizCi]=(i===QUIZZES[S.quizLi].ch[S.quizCi].ans);renderQuizPlay()}
+function chkF(){
+  const ch=QUIZZES[S.quizLi].ch[S.quizCi];const v=S.fill.trim();
+  const n=s=>s.toLowerCase().replace(/\s+/g,'');
+  S.ans[S.quizCi]=ch.correct.some(c=>n(c)===n(v));renderQuizPlay();
+}
+function chkOrd(){S.ans[S.quizCi]=S.ord.every((v,i)=>v===QUIZZES[S.quizLi].ch[S.quizCi].correct[i]);renderQuizPlay()}
+function nextQ(){
+  if(S.quizCi+1<QUIZZES[S.quizLi].ch.length){S.quizCi++;S.sel=null;S.fill='';initQ();renderQuizPlay();}
+  else{S.done[QUIZZES[S.quizLi].id]=true;save();S.quizView='comp';renderQuizComp();}
+}
+function renderQuizComp(){
+  const qz=QUIZZES[S.quizLi];const isLast=S.quizLi===QUIZZES.length-1;const allDone=QUIZZES.every(q=>S.done[q.id]);
+  let h=`<div class="comp"><div class="comp-ic">✓</div>
+    <div class="comp-title">${qz.tag} クリア！</div>
+    <div class="comp-sub">${qz.name}の理解度チェック完了</div>
+    <div class="comp-btns">
+      ${!isLast?`<button class="btn btn-p" onclick="startQuiz(${S.quizLi+1})">次へ →</button>`:''}
+      <button class="btn" onclick="backQuiz()">一覧へ</button>
+    </div>`;
+  if(allDone) h+=`<div class="final">🎉 <strong>全章完了！</strong><br>簿記の基礎知識が身につきました。次は仕訳練習タブで実際の仕訳を体で覚えましょう！</div>`;
+  h+=`</div>`;
+  document.getElementById('app').innerHTML=h;
+}
+function setupDD(){
+  const area=document.getElementById('ordlist');if(!area)return;
+  let dp=null;
+  area.querySelectorAll('.ord-item').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dp=+el.dataset.pos;el.style.opacity='.4';e.dataTransfer.effectAllowed='move'});
+    el.addEventListener('dragend',e=>{el.style.opacity='1';area.querySelectorAll('.ord-item').forEach(x=>x.classList.remove('drag-over-top','drag-over-bot'))});
+    el.addEventListener('dragover',e=>{e.preventDefault();area.querySelectorAll('.ord-item').forEach(x=>x.classList.remove('drag-over-top','drag-over-bot'));const mid=el.getBoundingClientRect().top+el.offsetHeight/2;el.classList.add(e.clientY<mid?'drag-over-top':'drag-over-bot')});
+    el.addEventListener('drop',e=>{e.preventDefault();const mid=el.getBoundingClientRect().top+el.offsetHeight/2;let tp=+el.dataset.pos;if(e.clientY>=mid)tp++;if(dp===null)return;const it=S.ord.splice(dp,1)[0];if(tp>dp)tp--;S.ord.splice(tp,0,it);dp=null;renderQuizPlay()});
+  });
+}
+
+/* ===== JIWAKE ===== */
+function renderJiwake(){
+  const jw=JIWAKES[S.jiwakeIdx];const ansd=S.jiwakeAns!==null;
+  const ok=S.jiwakeAns;
+  let h=`<div class="hero">
+    <div class="hero-tag">仕訳練習</div>
+    <div class="hero-title">仕訳を体で覚えよう</div>
+    <div class="hero-sub">借方・貸方の勘定科目名を入力して答え合わせ。全${JIWAKES.length}問あります。</div>
+    <div class="hero-row">
+      <div class="hero-stat"><div class="hero-stat-n">${S.jiwakeIdx+1}/${JIWAKES.length}</div><div class="hero-stat-l">現在の問題</div></div>
+    </div>
+  </div>
+  <div class="ch-card">
+    <div class="ch-head"><span class="ch-type jiwake">仕訳</span><span class="ch-qnum">No.${S.jiwakeIdx+1}</span></div>
+    <div class="ch-q">次の取引を仕訳してください：<br><strong>「${jw.q}」</strong></div>
+    <div class="jiwake-q">金額：<strong>${jw.amt.toLocaleString()}円</strong><br>借方と貸方の勘定科目名を入力してください</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px;text-align:center">
+      <div style="font-size:11px;color:#7c3aed;font-weight:700">借方（左）</div>
+      <div style="font-size:11px;color:#a855f7;font-weight:700">貸方（右）</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <input id="kari" type="text" placeholder="例：現金" value="${esca(S.jiwakeKari)}" ${ansd?'disabled':''} class="${ansd?(S.jiwakeKari.replace(/\s/g,'')===jw.kari?'correct':'wrong'):''}" style="padding:10px 12px;border:1px solid #ddd6fe;border-radius:10px;font-size:13px;background:#faf9ff;color:#1e1530;font-family:inherit;text-align:center">
+      <input id="kashi" type="text" placeholder="例：売上" value="${esca(S.jiwakeKashi)}" ${ansd?'disabled':''} class="${ansd?(S.jiwakeKashi.replace(/\s/g,'')===jw.kashi?'correct':'wrong'):''}" style="padding:10px 12px;border:1px solid #ddd6fe;border-radius:10px;font-size:13px;background:#faf9ff;color:#1e1530;font-family:inherit;text-align:center">
+    </div>`;
+
+  if(!ansd){
+    h+=`<button class="btn btn-p" onclick="chkJiwake()">答え合わせ</button>`;
+  }else{
+    h+=`<div class="fb ${ok?'ok':'ng'}">
+      <span class="fb-icon">${ok?'✓':'×'}</span>
+      <div>
+        <div class="fb-head">${ok?'正解！':'正解はこちら'}</div>
+        <div>${jw.exp}</div>
+        ${!ok?`<div class="fb-code">借方：${jw.kari} ／ 貸方：${jw.kashi}</div>`:''}
+      </div>
+    </div>
+    <div class="nav"><button class="btn btn-p" onclick="nextJiwake()">${S.jiwakeIdx+1<JIWAKES.length?'次の問題 →':'最初に戻る 🔄'}</button></div>`;
+  }
+  h+=`</div>`;
+  document.getElementById('app').innerHTML=h;
+
+  if(!ansd){
+    const ki=document.getElementById('kari');const ka=document.getElementById('kashi');
+    if(ki){ki.addEventListener('input',e=>S.jiwakeKari=e.target.value);ki.focus();}
+    if(ka) ka.addEventListener('input',e=>S.jiwakeKashi=e.target.value);
+  }
+}
+function chkJiwake(){
+  const jw=JIWAKES[S.jiwakeIdx];
+  const k=S.jiwakeKari.trim().replace(/\s/g,'');
+  const ka=S.jiwakeKashi.trim().replace(/\s/g,'');
+  S.jiwakeAns=(k===jw.kari && ka===jw.kashi);
+  renderJiwake();
+}
+function nextJiwake(){
+  S.jiwakeIdx=(S.jiwakeIdx+1)%JIWAKES.length;
+  S.jiwakeAns=null;S.jiwakeKari='';S.jiwakeKashi='';
+  renderJiwake();
+}
+
+/* ===== GLOSSARY ===== */
+function renderGlossary(){
+  let h=`<div class="hero">
+    <div class="hero-tag">用語集</div>
+    <div class="hero-title">会計・簿記 用語集</div>
+    <div class="hero-sub">面接で出てきそうな${GLOSSARY.length}の用語をまとめました</div>
+  </div>
+  <div class="sec-label">${GLOSSARY.length}用語</div>`;
+  GLOSSARY.forEach(g=>{
+    h+=`<div style="background:#fff;border:1px solid #ede9fe;border-radius:12px;padding:12px 14px;margin-bottom:8px">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px">
+        <span style="font-size:15px;font-weight:700;color:#1e1530">${g.term}</span>
+        <span style="font-size:11px;color:#9986c0">${g.read}</span>
+      </div>
+      <div style="font-size:12px;color:#4a3f6b;line-height:1.65">${g.def}</div>
+    </div>`;
+  });
+  document.getElementById('app').innerHTML=h;
+}
+
+/* ===== RESET ===== */
+function confirmReset(){
+  document.getElementById('modal').innerHTML=`<div class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal"><div class="modal-ic">⚠️</div>
+    <div class="modal-title">進捗をリセットしますか？</div>
+    <div class="modal-sub">読了状態・クイズ完了状態がすべて消去されます。</div>
+    <div class="modal-btns"><button class="btn" onclick="closeModal()">キャンセル</button><button class="btn btn-danger" onclick="doReset()">リセット</button></div>
+    </div></div>`;
+}
+function closeModal(e){if(!e||e.target.classList.contains('modal-overlay'))document.getElementById('modal').innerHTML=''}
+function doReset(){
+  S.read={};S.done={};S.jiwakeIdx=0;S.jiwakeAns=null;S.jiwakeKari='';S.jiwakeKashi='';
+  save();document.getElementById('modal').innerHTML='';render();
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function esca(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY TODO</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --dp:#1a0a2e;--dm:#2d1b69;--pm:#6B3FA0;--pl:#9B59B6;
+  --pale:#C39BD3;--acc:#E040FB;--glow:#A855F7;--white:#FDFAFF;
+  --card:rgba(237,228,255,.82);--card2:rgba(237,228,255,.45);
+  --tmid:#4A3060;--tlight:#8B6CA8;--sh:0 8px 28px rgba(107,63,160,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%);
+  min-height:100vh;padding:20px 14px 60px;
+  position:relative;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 65% 25%,rgba(168,85,247,.14) 0%,transparent 55%),
+             radial-gradient(ellipse at 20% 75%,rgba(224,64,251,.09) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
+.wrap{max-width:480px;margin:0 auto;position:relative;z-index:1;}
+
+.hdr{text-align:center;margin-bottom:22px;animation:fd .55s ease;}
+.hdr h1{font-family:'Cormorant Garamond',serif;color:var(--white);font-size:1.9rem;letter-spacing:.03em;text-shadow:0 0 24px rgba(168,85,247,.5);}
+.hdr p{color:var(--pale);font-size:.75rem;margin-top:4px;font-weight:300;letter-spacing:.06em;}
+
+.prog{background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px 18px;margin-bottom:18px;animation:fu .55s .1s both;}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-lbl{color:var(--pale);font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.prog-num{color:var(--white);font-size:.82rem;font-weight:700;}
+.prog-bar{background:rgba(255,255,255,.1);border-radius:99px;height:6px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--pl),var(--acc));border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(224,64,251,.45);}
+
+.tabs{display:flex;gap:6px;margin-bottom:14px;animation:fu .55s .15s both;overflow-x:auto;padding-bottom:2px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:99px;padding:6px 14px;color:rgba(255,255,255,.6);font-size:.72rem;font-weight:600;letter-spacing:.05em;cursor:pointer;white-space:nowrap;transition:all .2s ease;font-family:inherit;}
+.tab.active{background:linear-gradient(135deg,var(--pm),var(--acc));border-color:transparent;color:var(--white);box-shadow:0 3px 12px rgba(168,85,247,.4);}
+.tab:hover:not(.active){background:rgba(255,255,255,.16);}
+
+.action-bar{display:flex;gap:8px;margin-bottom:14px;animation:fu .55s .2s both;flex-wrap:wrap;}
+.act-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:7px 12px;color:rgba(255,255,255,.7);font-size:.72rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;gap:5px;}
+.act-btn:hover{background:rgba(255,255,255,.18);color:var(--white);}
+.act-btn.danger:hover{background:rgba(231,76,60,.2);color:#e74c3c;border-color:rgba(231,76,60,.3);}
+
+.sec{margin-bottom:14px;animation:fu .55s both;}
+.sec-title{color:var(--pale);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(195,155,211,.4),transparent);}
+
+.item{background:var(--card);border-radius:14px;padding:12px 14px;margin-bottom:7px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:all .22s ease;border:1px solid rgba(107,63,160,.12);box-shadow:var(--sh);user-select:none;}
+.item:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(107,63,160,.24);border-color:rgba(168,85,247,.3);}
+.item:active{transform:scale(.985);}
+.item.done{background:var(--card2);border-color:rgba(107,63,160,.06);}
+
+.chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--pl);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .22s ease;background:transparent;margin-top:1px;}
+.item.done .chk{background:linear-gradient(135deg,var(--pm),var(--acc));border-color:transparent;box-shadow:0 0 8px rgba(168,85,247,.4);}
+.chk-mark{color:#fff;font-size:.62rem;opacity:0;transform:scale(0);transition:all .18s ease;}
+.item.done .chk-mark{opacity:1;transform:scale(1);}
+
+.item-body{flex:1;min-width:0;}
+.item-text{color:#1A0A2E;font-size:.85rem;font-weight:500;line-height:1.45;transition:all .22s ease;word-break:break-all;}
+.item.done .item-text{color:var(--tlight);text-decoration:line-through;}
+.item-meta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;}
+
+.tag{font-size:.62rem;padding:2px 8px;border-radius:99px;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:all .18s ease;border:1px solid transparent;}
+.tag:hover{opacity:.75;}
+.tag-urgent{background:rgba(231,76,60,.12);color:#c0392b;border-color:rgba(231,76,60,.3);}
+.tag-soon{background:rgba(243,156,18,.12);color:#d35400;border-color:rgba(243,156,18,.3);}
+.tag-ongoing{background:rgba(107,63,160,.13);color:var(--pm);border-color:rgba(107,63,160,.28);}
+
+.due{font-size:.62rem;color:var(--tlight);}
+.due.overdue{color:#e74c3c;font-weight:700;}
+.due.today-due{color:#d35400;font-weight:700;}
+
+.item-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+.del-btn,.edit-btn{background:none;border:none;cursor:pointer;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.78rem;transition:all .18s ease;}
+.del-btn{color:rgba(107,63,160,.3);}
+.del-btn:hover{color:#e74c3c;background:rgba(231,76,60,.1);}
+.edit-btn{color:rgba(107,63,160,.3);}
+.edit-btn:hover{color:var(--pm);background:rgba(107,63,160,.1);}
+
+.add-wrap{margin-top:20px;animation:fu .55s .5s both;}
+.add-label{color:var(--pale);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;display:block;}
+.add-card{background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.18);border-radius:18px;padding:14px;}
+.add-row{display:flex;gap:8px;margin-bottom:8px;}
+.add-input{flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:11px;padding:10px 13px;color:var(--white);font-size:.83rem;font-family:inherit;outline:none;transition:all .22s ease;}
+.add-input::placeholder{color:rgba(255,255,255,.32);}
+.add-input:focus{border-color:rgba(168,85,247,.6);background:rgba(255,255,255,.18);box-shadow:0 0 0 3px rgba(168,85,247,.14);}
+.add-btn{background:linear-gradient(135deg,var(--pm),var(--acc));border:none;border-radius:11px;width:42px;height:42px;color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s ease;box-shadow:0 4px 14px rgba(168,85,247,.38);flex-shrink:0;}
+.add-btn:hover{transform:scale(1.07);}
+.add-btn:active{transform:scale(.94);}
+.add-opts{display:flex;gap:6px;flex-wrap:wrap;}
+.opt-select,.due-input{flex:1;min-width:100px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:7px 10px;color:var(--white);font-size:.75rem;font-family:inherit;outline:none;}
+.opt-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;cursor:pointer;}
+.opt-select option{background:#2d1b69;color:#fff;}
+.opt-select:focus,.due-input:focus{border-color:rgba(168,85,247,.5);}
+.due-input{color-scheme:dark;}
+
+.overlay{position:fixed;inset:0;background:rgba(26,10,46,.78);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeOv .2s ease;}
+.overlay.hidden{display:none;}
+.modal{background:linear-gradient(135deg,#2d1b69,#1a0a2e);border:1px solid rgba(168,85,247,.35);border-radius:22px;padding:24px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:popIn .25s ease;}
+.modal h3{color:var(--white);font-size:1rem;font-weight:700;margin-bottom:16px;}
+.modal-field{margin-bottom:12px;}
+.modal-label{color:var(--pale);font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;display:block;}
+.modal-input,.modal-select{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:9px 12px;color:var(--white);font-size:.83rem;font-family:inherit;outline:none;}
+.modal-select option{background:#2d1b69;}
+.modal-input:focus,.modal-select:focus{border-color:rgba(168,85,247,.55);}
+.modal-btns{display:flex;gap:8px;margin-top:18px;}
+.modal-save{flex:1;background:linear-gradient(135deg,var(--pm),var(--acc));border:none;border-radius:11px;padding:11px;color:#fff;font-size:.85rem;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s;}
+.modal-save:hover{opacity:.88;}
+.modal-cancel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:11px;padding:11px 16px;color:rgba(255,255,255,.6);font-size:.85rem;font-family:inherit;cursor:pointer;}
+.modal-cancel:hover{background:rgba(255,255,255,.18);}
+
+.empty{text-align:center;padding:28px 0;color:rgba(255,255,255,.3);font-size:.8rem;}
+
+.motivate{text-align:center;margin-top:22px;padding:14px;background:rgba(255,255,255,.06);border-radius:14px;border:1px solid rgba(255,255,255,.09);animation:fu .55s .6s both;}
+.motivate p{color:var(--pale);font-size:.77rem;font-weight:300;letter-spacing:.04em;line-height:1.7;}
+.motivate strong{color:var(--white);font-weight:700;}
+.widget-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;animation:fu .55s .55s both;}
+.glass-card{background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:14px;}
+.clock-card{text-align:center;display:flex;flex-direction:column;justify-content:center;}
+.clock-time{font-size:1.55rem;font-weight:700;color:var(--white);letter-spacing:.04em;text-shadow:0 0 16px rgba(224,64,251,.35);font-variant-numeric:tabular-nums;}
+.clock-date{font-size:.82rem;color:var(--pale);margin-top:6px;letter-spacing:.02em;font-weight:500;}
+.cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.cal-nav-btn{background:none;border:none;color:var(--pale);cursor:pointer;font-size:.85rem;padding:2px 5px;border-radius:6px;transition:all .15s ease;font-family:inherit;}
+.cal-nav-btn:hover{background:rgba(255,255,255,.12);color:var(--white);}
+.cal-month{color:var(--white);font-size:.75rem;font-weight:700;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center;}
+.cal-head{font-size:.58rem;color:var(--pale);font-weight:600;padding:2px 0;}
+.cal-day{font-size:.65rem;color:rgba(255,255,255,.7);padding:3px 0;border-radius:50%;cursor:default;line-height:1.6;}
+.cal-day.today{background:linear-gradient(135deg,var(--pm),var(--acc));color:#fff;font-weight:700;box-shadow:0 0 8px rgba(224,64,251,.4);}
+.cal-day.other-month{color:rgba(255,255,255,.2);}
+.widget-label{color:var(--pale);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;padding-left:2px;display:flex;align-items:center;gap:8px;}
+.widget-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(195,155,211,.4),transparent);}
+
+@keyframes fd{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.88)}70%{transform:scale(1.02)}100%{opacity:1;transform:scale(1)}}
+@keyframes fadeOv{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+  </div>
+
+  <div class="widget-label">時計 &amp; カレンダー</div>
+  <div class="widget-row">
+    <div class="glass-card clock-card">
+      <div class="clock-time" id="clockTime">--:--:--</div>
+      <div class="clock-date" id="clockDate">読み込み中...</div>
+    </div>
+    <div class="glass-card">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+        <span class="cal-month" id="calMonth"></span>
+        <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+  </div>
+
+  <div class="prog">
+    <div class="prog-row">
+      <span class="prog-lbl">進捗</span>
+      <span class="prog-num" id="progNum">0 / 0 完了</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-filter="all">すべて</button>
+    <button class="tab" data-filter="urgent">🔴 今すぐ</button>
+    <button class="tab" data-filter="soon">🟠 もうすぐ</button>
+    <button class="tab" data-filter="ongoing">🟣 継続</button>
+    <button class="tab" data-filter="done">✓ 完了済み</button>
+  </div>
+
+  <div class="action-bar">
+    <button class="act-btn danger" onclick="clearDone()">🗑 完了をまとめて削除</button>
+    <button class="act-btn" onclick="sortByDue()">📅 期限順に並べる</button>
+  </div>
+
+  <div id="listWrap"></div>
+
+  <div class="add-wrap">
+    <span class="add-label">タスクを追加</span>
+    <div class="add-card">
+      <div class="add-row">
+        <input class="add-input" id="newText" type="text" placeholder="新しいタスクを入力..." maxlength="80">
+        <button class="add-btn" onclick="addTodo()">＋</button>
+      </div>
+      <div class="add-opts">
+        <select class="opt-select" id="newTag">
+          <option value="urgent">🔴 今すぐ</option>
+          <option value="soon">🟠 もうすぐ</option>
+          <option value="ongoing" selected>🟣 継続</option>
+        </select>
+        <select class="opt-select" id="newSection">
+          <option value="今すぐ">今すぐ</option>
+          <option value="4月23日">4月23日</option>
+          <option value="4月23日後">4月23日後</option>
+          <option value="転職活動">転職活動</option>
+          <option value="マイタスク" selected>マイタスク</option>
+        </select>
+        <input class="due-input" id="newDue" type="date" title="期限日">
+      </div>
+    </div>
+  </div>
+
+  <div class="motivate">
+    <p><strong>継続は力なり。たるんどる！</strong></p>
+  </div>
+</div>
+
+<div class="overlay hidden" id="overlay">
+  <div class="modal">
+    <h3>✏️ タスクを編集</h3>
+    <div class="modal-field">
+      <label class="modal-label">タスク名</label>
+      <input class="modal-input" id="editText" type="text" maxlength="80">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">タグ</label>
+      <select class="modal-select" id="editTag">
+        <option value="urgent">🔴 今すぐ</option>
+        <option value="soon">🟠 もうすぐ</option>
+        <option value="ongoing">🟣 継続</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">カテゴリ</label>
+      <select class="modal-select" id="editSection">
+        <option value="今すぐ">今すぐ</option>
+        <option value="4月23日">4月23日</option>
+        <option value="4月23日後">4月23日後</option>
+        <option value="転職活動">転職活動</option>
+        <option value="マイタスク">マイタスク</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">期限日</label>
+      <input class="modal-input" id="editDue" type="date">
+    </div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="modal-save" onclick="saveEdit()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY='mitsubashi_v3';
+const TAG_LABELS={urgent:'今すぐ',soon:'もうすぐ',ongoing:'継続'};
+const defaults=[
+  {id:1,text:'dodaエージェント登録を完了する',done:false,tag:'urgent',section:'今すぐ',due:''},
+  {id:2,text:'貸与物をまとめておく（PC・社員証など）',done:false,tag:'urgent',section:'今すぐ',due:'2026-04-22'},
+  {id:3,text:'4/23 来社して書類・返却手続きを済ませる',done:false,tag:'urgent',section:'4月23日',due:'2026-04-23'},
+  {id:4,text:'国民健康保険の加入手続き（14日以内）',done:false,tag:'soon',section:'4月23日',due:'2026-05-07'},
+  {id:5,text:'離職票が届いたらハローワークで手続き',done:false,tag:'soon',section:'4月23日後',due:''},
+  {id:6,text:'dodaエージェントとの面談準備',done:false,tag:'ongoing',section:'転職活動',due:''},
+  {id:7,text:'Excel・VBAの自主学習を継続する',done:false,tag:'ongoing',section:'転職活動',due:''},
+  {id:8,text:'MOS取得に向けて勉強を始める',done:false,tag:'ongoing',section:'転職活動',due:''},
+];
+
+function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):defaults;}catch{return defaults;}}
+function save(t){try{localStorage.setItem(KEY,JSON.stringify(t));}catch{}}
+
+let todos=load();
+let nextId=Math.max(...todos.map(t=>t.id),0)+1;
+let filter='all';
+let editingId=null;
+
+function todayStr(){return new Date().toISOString().split('T')[0];}
+
+function dueLabel(due){
+  if(!due) return null;
+  const t=todayStr();
+  if(due<t) return{text:'⚠ 期限切れ',cls:'overdue'};
+  if(due===t) return{text:'📌 今日まで',cls:'today-due'};
+  return{text:'📅 '+due.replace(/-/g,'/'),cls:''};
+}
+
+function getFiltered(){
+  if(filter==='done') return todos.filter(t=>t.done);
+  if(filter==='all') return todos.filter(t=>!t.done);
+  return todos.filter(t=>!t.done&&t.tag===filter);
+}
+
+function grouped(list){
+  const m={};
+  list.forEach(t=>{if(!m[t.section])m[t.section]=[];m[t.section].push(t);});
+  return m;
+}
+
+function render(){
+  const wrap=document.getElementById('listWrap');
+  const list=getFiltered();
+  wrap.innerHTML='';
+  if(list.length===0){wrap.innerHTML='<div class="empty">タスクがありません ✨</div>';updateProg();return;}
+  const sections=grouped(list);
+  Object.entries(sections).forEach(([sec,items],si)=>{
+    const sd=document.createElement('div');
+    sd.className='sec';sd.style.animationDelay=(si*.06)+'s';
+    sd.innerHTML=`<div class="sec-title">${sec}</div>`;
+    items.forEach(todo=>{
+      const dl=dueLabel(todo.due);
+      const el=document.createElement('div');
+      el.className='item'+(todo.done?' done':'');
+      el.dataset.id=todo.id;
+      el.innerHTML=`
+        <div class="chk"><span class="chk-mark">✓</span></div>
+        <div class="item-body">
+          <div class="item-text">${todo.text}</div>
+          <div class="item-meta">
+            <span class="tag tag-${todo.tag}" data-id="${todo.id}">${TAG_LABELS[todo.tag]}</span>
+            ${dl?`<span class="due ${dl.cls}">${dl.text}</span>`:''}
+          </div>
+        </div>
+        <div class="item-actions">
+          <button class="edit-btn" title="編集">✏</button>
+          <button class="del-btn" title="削除">×</button>
+        </div>`;
+      el.querySelector('.edit-btn').addEventListener('click',e=>{e.stopPropagation();openEdit(todo.id);});
+      el.querySelector('.del-btn').addEventListener('click',e=>{e.stopPropagation();del(todo.id);});
+      el.querySelector('.tag').addEventListener('click',e=>{e.stopPropagation();cycleTag(todo.id);});
+      el.addEventListener('click',e=>{if(e.target.closest('.item-actions')||e.target.closest('.tag'))return;toggle(todo.id);});
+      sd.appendChild(el);
+    });
+    wrap.appendChild(sd);
+  });
+  updateProg();
+}
+
+function updateProg(){
+  const total=todos.length,done=todos.filter(t=>t.done).length;
+  const pct=total===0?0:Math.round(done/total*100);
+  document.getElementById('progNum').textContent=`${done} / ${total} 完了`;
+  document.getElementById('progFill').style.width=pct+'%';
+}
+
+function toggle(id){todos=todos.map(t=>t.id===id?{...t,done:!t.done}:t);save(todos);render();}
+function del(id){todos=todos.filter(t=>t.id!==id);save(todos);render();}
+function cycleTag(id){
+  const order=['urgent','soon','ongoing'];
+  todos=todos.map(t=>{if(t.id!==id)return t;const i=(order.indexOf(t.tag)+1)%order.length;return{...t,tag:order[i]};});
+  save(todos);render();
+}
+
+function addTodo(){
+  const text=document.getElementById('newText').value.trim();
+  if(!text)return;
+  todos.push({id:nextId++,text,done:false,tag:document.getElementById('newTag').value,section:document.getElementById('newSection').value,due:document.getElementById('newDue').value});
+  save(todos);
+  document.getElementById('newText').value='';
+  document.getElementById('newDue').value='';
+  render();
+}
+
+function clearDone(){
+  if(!todos.some(t=>t.done))return;
+  if(!confirm('完了済みタスクをすべて削除しますか？'))return;
+  todos=todos.filter(t=>!t.done);save(todos);render();
+}
+
+function sortByDue(){
+  todos.sort((a,b)=>{if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return -1;return a.due.localeCompare(b.due);});
+  save(todos);render();
+}
+
+document.getElementById('tabs').addEventListener('click',e=>{
+  const tab=e.target.closest('.tab');if(!tab)return;
+  filter=tab.dataset.filter;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===filter));
+  render();
+});
+
+function openEdit(id){
+  const t=todos.find(x=>x.id===id);if(!t)return;
+  editingId=id;
+  document.getElementById('editText').value=t.text;
+  document.getElementById('editTag').value=t.tag;
+  document.getElementById('editSection').value=t.section;
+  document.getElementById('editDue').value=t.due||'';
+  document.getElementById('overlay').classList.remove('hidden');
+}
+function closeModal(){document.getElementById('overlay').classList.add('hidden');editingId=null;}
+function saveEdit(){
+  if(!editingId)return;
+  const text=document.getElementById('editText').value.trim();if(!text)return;
+  todos=todos.map(t=>t.id!==editingId?t:{...t,text,tag:document.getElementById('editTag').value,section:document.getElementById('editSection').value,due:document.getElementById('editDue').value});
+  save(todos);closeModal();render();
+}
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
+document.getElementById('newText').addEventListener('keydown',e=>{if(e.key==='Enter')addTodo();});
+document.getElementById('editText').addEventListener('keydown',e=>{if(e.key==='Enter')saveEdit();});
+
+render();
+
+const WDAYS=['日','月','火','水','木','金','土'];
+const WMONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth();
+
+function tickClock(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const s=String(now.getSeconds()).padStart(2,'0');
+  const ct=document.getElementById('clockTime');
+  const cd=document.getElementById('clockDate');
+  if(ct) ct.textContent=h+':'+m+':'+s;
+  if(cd) cd.textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日（'+WDAYS[now.getDay()]+'）';
+}
+
+function renderCal(){
+  const now=new Date();
+  const todayY=now.getFullYear(), todayM=now.getMonth(), todayD=now.getDate();
+  const mel=document.getElementById('calMonth');
+  const gel=document.getElementById('calGrid');
+  if(!mel||!gel) return;
+  mel.textContent=calYear+'年'+WMONTHS[calMonth];
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+  let html=WDAYS.map(d=>`<div class="cal-head">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day other-month">${prevDays-firstDay+1+i}</div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=d===todayD&&calMonth===todayM&&calYear===todayY;
+    html+=`<div class="cal-day${isToday?' today':''}">${d}</div>`;
+  }
+  const rem=(firstDay+daysInMonth)%7;
+  if(rem>0){for(let i=1;i<=7-rem;i++) html+=`<div class="cal-day other-month">${i}</div>`;}
+  gel.innerHTML=html;
+}
+
+function changeMonth(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCal();
+}
+
+tickClock();
+renderCal();
+setInterval(tickClock,1000);
+</script>
+</body>
+</html>
