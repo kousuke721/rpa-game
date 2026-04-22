@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPA Academy | ゼロから実務まで</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg-s:#1a0a2e;--bg-m:#2d1b69;--bg-e:#6b3fa0;
+  --card:rgba(237,228,255,.1);--card2:rgba(237,228,255,.15);
+  --border:rgba(168,85,247,.22);--border2:rgba(168,85,247,.38);
+  --primary:#A855F7;--primary-dim:rgba(168,85,247,.2);
+  --accent:#E040FB;--accent-dim:rgba(224,64,251,.15);
+  --success:#6ee7b7;--success-dim:rgba(110,231,183,.15);
+  --warn:#fbbf24;--danger:#f87171;--danger-dim:rgba(248,113,113,.15);
+  --text:#FDFAFF;--muted:rgba(195,155,211,.85);--dim:rgba(195,155,211,.4);
+  --pale:#C39BD3;--code-bg:#0d0718;--code-text:#a8d8a8;
+  --nav-h:58px;--sidebar-w:272px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',sans-serif;background:linear-gradient(135deg,var(--bg-s) 0%,var(--bg-m) 45%,var(--bg-e) 100%);background-attachment:fixed;color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 65% 25%,rgba(168,85,247,.14) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(224,64,251,.09) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* TOP NAV */
+.topnav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);background:rgba(12,4,28,.92);backdrop-filter:blur(24px);border-bottom:1px solid rgba(168,85,247,.2);display:flex;align-items:center;padding:0 28px;gap:0}
+.tnav-logo{display:flex;align-items:center;gap:10px;margin-right:32px;cursor:pointer}
+.tnav-logo-ico{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#6B3FA0,#E040FB);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:900;box-shadow:0 0 16px rgba(224,64,251,.3);flex-shrink:0}
+.tnav-logo-txt{font-size:16px;font-weight:700;color:#fff}
+.tnav-logo-txt span{color:var(--accent)}
+.tnav-tabs{display:flex;height:100%;gap:0}
+.tnav-tab{height:100%;padding:0 20px;border:none;border-bottom:2px solid transparent;background:transparent;color:rgba(195,155,211,.5);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:8px;transition:all .2s;white-space:nowrap}
+.tnav-tab:hover{color:rgba(195,155,211,.85)}
+.tnav-tab.act{color:#fff;border-bottom-color:var(--accent)}
+.tnav-tab svg{stroke:currentColor;flex-shrink:0}
+.tnav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.tnav-prog-lbl{font-size:12px;color:var(--muted)}
+.tnav-prog-val{font-size:14px;font-weight:700;color:var(--accent)}
+.tnav-reset{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:7px 16px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;transition:all .2s}
+.tnav-reset:hover{background:rgba(255,255,255,.12);color:#fff}
+
+/* SHELL */
+.app{position:relative;z-index:1;padding-top:var(--nav-h);min-height:100vh;display:flex;flex-direction:column}
+.pc-shell{display:flex;flex:1}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);flex-shrink:0;position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));overflow-y:auto;background:rgba(10,3,25,.55);border-right:1px solid rgba(168,85,247,.15);padding:18px 14px}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(168,85,247,.3);border-radius:2px}
+.sb-prog{background:rgba(237,228,255,.06);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:18px}
+.sb-prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sb-prog-lbl{font-size:11px;color:var(--muted)}
+.sb-prog-pct{font-size:12px;font-weight:700;color:var(--accent)}
+.sb-prog-bar{height:5px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.sb-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width .6s}
+.sb-prog-count{font-size:10px;color:var(--dim);margin-top:6px}
+.sb-sec-lbl{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pale);margin-bottom:8px;padding-left:4px;display:flex;align-items:center;gap:6px}
+.sb-sec-lbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(195,155,211,.2),transparent)}
+.sb-ch{background:rgba(237,228,255,.06);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;transition:border-color .2s}
+.sb-ch:hover{border-color:rgba(168,85,247,.4)}
+.sb-ch.sb-open{border-color:rgba(168,85,247,.35)}
+.sb-ch.sb-done{border-color:rgba(110,231,183,.25)}
+.sb-ch-hdr{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer}
+.sb-ch-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-ch-info{flex:1;min-width:0}
+.sb-ch-num{font-size:9px;color:var(--pale);letter-spacing:.06em;text-transform:uppercase}
+.sb-ch-t{font-size:11px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ch-p{font-size:10px;color:var(--muted);margin-top:1px}
+.sb-ch-arr{font-size:10px;color:var(--dim);transition:transform .2s;flex-shrink:0}
+.sb-ch.sb-open .sb-ch-arr{transform:rotate(90deg)}
+.sb-ls{display:none;border-top:1px solid var(--border)}
+.sb-ch.sb-open .sb-ls{display:block}
+.sb-ls-item{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
+.sb-ls-item:last-child{border-bottom:none}
+.sb-ls-item:hover:not(.sb-locked){background:rgba(168,85,247,.1)}
+.sb-ls-item.sb-locked{opacity:.4;cursor:default}
+.sb-ls-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.sb-ls-dot.done{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.sb-ls-dot.cur{background:var(--primary);color:#fff;box-shadow:0 0 5px rgba(168,85,247,.5)}
+.sb-ls-dot.lock{background:rgba(255,255,255,.06);border:1px solid var(--dim)}
+.sb-ls-t{font-size:11px;color:var(--muted);flex:1;line-height:1.35}
+.sb-ls-badge{font-size:9px;padding:2px 6px;border-radius:99px;border:1px solid var(--border);color:var(--dim);white-space:nowrap}
+
+/* MAIN */
+.main-content{flex:1;min-width:0;padding:32px 44px 60px;overflow:hidden}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.home-hero{background:rgba(237,228,255,.07);border:1px solid var(--border);border-radius:20px;padding:52px 56px;margin-bottom:32px;position:relative;overflow:hidden;backdrop-filter:blur(8px);display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center}
+.home-hero::before{content:'';position:absolute;right:-60px;top:-60px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.15) 0%,transparent 70%);pointer-events:none}
+.logo-wrap{position:relative;z-index:1}
+.logo{font-size:3rem;font-weight:900;color:#fff;line-height:1.05;text-shadow:0 0 36px rgba(168,85,247,.5);margin-bottom:4px}
+.logo span{color:var(--accent)}
+.logo-tag{font-size:.7rem;letter-spacing:.22em;color:var(--pale);text-transform:uppercase;margin-bottom:18px}
+.hero-title{font-size:1.2rem;font-weight:700;margin-bottom:8px;line-height:1.5;color:var(--text)}
+.hero-sub{font-size:.9rem;color:var(--muted);line-height:1.75}
+.btn-cta{padding:18px 40px;background:linear-gradient(135deg,#6B3FA0,var(--accent));color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;box-shadow:0 0 32px rgba(224,64,251,.4);transition:all .2s;white-space:nowrap;position:relative;z-index:1}
+.btn-cta:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(224,64,251,.55)}
+
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.home-grid-full{grid-column:1/-1}
+.hs{background:rgba(237,228,255,.06);border:1px solid var(--border);border-radius:16px;padding:24px;backdrop-filter:blur(8px)}
+.slabel{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pale);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(195,155,211,.2),transparent)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.icard{background:rgba(255,255,255,.04);border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s}
+.icard:hover{border-color:rgba(168,85,247,.35);transform:translateY(-2px)}
+.icard-ico{width:38px;height:38px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;background:rgba(168,85,247,.12);border-radius:10px}
+.icard-t{font-size:.9rem;font-weight:700;margin-bottom:5px;color:var(--text)}
+.icard-d{font-size:.78rem;color:var(--muted);line-height:1.55}
+.flist{display:flex;flex-direction:column}
+.fitem{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(168,85,247,.08);font-size:.88rem;color:var(--muted)}
+.fitem:last-child{border-bottom:none}
+.fdot{width:6px;height:6px;border-radius:50%;background:var(--primary);flex-shrink:0}
+.ch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ch-mini{background:rgba(255,255,255,.04);border:1px solid rgba(168,85,247,.15);border-radius:12px;padding:16px;cursor:pointer;transition:all .2s}
+.ch-mini:hover{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.4);transform:translateY(-2px)}
+.ch-mini-ico{width:30px;height:30px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.ch-mini-info .n{font-size:.65rem;color:var(--pale);margin-bottom:3px}
+.ch-mini-info .t{font-size:.84rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.ch-mini-info .s{font-size:.72rem;color:var(--muted)}
+
+/* MAP */
+.map-hd{margin-bottom:24px}
+.map-hd-title{font-size:1.8rem;font-weight:700;color:var(--text);margin-bottom:4px}
+.map-hd-sub{font-size:.9rem;color:var(--muted)}
+.op-card{background:rgba(237,228,255,.07);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:28px;backdrop-filter:blur(8px)}
+.op-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.op-label{font-size:.85rem;color:var(--muted);font-weight:500}
+.op-pct{font-size:.9rem;font-weight:700;color:var(--accent)}
+.op-bar{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.op-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width .6s cubic-bezier(.16,1,.3,1)}
+.op-count{font-size:.78rem;color:var(--dim);margin-top:8px}
+.ch-grid-map{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.ch-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .2s,box-shadow .2s;backdrop-filter:blur(8px)}
+.ch-card:hover{box-shadow:0 4px 20px rgba(168,85,247,.15)}
+.ch-card.current-ch{border-color:var(--primary)}
+.ch-card.done-ch{border-color:rgba(110,231,183,.3)}
+.ch-hdr{display:flex;align-items:center;gap:14px;padding:20px 22px;cursor:pointer}
+.ch-ico{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ch-info{flex:1}
+.ch-num{font-size:.68rem;color:var(--pale);letter-spacing:.1em;text-transform:uppercase}
+.ch-t{font-size:1rem;font-weight:700;color:var(--text);margin:3px 0}
+.ch-prog{font-size:.76rem;color:var(--muted)}
+.ch-chev{font-size:.9rem;color:var(--dim);transition:transform .2s}
+.ch-card.open .ch-chev{transform:rotate(90deg)}
+.ls-list{border-top:1px solid var(--border);display:none}
+.ch-card.open .ls-list{display:block}
+.ls-item{display:flex;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;color:var(--text)}
+.ls-item:last-child{border-bottom:none}
+.ls-item:not(.locked):hover{background:rgba(168,85,247,.08)}
+.ls-item.locked{opacity:.38;cursor:default}
+.ls-status{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;flex-shrink:0}
+.ls-status.done{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.ls-status.cur{background:var(--primary);animation:glow 2s infinite;color:#fff}
+.ls-status.lock{background:rgba(255,255,255,.06);border:1px solid var(--dim)}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(168,85,247,.5)}50%{box-shadow:0 0 0 8px rgba(168,85,247,0)}}
+.ls-t{font-size:.92rem;font-weight:500;flex:1;color:var(--text)}
+.ls-badge{font-size:.7rem;padding:3px 10px;border-radius:99px;border:1px solid var(--border);color:var(--muted)}
+
+/* LESSON */
+.lesson-layout{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+.ls-ch-lbl{font-size:.72rem;color:var(--pale);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+.ls-pg-t{font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:14px}
+.ls-prog-wrap{background:rgba(255,255,255,.06);border-radius:99px;height:4px;overflow:hidden;margin-bottom:28px}
+.ls-prog-fill{height:100%;background:var(--primary);transition:width .5s}
+.rs{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:18px;backdrop-filter:blur(8px)}
+.rs h3{font-size:.95rem;color:var(--pale);margin-bottom:16px;font-weight:700;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.rs p{font-size:.9rem;line-height:1.9;color:var(--muted);margin-bottom:12px}
+.rs p:last-child{margin-bottom:0}
+.rs ul{list-style:none;margin-top:10px}
+.rs li{font-size:.9rem;color:var(--muted);padding:7px 0 7px 20px;position:relative;line-height:1.65;border-bottom:1px solid rgba(168,85,247,.06)}
+.rs li:last-child{border-bottom:none}
+.rs li::before{content:'▸';color:var(--pale);position:absolute;left:0}
+.hbox{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);border-left:3px solid var(--primary);border-radius:0 10px 10px 0;padding:14px 18px;font-size:.88rem;line-height:1.75;margin:14px 0;color:var(--muted)}
+.code{background:var(--code-bg);border:1px solid rgba(168,85,247,.2);border-radius:12px;padding:20px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--code-text);line-height:1.9;margin:14px 0;overflow-x:auto;white-space:pre-wrap}
+.btn-next{display:block;width:100%;padding:16px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;margin-top:24px;transition:all .2s;box-shadow:0 0 20px rgba(224,64,251,.25)}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(224,64,251,.4)}
+.lesson-aside{position:sticky;top:calc(var(--nav-h) + 32px)}
+.la-card{background:rgba(237,228,255,.06);border:1px solid var(--border);border-radius:14px;padding:18px;backdrop-filter:blur(8px)}
+.la-title{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pale);margin-bottom:14px}
+.la-item{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:8px;cursor:pointer;transition:all .15s;margin:0 -8px}
+.la-item:hover{background:rgba(168,85,247,.1)}
+.la-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.la-dot.done{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff}
+.la-dot.cur{background:var(--primary);color:#fff}
+.la-dot.lock{background:rgba(255,255,255,.06);border:1px solid var(--dim)}
+.la-text{font-size:.82rem;color:var(--muted);flex:1;line-height:1.4}
+.la-badge{font-size:.68rem;padding:2px 7px;border-radius:99px;border:1px solid var(--border);color:var(--dim)}
+
+/* EXERCISE */
+.ex-layout{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+.ex-badge{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;padding:6px 14px;background:var(--accent-dim);border:1px solid rgba(224,64,251,.35);color:var(--accent);border-radius:99px;margin-bottom:14px;font-weight:600}
+.ex-q{font-size:1.15rem;font-weight:700;line-height:1.6;margin-bottom:8px;color:var(--text)}
+.ex-desc{font-size:.88rem;color:var(--muted);margin-bottom:22px;line-height:1.6}
+.ch-opts{display:flex;flex-direction:column;gap:10px}
+.ch-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px 22px;text-align:left;color:var(--text);cursor:pointer;font-family:'Noto Sans JP',sans-serif;font-size:.92rem;line-height:1.6;transition:all .2s;backdrop-filter:blur(8px);display:flex;align-items:flex-start;gap:14px;width:100%}
+.ch-btn:hover:not(:disabled){border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.08)}
+.ch-btn-num{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0;color:var(--muted);margin-top:1px}
+.ch-btn.sel{border-color:var(--primary);background:var(--primary-dim)}
+.ch-btn.sel .ch-btn-num{background:var(--primary);border-color:var(--primary);color:#fff}
+.ch-btn.cor{border-color:var(--success);background:var(--success-dim)}
+.ch-btn.cor .ch-btn-num{background:var(--success);color:#0d0718;border-color:var(--success)}
+.ch-btn.wrg{border-color:var(--danger);background:var(--danger-dim)}
+.ch-btn.wrg .ch-btn-num{background:var(--danger);color:#fff;border-color:var(--danger)}
+.ch-btn:disabled{cursor:default}
+.ord-sec{}
+.ord-pool-lbl{font-size:.82rem;color:var(--muted);margin-bottom:12px;font-weight:500}
+.ord-pool{display:flex;flex-wrap:wrap;gap:10px;min-height:52px;margin-bottom:20px}
+.ord-chip{background:var(--card);border:1px solid var(--border2);border-radius:10px;padding:11px 18px;font-size:.88rem;cursor:pointer;transition:all .18s;color:var(--text);backdrop-filter:blur(8px)}
+.ord-chip:hover{background:rgba(168,85,247,.15);border-color:var(--primary)}
+.ord-chip.used{opacity:.25;pointer-events:none}
+.ord-zone-lbl{font-size:.82rem;color:var(--muted);margin-bottom:12px;font-weight:500;display:flex;align-items:center;gap:8px}
+.ord-zone{background:rgba(255,255,255,.03);border:2px dashed rgba(168,85,247,.25);border-radius:14px;padding:14px;min-height:150px;display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ord-placed{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:10px;padding:13px 18px;font-size:.9rem;display:flex;align-items:center;gap:10px;animation:chipIn .25s cubic-bezier(.16,1,.3,1);cursor:pointer}
+.ord-placed:hover{opacity:.85}
+@keyframes chipIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.ord-num{background:rgba(255,255,255,.22);border-radius:6px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0}
+.fb-box{margin-top:18px;border-radius:14px;padding:20px;display:none}
+.fb-box.show{display:block;animation:chipIn .3s ease}
+.fb-box.cor-fb{background:var(--success-dim);border:1px solid rgba(110,231,183,.4)}
+.fb-box.wrg-fb{background:var(--danger-dim);border:1px solid rgba(248,113,113,.3)}
+.fb-t{font-size:1rem;font-weight:700;margin-bottom:8px;color:var(--text)}
+.fb-d{font-size:.88rem;color:var(--muted);line-height:1.7}
+.ex-btns{display:flex;gap:12px;margin-top:20px}
+.btn-sec{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:14px 22px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+.btn-sec:hover{background:var(--card2)}
+.btn-pri{flex:1;background:linear-gradient(135deg,var(--primary),var(--accent));border:none;color:#fff;border-radius:12px;padding:14px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .2s}
+.btn-pri:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(168,85,247,.3)}
+.btn-pri:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+.ex-aside{position:sticky;top:calc(var(--nav-h) + 32px)}
+.ex-aside-card{background:rgba(237,228,255,.06);border:1px solid var(--border);border-radius:14px;padding:20px;backdrop-filter:blur(8px)}
+.ea-title{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pale);margin-bottom:14px}
+.ea-rule{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(168,85,247,.08);font-size:.85rem;color:var(--muted);line-height:1.55}
+.ea-rule:last-child{border-bottom:none}
+.ea-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+
+/* COMPLETE */
+.comp-wrap{max-width:560px;margin:0 auto;text-align:center;padding:52px 0}
+.comp-ico{width:80px;height:80px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:22px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 44px rgba(168,85,247,.4);animation:pop .6s cubic-bezier(.16,1,.3,1) .2s both}
+@keyframes pop{from{transform:scale(0)}60%{transform:scale(1.1)}to{transform:scale(1)}}
+.comp-t{font-size:2rem;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.comp-s{font-size:.95rem;color:var(--muted);margin-bottom:32px;line-height:1.7}
+.comp-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:28px}
+.stat-pill{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;backdrop-filter:blur(8px)}
+.stat-val{font-size:1.6rem;font-weight:900;color:var(--accent)}
+.stat-lbl{font-size:.78rem;color:var(--muted);margin-top:4px}
+.xp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:28px;backdrop-filter:blur(8px)}
+.xp-lbl{font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.xp-val{font-family:'JetBrains Mono',monospace;font-size:2.4rem;font-weight:700;color:var(--warn)}
+.comp-btns{display:flex;gap:14px;justify-content:center}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,3,25,.8);display:none;align-items:center;justify-content:center;z-index:200}
+.modal-overlay.show{display:flex}
+.modal{background:linear-gradient(135deg,#2d1b69,#1a0a2e);border:1px solid rgba(168,85,247,.35);border-radius:20px;padding:36px;width:100%;max-width:420px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.6)}
+.modal-title{font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:10px}
+.modal-sub{font-size:.9rem;color:var(--muted);line-height:1.65;margin-bottom:24px}
+.modal-btns{display:flex;gap:12px;justify-content:center}
+.btn-danger{background:linear-gradient(135deg,#e74c3c,#f87171);border-color:transparent;color:#fff}
+
+strong{color:var(--text)}
+code{font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--pale)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOP NAVIGATION -->
+<nav class="topnav">
+  <div class="tnav-logo" onclick="showPage('home')">
+    <div class="tnav-logo-ico">R</div>
+    <div class="tnav-logo-txt">RPA<span>Academy</span></div>
+  </div>
+  <div class="tnav-tabs">
+    <button class="tnav-tab act" id="tnav-home" onclick="showPage('home')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      ホーム
+    </button>
+    <button class="tnav-tab" id="tnav-map" onclick="goToMap()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+      学習マップ
+    </button>
+  </div>
+  <div class="tnav-right">
+    <span class="tnav-prog-lbl">進捗</span>
+    <span class="tnav-prog-val" id="tnav-pct">0%</span>
+    <button class="tnav-reset" onclick="showReset()">リセット</button>
+  </div>
+</nav>
+
+<div class="pc-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-prog">
+      <div class="sb-prog-top">
+        <span class="sb-prog-lbl">全体の進捗</span>
+        <span class="sb-prog-pct" id="sb-pct">0%</span>
+      </div>
+      <div class="sb-prog-bar"><div class="sb-prog-fill" id="sb-fill" style="width:0%"></div></div>
+      <div class="sb-prog-count" id="sb-count">0 / 0 レッスン完了</div>
+    </div>
+    <div class="sb-sec-lbl">チャプター</div>
+    <div id="sb-ch-list"></div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- HOME -->
+    <div id="page-home" class="page active">
+      <div class="home-hero">
+        <div class="logo-wrap">
+          <div class="logo">RPA<span>Academy</span></div>
+          <div class="logo-tag">ゼロから実務レベルまで</div>
+          <div class="hero-title">RPAをゼロから学んで実務エンジニアになろう</div>
+          <div class="hero-sub">8チャプター・16レッスン・全演習付き<br>UiPath / Power Automate Desktop 対応</div>
+        </div>
+        <button class="btn-cta" onclick="goToMap()">学習をはじめる →</button>
+      </div>
+
+      <div class="home-grid">
+        <div class="hs">
+          <div class="slabel">RPAとは</div>
+          <div class="info-grid">
+            <div class="icard"><div class="icard-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></div><div class="icard-t">自動化技術</div><div class="icard-d">人のPC操作をロボットが代わりに実行する</div></div>
+            <div class="icard"><div class="icard-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="icard-t">時間削減</div><div class="icard-d">24時間・ノーミスで繰り返し業務を処理</div></div>
+            <div class="icard"><div class="icard-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="icard-t">幅広い連携</div><div class="icard-d">Excel・Web・メール・基幹システムなど</div></div>
+            <div class="icard"><div class="icard-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="icard-t">DX推進の核</div><div class="icard-d">業務改革・コスト削減・デジタル変革</div></div>
+          </div>
+        </div>
+        <div class="hs">
+          <div class="slabel">このコースで学べること</div>
+          <div class="flist">
+            <div class="fitem"><div class="fdot"></div>RPAの基本概念とできること・できないことを理解</div>
+            <div class="fitem"><div class="fdot"></div>変数・条件分岐・ループなど制御フローをマスター</div>
+            <div class="fitem"><div class="fdot"></div>Excel連携・DataTable操作の実務スキルを習得</div>
+            <div class="fitem"><div class="fdot"></div>エラーハンドリングで壊れにくいロボットを作る</div>
+            <div class="fitem"><div class="fdot"></div>インタラクティブ演習で理解を確実に定着させる</div>
+            <div class="fitem"><div class="fdot"></div>進捗が自動保存され、続きから始められる</div>
+          </div>
+        </div>
+        <div class="hs home-grid-full">
+          <div class="slabel">8つの学習チャプター</div>
+          <div class="ch-grid" id="home-ch-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP -->
+    <div id="page-map" class="page">
+      <div class="map-hd">
+        <div class="map-hd-title">学習マップ</div>
+        <div class="map-hd-sub">チャプターを選んでレッスンを開始してください</div>
+      </div>
+      <div class="op-card">
+        <div class="op-top"><span class="op-label">全体の進捗</span><span class="op-pct" id="op-pct">0%</span></div>
+        <div class="op-bar"><div class="op-fill" id="op-fill" style="width:0%"></div></div>
+        <div class="op-count" id="op-count"></div>
+      </div>
+      <div class="ch-grid-map" id="ch-list-area"></div>
+    </div>
+
+    <!-- LESSON -->
+    <div id="page-lesson" class="page">
+      <div class="lesson-layout">
+        <div class="lesson-main">
+          <div><div class="ls-ch-lbl" id="ls-ch-lbl"></div><div class="ls-pg-t" id="ls-pg-t"></div></div>
+          <div class="ls-prog-wrap"><div class="ls-prog-fill" style="width:50%"></div></div>
+          <div id="ls-content"></div>
+        </div>
+        <div class="lesson-aside">
+          <div class="la-card">
+            <div class="la-title">このチャプターのレッスン</div>
+            <div id="la-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXERCISE -->
+    <div id="page-exercise" class="page">
+      <div class="ex-layout">
+        <div>
+          <div><div class="ls-ch-lbl" id="ex-ch-lbl"></div></div>
+          <div id="ex-hdr"></div>
+          <div id="ex-body"></div>
+          <div class="fb-box" id="fb-box">
+            <div class="fb-t" id="fb-t"></div>
+            <div class="fb-d" id="fb-d"></div>
+          </div>
+          <div class="ex-btns">
+            <button class="btn-sec" onclick="resetEx()">やり直し</button>
+            <button class="btn-pri" id="btn-judge" onclick="judgeAnswer()" disabled>判定する</button>
+          </div>
+        </div>
+        <div class="ex-aside">
+          <div class="ex-aside-card">
+            <div class="ea-title">解答のヒント</div>
+            <div class="ea-rule">
+              <div class="ea-dot" style="background:var(--primary)"></div>
+              選択肢を選んで「判定する」ボタンを押してください
+            </div>
+            <div class="ea-rule">
+              <div class="ea-dot" style="background:var(--success)"></div>
+              正解すると緑色でハイライトされます
+            </div>
+            <div class="ea-rule">
+              <div class="ea-dot" style="background:var(--danger)"></div>
+              不正解の場合は解説を確認して理解を深めましょう
+            </div>
+            <div class="ea-rule">
+              <div class="ea-dot" style="background:var(--accent)"></div>
+              並べ替え問題はチップをタップして順番に並べてください
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETE -->
+    <div id="page-complete" class="page">
+      <div class="comp-wrap">
+        <div class="comp-ico" id="comp-ico">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="comp-t" id="comp-t">レッスン完了！</div>
+        <div class="comp-s" id="comp-s"></div>
+        <div class="xp-card"><div class="xp-lbl">獲得 XP</div><div class="xp-val" id="xp-val">+100 XP</div></div>
+        <div class="comp-stats">
+          <div class="stat-pill"><div class="stat-val" id="stat-done">0</div><div class="stat-lbl">完了レッスン</div></div>
+          <div class="stat-pill"><div class="stat-val" id="stat-pct">0%</div><div class="stat-lbl">達成率</div></div>
+          <div class="stat-pill"><div class="stat-val" id="stat-rem">16</div><div class="stat-lbl">残りレッスン</div></div>
+        </div>
+        <div class="comp-btns">
+          <button class="btn-next" id="btn-next-ls" style="max-width:260px">次のレッスンへ →</button>
+          <button class="btn-sec" onclick="showPage('map')">マップに戻る</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- RESET MODAL -->
+<div id="reset-modal" class="modal-overlay">
+  <div class="modal">
+    <div style="margin-bottom:14px">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="modal-title">進捗をリセット</div>
+    <div class="modal-sub">すべての学習進捗が削除されます。<br>この操作は取り消せません。</div>
+    <div class="modal-btns">
+      <button class="btn-sec" onclick="closeReset()">キャンセル</button>
+      <button class="btn-sec btn-danger" onclick="confirmReset()">リセットする</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CUR = [
+  {
+    id:1, title:"RPAの基礎", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>`, color:"#A855F7",
+    lessons:[
+      {
+        id:"1-1", title:"RPAって何だろう？", exType:"choice",
+        reading:`
+<div class="rs"><h3>RPAとは</h3>
+<p><strong>RPA（Robotic Process Automation）</strong>とは、人がPCで行う繰り返し操作をソフトウェアロボットに自動化させる技術です。</p>
+<div class="hbox">「人間がPCで行う画面操作をそのままロボットに覚えさせる」技術。プログラミングの深い知識がなくても扱えます。</div>
+<p>主な活用場面：</p>
+<ul><li>Webシステムへのデータ入力・転記</li><li>Excelデータの集計・加工・出力</li><li>メールの自動作成・送信・仕分け</li><li>複数システム間のコピー&amp;ペースト</li></ul></div>
+<div class="rs"><h3>代表的なRPAツール</h3>
+<ul><li><strong>UiPath</strong> — 世界シェアNo.1。GUIベースで直感的な開発が可能</li><li><strong>Microsoft Power Automate Desktop（PAD）</strong> — Windows 11に標準搭載・無料</li><li><strong>Blue Prism</strong> — 大企業向け。強固なセキュリティと監査機能</li><li><strong>WinActor</strong> — 国産RPA。日本語サポートと官公庁への実績が豊富</li></ul>
+<div class="hbox">DX推進会社では主にUiPathやPADが多く使われています。</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"RPAに関する説明として、最も正しいものはどれですか？",
+          options:[
+            "AIと同じもので、自ら判断してあらゆる業務を自動化できる",
+            "人間がPCで行う定型的な操作をソフトウェアロボットに自動化させる技術",
+            "ハードウェアロボットを使って物理的な作業を自動化する技術",
+            "プログラミング言語の知識が必須のため、ITエンジニア専用のツール"
+          ],
+          correct:1,
+          explanation:"RPAはソフトウェアロボットがPC画面の操作を再現する技術です。AIとは異なり自ら判断することは苦手で、ルールが明確な定型業務が得意です。"
+        }
+      },
+      {
+        id:"1-2", title:"RPAでできること・できないこと", exType:"ordering",
+        reading:`
+<div class="rs"><h3>RPAが得意なこと</h3>
+<ul><li>同じ手順を何度も繰り返す業務</li><li>ルールが明確で例外が少ない処理</li><li>複数のシステムをまたぐコピー&amp;ペースト</li><li>大量データの入力・転記・集計</li><li>定時実行・夜間バッチ処理（人がいなくても動く）</li></ul></div>
+<div class="rs"><h3>RPAが苦手なこと</h3>
+<ul><li>画像・手書き文字の読み取り（AI OCRとの連携が必要）</li><li>状況を判断して柔軟に対応が必要な業務</li><li>頻繁に画面レイアウトが変わるシステム操作</li><li>人とのコミュニケーションが必要な対応</li></ul>
+<div class="hbox">RPA導入で業務時間を<strong>80〜90%削減</strong>できる事例も多数！<br>まず「繰り返し・ルール明確・大量」を探しましょう。</div></div>`,
+        exercise:{
+          type:"ordering",
+          question:"業務をRPA化する際の標準的な進め方を正しい順番に並べてください",
+          chips:[
+            {id:"b",text:"業務フローを詳細に整理する"},
+            {id:"d",text:"本番稼働・運用開始"},
+            {id:"a",text:"自動化する業務を選定する"},
+            {id:"c",text:"ロボットを開発・テストする"}
+          ],
+          answer:["a","b","c","d"],
+          explanation:"まず自動化に適した業務を選定し、フローを整理してから開発・テスト、最後に本番稼働というステップが基本です。"
+        }
+      }
+    ]
+  },
+  {
+    id:2, title:"ワークフロー設計", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>`, color:"#C084FC",
+    lessons:[
+      {
+        id:"2-1", title:"アクティビティとワークフロー", exType:"choice",
+        reading:`
+<div class="rs"><h3>アクティビティとは</h3>
+<p><strong>アクティビティ</strong>はRPAの基本部品です。「クリックする」「文字を入力する」など、1つの操作がアクティビティとして用意されています。</p>
+<div class="code">例：UiPath の主なアクティビティ
+・Click（クリック）
+・Type Into（文字入力）
+・Get Text（テキスト取得）
+・Read Range（Excelシート読み取り）
+・If（条件分岐）
+・For Each Row（行ごとに繰り返し）</div></div>
+<div class="rs"><h3>ワークフローとは</h3>
+<p>アクティビティを組み合わせて並べたものが<strong>ワークフロー</strong>です。料理のレシピのように、ロボットはワークフロー通り順番に動作します。</p>
+<div class="hbox">ワークフロー ＝ アクティビティの集合体<br>まず「何をするか」をアクティビティ単位で分解して考えましょう。</div>
+<ul><li>UiPathの場合：.xamlファイルがワークフローの本体</li><li>Main.xamlが起点となり、他のワークフローを呼び出す設計が基本</li></ul></div>`,
+        exercise:{
+          type:"choice",
+          question:"UiPathにおける「アクティビティ」の正しい説明はどれですか？",
+          options:[
+            "ロボットが動作する物理的なサーバーマシン",
+            "一連の操作手順全体をまとめた.xamlファイル",
+            "「クリック」「文字入力」など操作の最小単位となる部品",
+            "Excelのシートやセルのこと"
+          ],
+          correct:2,
+          explanation:"アクティビティはRPAの最小動作単位です。これらを組み合わせることでワークフロー（ロボットの動作手順）が完成します。"
+        }
+      },
+      {
+        id:"2-2", title:"シーケンスとフローチャート", exType:"choice",
+        reading:`
+<div class="rs"><h3>シーケンス（Sequence）</h3>
+<p>アクティビティを<strong>上から下へ順番に</strong>実行するシンプルな構造です。</p>
+<ul><li>見通しがよくデバッグしやすい</li><li>条件分岐・ループが少ない直線的な処理に最適</li><li>例：フォームに5項目入力して送信する</li><li>例：Excelを開いてデータを転記して保存する</li></ul></div>
+<div class="rs"><h3>フローチャート（Flowchart）</h3>
+<p>条件分岐（Yes/No）やループが多い複雑な処理に使います。視覚的にフロー全体を把握できます。</p>
+<ul><li>複雑な条件分岐がある業務に向く</li><li>処理の流れが図で確認できる</li><li>例：金額によって処理を変える承認フロー</li></ul>
+<div class="hbox">迷ったらまずシーケンスで作り始め、複雑になったらフローチャートに移行するのが定石です。</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"「Excel 100行分を1行ずつ読んで、金額が5万円以上なら承認フラグを立てる」処理に適したワークフローは？",
+          options:[
+            "シーケンス（単純に上から順に実行するだけ）",
+            "フローチャート（ループと条件分岐が含まれるため）",
+            "どちらでも全く同じで違いはない",
+            "RPAではこのような処理はできない"
+          ],
+          correct:1,
+          explanation:"ループ（100行の繰り返し）と条件分岐（5万円以上かどうか）が含まれるため、フローチャートが適しています。"
+        }
+      }
+    ]
+  },
+  {
+    id:3, title:"変数とデータ型", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>`, color:"#818CF8",
+    lessons:[
+      {
+        id:"3-1", title:"変数を使いこなす", exType:"choice",
+        reading:`
+<div class="rs"><h3>変数とは</h3>
+<p><strong>変数</strong>とは値を一時的に記憶しておく「箱」です。処理の途中で値を保存・再利用するために必要です。</p>
+<div class="code">変数名: str_customerName
+値:    "山田 太郎"
+
+変数名: int_amount
+値:    50000
+
+変数名: bool_isApproved
+値:    True</div>
+<p>UiPathでは「Variables」パネルから変数を作成。<strong>名前・型・スコープ・デフォルト値</strong>を設定します。</p></div>
+<div class="rs"><h3>命名規則のベストプラクティス</h3>
+<ul><li>型を示すプレフィックスをつけると可読性が上がる</li></ul>
+<div class="code">str_  → String（文字列）
+int_  → Int32（整数）
+dbl_  → Double（小数）
+bool_ → Boolean（真偽値）
+dt_   → DataTable（表形式）
+dt_   → DateTime（日時）</div>
+<div class="hbox">変数名にスペースは使えません。単語間はアンダースコア（_）で区切りましょう。</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"変数 str_customerName に「田中 花子」という値を代入するのに適切なアクティビティはどれですか？",
+          options:[
+            "Click アクティビティ",
+            "Assign アクティビティ（str_customerName = \"田中 花子\"）",
+            "Get Text アクティビティ",
+            "Start Process アクティビティ"
+          ],
+          correct:1,
+          explanation:"Assign（代入）アクティビティは変数に値をセットするために使います。「変数名 = 値」の形式で記述します。"
+        }
+      },
+      {
+        id:"3-2", title:"データ型を理解する", exType:"choice",
+        reading:`
+<div class="rs"><h3>主なデータ型</h3>
+<p>変数の「型」はどんな種類のデータを入れるかを決めます。型を間違えるとエラーになります。</p>
+<div class="code">String  （文字列）: "田中太郎", "東京都"
+Int32   （整数）  : 1, 100, -5
+Double  （小数）  : 3.14, 1500.5
+Boolean （真偽値）: True / False
+DateTime（日時）  : 2024/04/01 09:00
+DataTable（表）  : Excelシート全体のイメージ</div></div>
+<div class="rs"><h3>よくある落とし穴</h3>
+<ul><li>Excelから読み込んだ数値は<strong>String型</strong>になっていることがある</li><li>計算する前に型変換が必要！</li></ul>
+<div class="code">// 文字列 → 整数に変換
+Convert.ToInt32(row("金額").ToString)
+
+// 文字列 → 小数に変換
+Double.Parse(row("率").ToString)</div>
+<div class="hbox">Boolean はフラグ（条件分岐）に活用。DataTable はExcel操作で必須。GenericValue は乱用禁止！</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"社員の「給与（円）」を格納して計算に使いたい。最も適切なデータ型はどれですか？",
+          options:[
+            "String（文字列型）",
+            "Boolean（真偽値型）",
+            "Int32 または Double（数値型）",
+            "DateTime（日時型）"
+          ],
+          correct:2,
+          explanation:"給与のように数値計算が必要なデータはInt32（整数）またはDouble（小数点あり）を使います。Stringのままでは計算できません。"
+        }
+      }
+    ]
+  },
+  {
+    id:4, title:"制御フロー", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>`, color:"#6ee7b7",
+    lessons:[
+      {
+        id:"4-1", title:"条件分岐（If / Else）", exType:"ordering",
+        reading:`
+<div class="rs"><h3>条件分岐とは</h3>
+<p>条件が<strong>True（真）</strong>か<strong>False（偽）</strong>かによって、実行する処理を分けるしくみです。</p>
+<div class="code">If 金額 >= 10000 Then
+    高額フラグ = True
+    承認メール送信
+Else
+    高額フラグ = False
+End If</div></div>
+<div class="rs"><h3>比較演算子</h3>
+<div class="code">=    等しい        &lt;&gt;   等しくない（≠）
+>    より大きい    >=   以上
+&lt;    より小さい    &lt;=   以下
+And  かつ（両方True）
+Or   または（どちらかTrue）
+Not  否定（Trueを反転）</div>
+<div class="hbox">条件式の例：<br><code>金額 >= 50000 And 承認済み = True</code><br>→「5万円以上 かつ 承認済み」の場合のみ処理を実行</div></div>`,
+        exercise:{
+          type:"ordering",
+          question:"「スコアが80点以上なら合格、そうでなければ不合格と記録する」処理の正しい流れは？",
+          chips:[
+            {id:"b",text:"Then: result = \"合格\" と代入する"},
+            {id:"d",text:"End If でブロックを閉じる"},
+            {id:"a",text:"If score >= 80 の条件を設定する"},
+            {id:"c",text:"Else: result = \"不合格\" と代入する"}
+          ],
+          answer:["a","b","c","d"],
+          explanation:"If（条件設定）→ Then（True時の処理）→ Else（False時の処理）→ End If という構造が基本です。"
+        }
+      },
+      {
+        id:"4-2", title:"繰り返し（ループ）", exType:"ordering",
+        reading:`
+<div class="rs"><h3>ループの種類</h3>
+<ul><li><strong>For Each Row</strong> — DataTableの各行を処理（Excel連携で最頻出）</li><li><strong>While</strong> — 条件がTrueの間ずっと繰り返す</li><li><strong>Do While</strong> — 必ず1回実行してから条件を判定</li></ul>
+<div class="code">For Each row In dt_顧客一覧
+    str_name   = row("氏名").ToString
+    str_email  = row("メール").ToString
+    // ...フォーム入力処理など...
+Next row</div></div>
+<div class="rs"><h3>無限ループに注意</h3>
+<p>While ループで終了条件を誤ると<strong>無限ループ</strong>が発生してロボットが止まらなくなります。</p>
+<div class="hbox">For Each Row はExcel処理の基本中の基本！<br>各行のデータにアクセスするには <code>row("列名").ToString</code> を使います。</div></div>`,
+        exercise:{
+          type:"ordering",
+          question:"「Excelの100行分のデータを1行ずつ読んでシステムに入力する」処理の正しい順番は？",
+          chips:[
+            {id:"b",text:"For Each Row でループ開始"},
+            {id:"d",text:"ループを終了する（Next Row）"},
+            {id:"a",text:"ExcelファイルをDataTableに読み込む"},
+            {id:"c",text:"各行のデータを取得・システムへ入力"}
+          ],
+          answer:["a","b","c","d"],
+          explanation:"まずExcelをDataTableに読み込み、ループで各行を処理し、ループを終了するという流れが基本です。"
+        }
+      }
+    ]
+  },
+  {
+    id:5, title:"セレクターとUI操作", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`, color:"#fbbf24",
+    lessons:[
+      {
+        id:"5-1", title:"セレクターの仕組み", exType:"choice",
+        reading:`
+<div class="rs"><h3>セレクターとは</h3>
+<p><strong>セレクター</strong>とは、ロボットが操作する画面上の要素（ボタン・テキストボックスなど）を特定するための「住所」です。XML形式で記述されます。</p>
+<div class="code">&lt;wnd app='chrome.exe' title='受注管理システム' /&gt;
+&lt;webctrl id='btnSubmit' tag='INPUT' type='submit' /&gt;</div>
+<p>UiPath の「UI Explorer」や「Indicate Element」でクリックするだけで自動生成されます。</p></div>
+<div class="rs"><h3>セレクターが壊れる主な原因</h3>
+<ul><li>ウィンドウタイトルに日付・番号が含まれている</li><li>システムアップデートでID・クラス名が変わった</li><li>画面解像度やブラウザのバージョンが異なる環境で動かした</li></ul>
+<div class="hbox">安定したセレクターのコツ：<br>・動的に変わる部分はワイルドカード（*）で対応<br>例：title='売上報告書_*.xlsx'<br>・複数の属性を組み合わせて一意に特定する</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"セレクターに「売上報告書_20240401.xlsx」というタイトルが入っていて、毎日日付が変わるためロボットが失敗します。最適な解決策は？",
+          options:[
+            "毎日セレクターを手動で書き換える",
+            "タイトルの日付部分をワイルドカード（*）に置き換える",
+            "このようなファイルへのRPA操作はあきらめる",
+            "別のRPAツールに変更する"
+          ],
+          correct:1,
+          explanation:"ワイルドカード（*）を使い title='売上報告書_*.xlsx' とすることで、毎日変わるファイル名にも対応できます。"
+        }
+      },
+      {
+        id:"5-2", title:"Webフォームの自動入力", exType:"ordering",
+        reading:`
+<div class="rs"><h3>Web操作の基本アクティビティ</h3>
+<ul><li><strong>Open Browser</strong> — URLを指定してブラウザを起動</li><li><strong>Type Into</strong> — テキストボックスに文字を入力</li><li><strong>Click</strong> — ボタンやリンクをクリック</li><li><strong>Select Item</strong> — ドロップダウンから選択</li><li><strong>Get Text</strong> — ページ上のテキストを取得</li></ul></div>
+<div class="rs"><h3>タイミング制御が重要</h3>
+<p>ページ読み込みを待たずに操作するとエラーになります。</p>
+<ul><li><strong>Wait Element Appear</strong> — 要素が表示されるまで待機（推奨）</li><li><strong>Element Exists</strong> — 要素の存在を確認してから操作</li><li><strong>Delay</strong> — 固定時間待機（最終手段。多用禁止）</li></ul>
+<div class="hbox">Delay を乱用するとロボットが遅くなります。Wait Element Appear を活用して安定性と速度を両立しましょう。</div></div>`,
+        exercise:{
+          type:"ordering",
+          question:"Webフォームに氏名・電話番号を入力して送信するロボットの正しい処理順は？",
+          chips:[
+            {id:"b",text:"氏名欄に Type Into で入力する"},
+            {id:"d",text:"送信ボタンを Click する"},
+            {id:"a",text:"Open Browser でURLを開く"},
+            {id:"c",text:"電話番号欄に Type Into で入力する"}
+          ],
+          answer:["a","b","c","d"],
+          explanation:"ブラウザを起動してから各フォーム項目に順番に入力し、最後に送信ボタンをクリックする流れが基本です。"
+        }
+      }
+    ]
+  },
+  {
+    id:6, title:"Excelとデータ処理", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>`, color:"#34d399",
+    lessons:[
+      {
+        id:"6-1", title:"Excel操作の基本", exType:"ordering",
+        reading:`
+<div class="rs"><h3>Excelと連携する主なアクティビティ</h3>
+<div class="code">Excel Application Scope（またはUse Excel File）
+ └ Read Range   → DataTableに読み込む
+ └ Write Range  → DataTableをExcelへ書き出す
+ └ Write Cell   → 特定セルに値を書き込む
+ └ Read Cell    → 特定セルの値を取得する
+ └ Save Workbook → ブックを保存する</div>
+<div class="hbox">必ずExcel Application Scope の中にExcel操作を入れること！<br>外に置くとエラーになります。</div></div>
+<div class="rs"><h3>よく使う応用操作</h3>
+<ul><li><strong>Filter Data Table</strong> — 条件でフィルタリング</li><li><strong>Sort Data Table</strong> — 列を基準にソート</li><li><strong>Add Data Row</strong> — DataTableに行を追加</li><li><strong>Get Row Item</strong> — 特定セルの値を取得</li></ul></div>`,
+        exercise:{
+          type:"ordering",
+          question:"「Excelを開き→データ読み込み→加工→別シートに書き込み→保存」の正しい手順は？",
+          chips:[
+            {id:"e",text:"Save Workbook で保存する"},
+            {id:"b",text:"Read Range でDataTableに読み込む"},
+            {id:"d",text:"Write Range で別シートに書き込む"},
+            {id:"a",text:"Excel Application Scope でファイルを開く"},
+            {id:"c",text:"DataTableのデータを加工処理する"}
+          ],
+          answer:["a","b","c","d","e"],
+          explanation:"スコープでExcelを開き→読み込み→加工→書き込み→保存の順が基本フローです。スコープの外に出てから保存は不可。"
+        }
+      },
+      {
+        id:"6-2", title:"DataTableを操作する", exType:"choice",
+        reading:`
+<div class="rs"><h3>DataTableとは</h3>
+<p><strong>DataTable</strong>はExcelシートをメモリ上で表現したデータ構造です。行・列形式でデータを管理します。</p>
+<div class="code">// For Each Row ループ内でアクセス
+row("氏名").ToString       → "田中 太郎"
+row("金額").ToString       → "50000"
+row(0).ToString            → 1列目の値
+
+// DataTable全体の情報
+dt.Rows.Count              → 行数
+dt.Columns.Count           → 列数</div></div>
+<div class="rs"><h3>DataTableの主な操作</h3>
+<ul><li><strong>Filter Data Table</strong> — 条件でフィルタリング（例：金額 > 10000）</li><li><strong>Build Data Table</strong> — 新しいDataTableを作成</li><li><strong>Add Data Row</strong> — 行を追加</li><li><strong>Output Data Table</strong> — CSV文字列に変換</li></ul>
+<div class="hbox">DataTableから取り出した値はString型になりがちです。計算前に <code>Convert.ToInt32()</code> や <code>Double.Parse()</code> で変換を忘れずに！</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"For Each Row でループ中に、DataTable「dt_売上」の「売上金額」列の値を取得する正しい記述は？",
+          options:[
+            "dt_売上(\"売上金額\")",
+            "row(\"売上金額\").ToString",
+            "dt_売上.売上金額",
+            "GetValue(\"売上金額\")"
+          ],
+          correct:1,
+          explanation:"For Each Row のループ内では、各行（row）に row(\"列名\").ToString の形でアクセスします。DataTable名は不要です。"
+        }
+      }
+    ]
+  },
+  {
+    id:7, title:"エラーハンドリング", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`, color:"#f87171",
+    lessons:[
+      {
+        id:"7-1", title:"エラーの種類と対処法", exType:"choice",
+        reading:`
+<div class="rs"><h3>RPAでよく発生するエラー</h3>
+<ul><li><strong>セレクターエラー</strong> — 操作対象の要素が見つからない（最頻出）</li><li><strong>タイムアウト</strong> — 指定時間内に要素が表示されない</li><li><strong>型変換エラー</strong> — 数値のはずがStringで計算できない</li><li><strong>ファイルエラー</strong> — ファイルが開いている・パスが間違っている</li><li><strong>ネットワークエラー</strong> — システムがダウン・タイムアウト</li></ul></div>
+<div class="rs"><h3>エラーが起きたときの調査手順</h3>
+<ul><li>① ログを確認してエラーの詳細メッセージを把握</li><li>② デバッグモードでステップ実行して原因を特定</li><li>③ セレクターが変わっていないか UI Explorer で確認</li><li>④ 手動で同じ操作が正常にできるか試す</li></ul>
+<div class="hbox">エラーはロボット開発の日常です。ログを丁寧に読む習慣をつけることが実務スキルの核心です。</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"ロボットが毎朝起動するが、たまにシステムの読み込みが遅くてエラーになります。最も適切な対処法は？",
+          options:[
+            "エラーが起きたら毎回手動で再実行する",
+            "Wait Element Appear でログイン画面の表示を待ってから操作する",
+            "ロボットの実行時間を夜中に変更する",
+            "Delay を30秒に設定してとにかく固定で待つ"
+          ],
+          correct:1,
+          explanation:"Wait Element Appear（または Element Exists）を使い、ページ表示を確認してから操作することが安定したロボットの基本です。固定のDelayは非効率で脆弱です。"
+        }
+      },
+      {
+        id:"7-2", title:"Try / Catch / Finally", exType:"ordering",
+        reading:`
+<div class="rs"><h3>Try / Catch とは</h3>
+<p>エラーが発生しても<strong>ロボットを止めない</strong>ための重要な仕組みです。</p>
+<div class="code">Try
+    // 通常の処理（エラーが起きるかもしれない箇所）
+    Click ログインボタン
+    Type Into パスワード欄
+Catch (Exception ex)
+    // エラー発生時の処理
+    Log Message "エラー発生: " + ex.Message
+    Send Outlook Mail "管理者へエラー通知"
+Finally
+    // エラーの有無に関わらず必ず実行
+    Close Application</div></div>
+<div class="rs"><h3>各ブロックの使い分け</h3>
+<ul><li><strong>Try</strong> — エラーが起きうる処理を囲む</li><li><strong>Catch</strong> — エラー発生時に実行（ログ記録・通知など）</li><li><strong>Finally</strong> — 必ず実行したい後処理（アプリを閉じる等）</li></ul>
+<div class="hbox">重要な業務ロボットには必ずTry/Catchを入れましょう。<br>エラー内容を自動メール通知する仕組みがあると運用が格段に楽になります！</div></div>`,
+        exercise:{
+          type:"ordering",
+          question:"Try / Catch / Finally ブロックの正しい構造を並べてください",
+          chips:[
+            {id:"b",text:"Catch: エラーログを記録し管理者に通知"},
+            {id:"c",text:"Finally: アプリを閉じる（必ず実行）"},
+            {id:"a",text:"Try: 通常の業務処理を実行する"}
+          ],
+          answer:["a","b","c"],
+          explanation:"Try（通常処理）→ Catch（エラー時の処理）→ Finally（必ず実行）の順が正しい構造です。"
+        }
+      }
+    ]
+  },
+  {
+    id:8, title:"実務レベルへ", icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E040FB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`, color:"#E040FB",
+    lessons:[
+      {
+        id:"8-1", title:"業務分析とRPA化判断", exType:"choice",
+        reading:`
+<div class="rs"><h3>RPA化に適した業務の条件</h3>
+<ul><li>ルールが明確で判断基準がシンプル</li><li>繰り返し頻度が高い（毎日・毎週）</li><li>大量のデータを扱う</li><li>複数システム間の転記・コピー作業</li><li>人的ミスが発生しやすい手作業</li></ul></div>
+<div class="rs"><h3>ROI（投資対効果）の計算方法</h3>
+<p>RPA化を提案するには効果を数字で示すことが重要です。</p>
+<div class="code">削減工数（年間） = 月次作業時間 × 12ヶ月
+削減コスト　　 = 削減工数 × 人件費単価
+
+例: 月20時間 × 12 × ¥3,000/h
+  = ¥720,000/年 のコスト削減
+
+開発・ライセンス費と比較してROIを算出</div>
+<div class="hbox">「年間何時間削減できるか」を現場担当者にヒアリングして計算しましょう。数字で見せることが経営層への説得・予算獲得の鍵です。</div></div>`,
+        exercise:{
+          type:"choice",
+          question:"以下の業務のうち、RPA化の優先度が最も高いものはどれですか？",
+          options:[
+            "月1回・15分で終わる手作業の報告書提出",
+            "毎日2時間かかるシステム間のデータ転記（ルールが明確）",
+            "顧客クレームに応じて柔軟に対応するサポート業務",
+            "年1回のシステム構成変更作業"
+          ],
+          correct:1,
+          explanation:"毎日2時間・ルール明確・データ転記は、RPA化の最適解です。年間約500時間削減が見込め、ROIが高い案件です。"
+        }
+      },
+      {
+        id:"8-2", title:"保守・ログ・運用設計", exType:"ordering",
+        reading:`
+<div class="rs"><h3>ログ記録の重要性</h3>
+<p>ロボットがいつ何を実行したかを記録するログは、問題発生時の原因調査に必須です。</p>
+<ul><li><strong>Log Message</strong> — 処理の節目に記録（Info / Warning / Error）</li><li><strong>Orchestrator</strong> — UiPathの管理画面でログを集中管理・監視</li><li><strong>エラー通知</strong> — 失敗時にメールで担当者に自動通知する</li></ul></div>
+<div class="rs"><h3>安定した運用のために</h3>
+<ul><li><strong>定期メンテナンス</strong> — システム更新後にセレクターを必ず確認</li><li><strong>ドキュメント整備</strong> — 仕様書・手順書・変更履歴を残す</li><li><strong>テスト環境</strong> — 本番前に必ずテスト環境で十分に検証</li><li><strong>例外ルールの整備</strong> — 想定外データの扱いを設計に組み込む</li></ul>
+<div class="hbox">実務では「動くロボットを作る」だけでなく<br>「<strong>壊れにくく・直しやすい</strong>ロボットを作る」視点が重要です！</div></div>`,
+        exercise:{
+          type:"ordering",
+          question:"RPAロボットを本番稼働させるまでの正しいステップを並べてください",
+          chips:[
+            {id:"b",text:"ワークフローを開発する"},
+            {id:"d",text:"本番環境で稼働・継続監視"},
+            {id:"a",text:"業務フロー整理・設計書作成"},
+            {id:"c",text:"テスト環境で動作確認・バグ修正"}
+          ],
+          answer:["a","b","c","d"],
+          explanation:"設計→開発→テスト→本番稼働のステップが基本です。特にテストを丁寧に行うことが安定稼働の鍵です。"
+        }
+      }
+    ]
+  }
+];
+
+
+const TOTAL = CUR.reduce((s,ch)=>s+ch.lessons.length,0);
+let completed = new Set();
+try{const d=JSON.parse(localStorage.getItem('rpa_v2')||'{}');completed=new Set(d.c||[]);}catch(e){}
+const save=()=>{try{localStorage.setItem('rpa_v2',JSON.stringify({c:[...completed]}));}catch(e){}};
+
+let curLessonId=null, exState={};
+
+// === PC版ナビ・サイドバー更新 ===
+function updateNav(name){
+  ['home','map'].forEach(t=>{
+    const el=document.getElementById('tnav-'+t);
+    if(el) el.classList.toggle('act',t===name||(t==='map'&&(name==='lesson'||name==='exercise'||name==='complete')));
+  });
+  // 進捗更新
+  const done=completed.size;
+  const pct=Math.round(done/TOTAL*100);
+  const pctEl=document.getElementById('tnav-pct');
+  if(pctEl) pctEl.textContent=pct+'%';
+}
+
+function renderSidebar(){
+  const done=completed.size;
+  const pct=Math.round(done/TOTAL*100);
+  const fillEl=document.getElementById('sb-fill');
+  const pctEl=document.getElementById('sb-pct');
+  const countEl=document.getElementById('sb-count');
+  if(fillEl) fillEl.style.width=pct+'%';
+  if(pctEl) pctEl.textContent=pct+'%';
+  if(countEl) countEl.textContent=`${done} / ${TOTAL} レッスン完了`;
+
+  const con=document.getElementById('sb-ch-list');
+  if(!con) return;
+  con.innerHTML='';
+  CUR.forEach((ch,ci)=>{
+    const chDone=ch.lessons.filter(l=>completed.has(l.id)).length;
+    const prevChDone=ci===0||CUR.slice(0,ci).every(c=>c.lessons.every(l=>completed.has(l.id)));
+    const allDone=chDone===ch.lessons.length;
+    const isCur=!allDone&&prevChDone;
+
+    const div=document.createElement('div');
+    div.className='sb-ch'+(allDone?' sb-done':'');
+    if(isCur||chDone>0) div.classList.add('sb-open');
+
+    div.innerHTML=`
+      <div class="sb-ch-hdr" onclick="this.parentElement.classList.toggle('sb-open')">
+        <div class="sb-ch-ico" style="background:${ch.color}25">${ch.icon}</div>
+        <div class="sb-ch-info">
+          <div class="sb-ch-num">Chapter ${ch.id}</div>
+          <div class="sb-ch-t">${ch.title}</div>
+          <div class="sb-ch-p">${chDone}/${ch.lessons.length} 完了</div>
+        </div>
+        <span class="sb-ch-arr">▸</span>
+      </div>
+      <div class="sb-ls">
+        ${ch.lessons.map((l,li)=>{
+          const isDone=completed.has(l.id);
+          const prevDone=li===0?prevChDone:completed.has(ch.lessons[li-1].id);
+          const isLock=!isDone&&!prevDone;
+          const isCurrent=!isDone&&prevDone;
+          const sc=isDone?'done':isCurrent?'cur':'lock';
+          const si=isDone?'':isCurrent?'▶':'—';
+          const badge=l.exType==='choice'?'選択':'並替';
+          return `<div class="sb-ls-item${isLock?' sb-locked':''}" ${isLock?'':'onclick="startLesson(\''+l.id+'\')"'}>
+            <div class="sb-ls-dot ${sc}">${si}</div>
+            <div class="sb-ls-t">${l.title}</div>
+            <div class="sb-ls-badge">${badge}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    con.appendChild(div);
+  });
+}
+
+// === ページ遷移 ===
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  updateNav(name);
+  renderSidebar();
+  window.scrollTo(0,0);
+}
+
+function goToMap(){renderMap();showPage('map');}
+
+// === ホーム ===
+function renderHome(){
+  const con=document.getElementById('home-ch-list');
+  if(!con) return;
+  con.innerHTML=CUR.map(ch=>`
+    <div class="ch-mini" onclick="goToMap()">
+      <div class="ch-mini-ico">${ch.icon}</div>
+      <div class="ch-mini-info">
+        <div class="n">Chapter ${ch.id}</div>
+        <div class="t">${ch.title}</div>
+        <div class="s">${ch.lessons.length}レッスン</div>
+      </div>
+    </div>`).join('');
+}
+
+// === マップ ===
+function renderMap(){
+  const done=completed.size;
+  const pct=Math.round(done/TOTAL*100);
+  document.getElementById('op-fill').style.width=pct+'%';
+  document.getElementById('op-pct').textContent=pct+'%';
+  document.getElementById('op-count').textContent=`${done} / ${TOTAL} レッスン完了`;
+
+  const con=document.getElementById('ch-list-area');
+  con.innerHTML='';
+  CUR.forEach((ch,ci)=>{
+    const chDone=ch.lessons.filter(l=>completed.has(l.id)).length;
+    const prevChDone=ci===0||CUR.slice(0,ci).every(c=>c.lessons.every(l=>completed.has(l.id)));
+    const allDone=chDone===ch.lessons.length;
+    const isCur=!allDone&&prevChDone;
+
+    const card=document.createElement('div');
+    card.className='ch-card'+(allDone?' done-ch':isCur?' current-ch':'');
+    card.innerHTML=`
+      <div class="ch-hdr" onclick="toggleCh(this.parentElement)">
+        <div class="ch-ico" style="background:${ch.color}33">${ch.icon}</div>
+        <div class="ch-info">
+          <div class="ch-num">CHAPTER ${ch.id}</div>
+          <div class="ch-t">${ch.title}</div>
+          <div class="ch-prog">${chDone} / ${ch.lessons.length} 完了</div>
+        </div>
+        <span class="ch-chev">▸</span>
+      </div>
+      <div class="ls-list">
+        ${ch.lessons.map((l,li)=>{
+          const isDone=completed.has(l.id);
+          const prevDone=li===0?prevChDone:completed.has(ch.lessons[li-1].id);
+          const isLock=!isDone&&!prevDone;
+          const isCurrent=!isDone&&prevDone;
+          const sc=isDone?'done':isCurrent?'cur':'lock';
+          const si=isDone?'':isCurrent?'▶':'—';
+          const badge=l.exType==='choice'?'選択クイズ':'並べ替え';
+          return `<div class="ls-item${isLock?' locked':''}" ${isLock?'':'onclick="startLesson(\''+l.id+'\')"'}>
+            <div class="ls-status ${sc}">${si}</div>
+            <div class="ls-t">${l.title}</div>
+            <div class="ls-badge">${badge}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    con.appendChild(card);
+    if(isCur&&chDone<ch.lessons.length) card.classList.add('open');
+    if(ci===0&&chDone===0) card.classList.add('open');
+  });
+}
+
+function toggleCh(card){card.classList.toggle('open');}
+
+// === レッスン ===
+function findLesson(id){
+  for(const ch of CUR){for(const l of ch.lessons){if(l.id===id)return{l,ch};}}return null;
+}
+
+function startLesson(id){
+  const f=findLesson(id);if(!f)return;
+  curLessonId=id;
+  document.getElementById('ls-ch-lbl').textContent=`Chapter ${f.ch.id}: ${f.ch.title}`;
+  document.getElementById('ls-pg-t').textContent=f.l.title;
+  document.getElementById('ls-content').innerHTML=f.l.reading+
+    `<button class="btn-next" onclick="goToEx('${id}')">演習問題へ進む →</button>`;
+  // サイドバーのチャプターをアクティブに
+  renderLessonAside(f);
+  showPage('lesson');
+}
+
+function renderLessonAside(f){
+  const con=document.getElementById('la-list');
+  if(!con) return;
+  con.innerHTML=f.ch.lessons.map((l,li)=>{
+    const isDone=completed.has(l.id);
+    const prevDone=li===0||completed.has(f.ch.lessons[li-1].id);
+    const isLock=!isDone&&!prevDone;
+    const isCur=l.id===curLessonId;
+    const sc=isDone?'done':isCur?'cur':'lock';
+    const si=isDone?'':isCur?'▶':'—';
+    const badge=l.exType==='choice'?'選択':'並替';
+    return `<div class="la-item${isCur?' active':''}" ${!isLock?`onclick="startLesson('${l.id}')"`:''}>
+      <div class="la-dot ${sc}">${si}</div>
+      <div class="la-text">${l.title}</div>
+      <div class="la-badge">${badge}</div>
+    </div>`;
+  }).join('');
+}
+
+// === 演習 ===
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function goToEx(id){
+  const f=findLesson(id);if(!f)return;
+  curLessonId=id;
+  const ex=f.l.exercise;
+  exState={id,selChoice:null,ordIds:[],chips:ex.chips?shuffle([...ex.chips]):[],answered:false,correct:false};
+  document.getElementById('ex-ch-lbl').textContent=`Chapter ${f.ch.id}: ${f.ch.title}`;
+  const typeLabel=ex.type==='choice'?'選択クイズ':'並べ替え問題';
+  document.getElementById('ex-hdr').innerHTML=`
+    <div class="ex-badge">${typeLabel}</div>
+    <div class="ex-q">${ex.question}</div>
+    ${ex.type==='ordering'?'<div class="ex-desc">選択肢をタップして順番に並べてください。並べた選択肢をタップすると取り消せます。</div>':''}
+  `;
+  renderExBody(ex);
+  document.getElementById('fb-box').className='fb-box';
+  const btn=document.getElementById('btn-judge');
+  btn.disabled=true;btn.textContent='判定する';btn.onclick=judgeAnswer;
+  showPage('exercise');
+}
+
+function renderExBody(ex){
+  const body=document.getElementById('ex-body');
+  if(ex.type==='choice'){
+    const labels=['A','B','C','D'];
+    body.innerHTML=`<div class="ch-opts">${ex.options.map((o,i)=>`
+      <button class="ch-btn" id="cb-${i}" onclick="selChoice(${i})">
+        <span class="ch-btn-num">${labels[i]}</span>
+        <span>${o}</span>
+      </button>`).join('')}</div>`;
+  } else {
+    body.innerHTML=`<div class="ord-sec">
+      <div class="ord-pool-lbl">選択肢（タップで選択）</div>
+      <div class="ord-pool" id="ord-pool">
+        ${exState.chips.map(c=>`<div class="ord-chip" id="chip-${c.id}" onclick="selChip('${c.id}')">${c.text}</div>`).join('')}
+      </div>
+      <div class="ord-zone-lbl">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--pale)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        並べた順番
+      </div>
+      <div class="ord-zone" id="ord-zone"></div>
+    </div>`;
+  }
+}
+
+function selChoice(i){
+  if(exState.answered)return;
+  exState.selChoice=i;
+  document.querySelectorAll('.ch-btn').forEach((b,j)=>b.classList.toggle('sel',j===i));
+  document.getElementById('btn-judge').disabled=false;
+}
+
+function selChip(id){
+  if(exState.answered)return;
+  if(exState.ordIds.includes(id)){
+    exState.ordIds=exState.ordIds.filter(x=>x!==id);
+    document.getElementById('chip-'+id).classList.remove('used');
+  } else {
+    exState.ordIds.push(id);
+    document.getElementById('chip-'+id).classList.add('used');
+  }
+  renderZone();
+  document.getElementById('btn-judge').disabled=exState.ordIds.length!==exState.chips.length;
+}
+
+function renderZone(){
+  document.getElementById('ord-zone').innerHTML=exState.ordIds.map((id,i)=>{
+    const c=exState.chips.find(x=>x.id===id);
+    return `<div class="ord-placed" onclick="removeFromZone('${id}')"><span class="ord-num">${i+1}</span>${c.text}</div>`;
+  }).join('');
+}
+
+function removeFromZone(id){
+  if(exState.answered)return;
+  exState.ordIds=exState.ordIds.filter(x=>x!==id);
+  document.getElementById('chip-'+id).classList.remove('used');
+  renderZone();
+  document.getElementById('btn-judge').disabled=exState.ordIds.length!==exState.chips.length;
+}
+
+function judgeAnswer(){
+  if(exState.answered)return;
+  const f=findLesson(exState.id);
+  const ex=f.l.exercise;
+  let correct=false;
+
+  if(ex.type==='choice'){
+    correct=exState.selChoice===ex.correct;
+    document.querySelectorAll('.ch-btn').forEach((b,i)=>{
+      if(i===ex.correct)b.classList.add('cor');
+      else if(i===exState.selChoice&&!correct)b.classList.add('wrg');
+    });
+  } else {
+    correct=JSON.stringify(exState.ordIds)===JSON.stringify(ex.answer);
+    document.querySelectorAll('.ord-placed').forEach(p=>{
+      p.style.background=correct?'var(--success)':'var(--danger)';
+    });
+  }
+
+  exState.answered=true;exState.correct=correct;
+  if(correct){completed.add(exState.id);save();}
+
+  const fb=document.getElementById('fb-box');
+  fb.className='fb-box '+(correct?'cor-fb':'wrg-fb')+' show';
+  document.getElementById('fb-t').textContent=correct?'正解！':'不正解';
+  document.getElementById('fb-d').textContent=correct?ex.explanation:
+    ex.type==='choice'?'正解は緑色でハイライトされています。解説を確認しましょう。':'「やり直し」ボタンで再挑戦してみましょう！';
+
+  const btn=document.getElementById('btn-judge');
+  btn.textContent=correct?'レッスン完了へ →':'次へ進む';
+  btn.disabled=false;
+  btn.onclick=showComplete;
+}
+
+function resetEx(){
+  exState.answered=false;exState.selChoice=null;exState.ordIds=[];
+  exState.chips=shuffle([...exState.chips]);
+  const f=findLesson(exState.id);if(!f)return;
+  renderExBody(f.l.exercise);
+  document.getElementById('fb-box').className='fb-box';
+  const btn=document.getElementById('btn-judge');
+  btn.disabled=true;btn.textContent='判定する';btn.onclick=judgeAnswer;
+}
+
+// === 完了 ===
+function showComplete(){
+  const f=findLesson(exState.id);
+  const done=completed.size;
+  const pct=Math.round(done/TOTAL*100);
+
+  // アイコンをSVGに
+  const icoEl=document.getElementById('comp-ico');
+  icoEl.innerHTML=exState.correct
+    ?'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+    :'<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>';
+
+  document.getElementById('comp-t').textContent=exState.correct?'レッスン完了！':'レッスン終了';
+  document.getElementById('comp-s').textContent=exState.correct
+    ?`「${f.l.title}」をマスターしました！この調子で次も頑張りましょう。`
+    :`「${f.l.title}」が終わりました。解説をよく読んで理解を深めましょう。`;
+  document.getElementById('xp-val').textContent=exState.correct?'+100 XP':'+50 XP';
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-pct').textContent=pct+'%';
+  document.getElementById('stat-rem').textContent=TOTAL-done;
+
+  let nextId=null,found=false;
+  outer:for(const ch of CUR){for(const l of ch.lessons){if(found){nextId=l.id;break outer;}if(l.id===exState.id)found=true;}}
+
+  const btn=document.getElementById('btn-next-ls');
+  if(nextId){
+    btn.style.display='block';
+    btn.textContent='次のレッスンへ →';
+    btn.onclick=()=>startLesson(nextId);
+  } else {
+    btn.textContent='全レッスン制覇！';
+    btn.onclick=()=>{
+      document.getElementById('comp-t').textContent='ALL COMPLETE!';
+      document.getElementById('comp-s').textContent='全16レッスンを制覇しました！あなたはRPA実務レベルに達しています。おめでとうございます！';
+    };
+  }
+  showPage('complete');
+}
+
+// === リセット ===
+function showReset(){document.getElementById('reset-modal').classList.add('show');}
+function closeReset(){document.getElementById('reset-modal').classList.remove('show');}
+function confirmReset(){
+  completed=new Set();save();closeReset();renderHome();renderSidebar();showPage('home');
+}
+
+// === 初期化 ===
+renderHome();
+renderSidebar();
+updateNav('home');
+</script>
+</body>
+</html>
