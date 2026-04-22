@@ -176,15 +176,15 @@ body::before{
 
   <div class="tabs" id="tabs">
     <button class="tab active" data-filter="all">すべて</button>
-    <button class="tab" data-filter="urgent">🔴 今すぐ</button>
-    <button class="tab" data-filter="soon">🟠 もうすぐ</button>
-    <button class="tab" data-filter="ongoing">🟣 継続</button>
+    <button class="tab" data-filter="urgent"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block;margin-right:5px;"></span>今すぐ</button>
+    <button class="tab" data-filter="soon"><span style="width:8px;height:8px;border-radius:50%;background:#fbbf24;display:inline-block;margin-right:5px;"></span>もうすぐ</button>
+    <button class="tab" data-filter="ongoing"><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:5px;"></span>継続</button>
     <button class="tab" data-filter="done">✓ 完了済み</button>
   </div>
 
   <div class="action-bar">
-    <button class="act-btn danger" onclick="clearDone()">🗑 完了をまとめて削除</button>
-    <button class="act-btn" onclick="sortByDue()">📅 期限順に並べる</button>
+    <button class="act-btn danger" onclick="clearDone()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> 完了をまとめて削除</button>
+    <button class="act-btn" onclick="sortByDue()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 期限順に並べる</button>
   </div>
 
   <div id="listWrap"></div>
@@ -198,9 +198,9 @@ body::before{
       </div>
       <div class="add-opts">
         <select class="opt-select" id="newTag">
-          <option value="urgent">🔴 今すぐ</option>
-          <option value="soon">🟠 もうすぐ</option>
-          <option value="ongoing" selected>🟣 継続</option>
+          <option value="urgent"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block;margin-right:5px;"></span>今すぐ</option>
+          <option value="soon"><span style="width:8px;height:8px;border-radius:50%;background:#fbbf24;display:inline-block;margin-right:5px;"></span>もうすぐ</option>
+          <option value="ongoing" selected><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:5px;"></span>継続</option>
         </select>
         <select class="opt-select" id="newSection">
           <option value="今すぐ">今すぐ</option>
@@ -221,7 +221,7 @@ body::before{
 
 <div class="overlay hidden" id="overlay">
   <div class="modal">
-    <h3>✏️ タスクを編集</h3>
+    <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> タスクを編集</h3>
     <div class="modal-field">
       <label class="modal-label">タスク名</label>
       <input class="modal-input" id="editText" type="text" maxlength="80">
@@ -229,9 +229,9 @@ body::before{
     <div class="modal-field">
       <label class="modal-label">タグ</label>
       <select class="modal-select" id="editTag">
-        <option value="urgent">🔴 今すぐ</option>
-        <option value="soon">🟠 もうすぐ</option>
-        <option value="ongoing">🟣 継続</option>
+        <option value="urgent"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block;margin-right:5px;"></span>今すぐ</option>
+        <option value="soon"><span style="width:8px;height:8px;border-radius:50%;background:#fbbf24;display:inline-block;margin-right:5px;"></span>もうすぐ</option>
+        <option value="ongoing"><span style="width:8px;height:8px;border-radius:50%;background:#A855F7;display:inline-block;margin-right:5px;"></span>継続</option>
       </select>
     </div>
     <div class="modal-field">
@@ -282,9 +282,9 @@ function todayStr(){return new Date().toISOString().split('T')[0];}
 function dueLabel(due){
   if(!due) return null;
   const t=todayStr();
-  if(due<t) return{text:'⚠ 期限切れ',cls:'overdue'};
-  if(due===t) return{text:'📌 今日まで',cls:'today-due'};
-  return{text:'📅 '+due.replace(/-/g,'/'),cls:''};
+  if(due<t) return{text:'期限切れ',cls:'overdue'};
+  if(due===t) return{text:'今日まで',cls:'today-due'};
+  return{text:'〆 '+due.replace(/-/g,'/'),cls:''};
 }
 
 function getFiltered(){
@@ -303,7 +303,7 @@ function render(){
   const wrap=document.getElementById('listWrap');
   const list=getFiltered();
   wrap.innerHTML='';
-  if(list.length===0){wrap.innerHTML='<div class="empty">タスクがありません ✨</div>';updateProg();return;}
+  if(list.length===0){wrap.innerHTML='<div class="empty">タスクがありません</div>';updateProg();return;}
   const sections=grouped(list);
   Object.entries(sections).forEach(([sec,items],si)=>{
     const sd=document.createElement('div');
@@ -324,8 +324,8 @@ function render(){
           </div>
         </div>
         <div class="item-actions">
-          <button class="edit-btn" title="編集">✏</button>
-          <button class="del-btn" title="削除">×</button>
+          <button class="edit-btn" title="編集"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="del-btn" title="削除"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         </div>`;
       el.querySelector('.edit-btn').addEventListener('click',e=>{e.stopPropagation();openEdit(todo.id);});
       el.querySelector('.del-btn').addEventListener('click',e=>{e.stopPropagation();del(todo.id);});

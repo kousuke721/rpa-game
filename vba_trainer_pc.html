@@ -619,6 +619,7 @@ function openLesson(i){
  S.lessonView='detail';
  S.currentLesson=i;
  renderLessonDetail();
+ renderSidebar();
 }
 
 function renderLessonDetail(){
@@ -649,7 +650,9 @@ function renderLessonDetail(){
 
 function backToLessonList(){
  S.lessonView='list';
+ S.currentLesson=null;
  renderLessonList();
+ renderSidebar();
 }
 
 function markLessonRead(i){
