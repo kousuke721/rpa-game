@@ -258,16 +258,7 @@ body::before{
 <script>
 const KEY='mitsubashi_v3';
 const TAG_LABELS={urgent:'今すぐ',soon:'もうすぐ',ongoing:'継続'};
-const defaults=[
-  {id:1,text:'dodaエージェント登録を完了する',done:false,tag:'urgent',section:'今すぐ',due:''},
-  {id:2,text:'貸与物をまとめておく（PC・社員証など）',done:false,tag:'urgent',section:'今すぐ',due:'2026-04-22'},
-  {id:3,text:'4/23 来社して書類・返却手続きを済ませる',done:false,tag:'urgent',section:'4月23日',due:'2026-04-23'},
-  {id:4,text:'国民健康保険の加入手続き（14日以内）',done:false,tag:'soon',section:'4月23日',due:'2026-05-07'},
-  {id:5,text:'離職票が届いたらハローワークで手続き',done:false,tag:'soon',section:'4月23日後',due:''},
-  {id:6,text:'dodaエージェントとの面談準備',done:false,tag:'ongoing',section:'転職活動',due:''},
-  {id:7,text:'Excel・VBAの自主学習を継続する',done:false,tag:'ongoing',section:'転職活動',due:''},
-  {id:8,text:'MOS取得に向けて勉強を始める',done:false,tag:'ongoing',section:'転職活動',due:''},
-];
+const defaults=[];
 
 function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):defaults;}catch{return defaults;}}
 function save(t){try{localStorage.setItem(KEY,JSON.stringify(t));}catch{}}
