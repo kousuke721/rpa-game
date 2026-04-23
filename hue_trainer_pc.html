@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HUE / ERPトレーナー</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hiragino Sans','Segoe UI',sans-serif;background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%);min-height:100vh;color:#FDFAFF;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 65% 25%,rgba(168,85,247,.14) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(224,64,251,.09) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* ── TOP BAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(13,7,24,.85);border-bottom:1px solid rgba(168,85,247,.25);backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 28px;gap:16px;z-index:50}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6B3FA0,#E040FB);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;box-shadow:0 2px 10px rgba(224,64,251,.35);flex-shrink:0}
+.logo-txt{font-size:15px;font-weight:700;white-space:nowrap}
+.logo-sub{font-size:11px;color:rgba(195,155,211,.6);margin-left:4px;white-space:nowrap}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.badge{background:rgba(168,85,247,.25);border:1px solid rgba(168,85,247,.4);border-radius:99px;padding:5px 14px;font-size:12px;color:#d8b4fe;font-weight:700}
+
+/* ── LAYOUT ── */
+.layout{display:flex;min-height:100vh;padding-top:56px;position:relative;z-index:1}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;position:fixed;top:56px;bottom:0;left:0;background:rgba(13,7,24,.7);border-right:1px solid rgba(168,85,247,.2);backdrop-filter:blur(20px);padding:24px 14px;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:none;background:transparent;font-size:13px;font-family:inherit;font-weight:600;color:rgba(195,155,211,.55);cursor:pointer;transition:all .18s;width:100%;text-align:left}
+.nav-item svg{flex-shrink:0;stroke:rgba(195,155,211,.4);transition:stroke .18s}
+.nav-item:hover{background:rgba(168,85,247,.12);color:rgba(195,155,211,.85)}
+.nav-item:hover svg{stroke:rgba(195,155,211,.7)}
+.nav-item.active{background:linear-gradient(135deg,rgba(107,63,160,.45),rgba(224,64,251,.25));color:#fff;border:1px solid rgba(224,64,251,.3)}
+.nav-item.active svg{stroke:#fff}
+.sidebar-footer{margin-top:auto;padding-top:20px;border-top:1px solid rgba(168,85,247,.15);font-size:10px;color:rgba(195,155,211,.35);text-align:center;line-height:1.7}
+
+/* ── MAIN ── */
+.main{margin-left:220px;flex:1;padding:32px 36px;max-width:calc(100% - 220px)}
+.content-wrap{max-width:900px;margin:0 auto}
+
+/* ── HERO ── */
+.hero{background:rgba(237,228,255,.09);border:1px solid rgba(168,85,247,.25);border-radius:20px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden;backdrop-filter:blur(8px)}
+.hero::before{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(224,64,251,.07)}
+.hero-inner{display:flex;align-items:flex-start;gap:32px;position:relative;z-index:1}
+.hero-text{flex:1}
+.hero-tag{font-size:10px;letter-spacing:2px;color:#C39BD3;margin-bottom:6px;font-weight:700;text-transform:uppercase}
+.hero-title{font-size:24px;font-weight:700;margin-bottom:6px;color:#FDFAFF}
+.hero-sub{font-size:13px;color:rgba(195,155,211,.8);line-height:1.7;margin-bottom:18px}
+.hero-stats{display:flex;gap:12px;flex-wrap:wrap}
+.hero-stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 18px;text-align:center;min-width:80px}
+.hero-stat-n{font-size:20px;font-weight:700}
+.hero-stat-l{font-size:10px;color:rgba(195,155,211,.65);margin-top:2px}
+.pbar-wrap{position:relative;z-index:1;margin-top:16px}
+.pbar-top{display:flex;justify-content:space-between;font-size:11px;color:rgba(195,155,211,.6);font-weight:600;margin-bottom:6px}
+.pbar-bg{background:rgba(255,255,255,.1);border-radius:99px;height:6px;overflow:hidden}
+.pbar-fill{height:100%;background:linear-gradient(90deg,#A855F7,#E040FB);border-radius:99px;transition:width .5s}
+
+/* ── SEC LABEL ── */
+.sec-label{font-size:11px;font-weight:700;color:#C39BD3;letter-spacing:.5px;margin:0 0 14px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.sec-label::before{content:"";width:3px;height:12px;background:linear-gradient(180deg,#A855F7,#E040FB);border-radius:2px}
+
+/* ── CARD GRID ── */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px;margin-bottom:16px}
+.lesson-card{background:rgba(237,228,255,.09);border:1px solid rgba(168,85,247,.2);border-radius:16px;cursor:pointer;backdrop-filter:blur(8px);transition:all .15s;overflow:hidden}
+.lesson-card:hover{box-shadow:0 6px 20px rgba(168,85,247,.2);transform:translateY(-2px);border-color:rgba(168,85,247,.4)}
+.lesson-card.read{border-color:rgba(110,231,183,.3)}
+.lesson-card-head{display:flex;align-items:center;gap:14px;padding:16px 18px}
+.lesson-icon{width:48px;height:48px;border-radius:13px;background:rgba(168,85,247,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lesson-card-body{flex:1;min-width:0}
+.lesson-read-pill{font-size:9px;padding:2px 8px;border-radius:99px;background:rgba(110,231,183,.2);color:#6ee7b7;font-weight:700;display:inline-block;margin-bottom:4px;border:1px solid rgba(110,231,183,.3)}
+.lesson-card-title{font-size:14px;font-weight:600;color:#FDFAFF;margin-bottom:3px}
+.lesson-card-desc{font-size:12px;color:rgba(195,155,211,.7)}
+.lesson-card-arr{color:rgba(168,85,247,.5);font-size:20px;flex-shrink:0;transition:all .15s}
+.lesson-card:hover .lesson-card-arr{color:#A855F7;transform:translateX(3px)}
+
+/* ── LESSON DETAIL ── */
+.detail-layout{display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start}
+.back-btn{background:rgba(255,255,255,.08);border:1px solid rgba(168,85,247,.3);border-radius:99px;padding:7px 16px;font-size:12px;color:#d8b4fe;cursor:pointer;font-family:inherit;font-weight:600;margin-bottom:18px;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.back-btn:hover{background:rgba(255,255,255,.14)}
+.lesson-content{background:rgba(237,228,255,.08);border-radius:18px;border:1px solid rgba(168,85,247,.2);overflow:hidden;backdrop-filter:blur(8px)}
+.lesson-content-hero{padding:22px 26px;background:rgba(168,85,247,.15);border-bottom:1px solid rgba(168,85,247,.2);display:flex;align-items:flex-start;gap:16px}
+.lesson-content-icon-wrap{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#6B3FA0,#E040FB);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.lesson-content-text{flex:1}
+.lesson-content-title{font-size:19px;font-weight:700;color:#FDFAFF;margin-bottom:6px}
+.lesson-content-lead{font-size:13px;color:rgba(195,155,211,.85);line-height:1.75}
+.lesson-section{padding:20px 26px;border-bottom:1px solid rgba(168,85,247,.1)}
+.lesson-section:last-child{border-bottom:none}
+.lesson-section-title{font-size:13px;font-weight:700;color:#d8b4fe;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.lesson-section-title::before{content:"";width:3px;height:13px;background:linear-gradient(180deg,#A855F7,#E040FB);border-radius:2px;flex-shrink:0}
+.lesson-body{font-size:13px;color:rgba(195,155,211,.9);line-height:1.85}
+.lesson-body p{margin-bottom:10px}
+.lesson-body p:last-child{margin-bottom:0}
+.chapter-nav{background:rgba(237,228,255,.08);border:1px solid rgba(168,85,247,.2);border-radius:16px;padding:18px;margin-bottom:14px;position:sticky;top:80px}
+.chapter-nav-title{font-size:11px;color:#C39BD3;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.chapter-nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:all .15s;margin-bottom:4px;font-size:12px;color:rgba(195,155,211,.65)}
+.chapter-nav-item:hover{background:rgba(168,85,247,.12);color:#d8b4fe}
+.chapter-nav-item.current{background:rgba(168,85,247,.2);color:#fff;font-weight:600}
+.chapter-nav-item.done{color:#6ee7b7}
+.chapter-nav-dot{width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.chapter-nav-item.current .chapter-nav-dot{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff}
+.chapter-nav-item.done .chapter-nav-dot{background:#6ee7b7;color:#0d0718}
+.lesson-done-btn{width:100%;padding:13px;background:linear-gradient(135deg,#6B3FA0,#E040FB);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(224,64,251,.3);transition:all .15s;margin-top:16px}
+.lesson-done-btn:hover{transform:translateY(-1px)}
+.lesson-done-btn.done{background:rgba(110,231,183,.2);border:1px solid rgba(110,231,183,.35);color:#6ee7b7}
+
+/* ── QUIZ ── */
+.quiz-play-layout{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+.ch-card{background:rgba(237,228,255,.09);border-radius:18px;padding:24px 28px;border:1px solid rgba(168,85,247,.2);backdrop-filter:blur(8px)}
+.ch-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ch-type{font-size:10px;padding:3px 11px;border-radius:99px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.ch-type.choice{background:rgba(248,113,113,.15);color:#f87171;border:1px solid rgba(248,113,113,.3)}
+.ch-type.fill{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.ch-type.order{background:rgba(168,85,247,.2);color:#d8b4fe;border:1px solid rgba(168,85,247,.35)}
+.ch-qnum{font-size:12px;color:#C39BD3;font-weight:600}
+.ch-q{font-size:15px;font-weight:500;color:#FDFAFF;line-height:1.8;margin-bottom:20px}
+.opts{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.opt{padding:14px 18px;border:1px solid rgba(168,85,247,.22);border-radius:13px;font-size:13px;background:rgba(237,228,255,.07);text-align:left;color:rgba(195,155,211,.9);line-height:1.6;display:flex;align-items:flex-start;gap:12px;width:100%;font-family:inherit;cursor:pointer;transition:all .12s}
+.opt:hover:not(:disabled){background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.45)}
+.opt-mk{flex-shrink:0;width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(168,85,247,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#C39BD3;margin-top:1px}
+.opt.correct{background:rgba(110,231,183,.12);border-color:rgba(110,231,183,.4);color:#6ee7b7}
+.opt.correct .opt-mk{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;border-color:transparent}
+.opt.wrong{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.35);color:#f87171}
+.opt.wrong .opt-mk{background:#f87171;color:#fff;border-color:#f87171}
+.opt:disabled{cursor:default}
+.fill-row{display:flex;gap:10px;margin-bottom:16px}
+.fill-row input{flex:1;padding:13px 16px;border:1px solid rgba(168,85,247,.3);border-radius:12px;font-size:14px;background:rgba(237,228,255,.08);color:#FDFAFF;font-family:inherit;transition:all .15s}
+.fill-row input::placeholder{color:rgba(195,155,211,.4)}
+.fill-row input:focus{outline:none;border-color:#A855F7;background:rgba(168,85,247,.12);box-shadow:0 0 0 3px rgba(168,85,247,.15)}
+.fill-row input.correct{border-color:rgba(110,231,183,.5);background:rgba(110,231,183,.1);color:#6ee7b7}
+.fill-row input.wrong{border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.08);color:#f87171}
+.ord-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.ord-item{background:rgba(237,228,255,.08);border:1px solid rgba(168,85,247,.22);border-radius:12px;padding:12px 16px;font-size:13px;display:flex;align-items:flex-start;gap:10px;cursor:grab;line-height:1.6;color:rgba(195,155,211,.9)}
+.ord-item:hover{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.12)}
+.ord-item:active{cursor:grabbing;opacity:.5}
+.ord-item.drag-over-top{border-top:3px solid #A855F7}
+.ord-item.drag-over-bot{border-bottom:3px solid #A855F7}
+.ord-n{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.ord-hdl{color:rgba(168,85,247,.4);font-size:14px;flex-shrink:0;letter-spacing:-1px;margin-left:auto}
+.fb{padding:16px 18px;border-radius:14px;display:flex;gap:12px;align-items:flex-start;margin-top:14px;font-size:13px;line-height:1.75}
+.fb.ok{background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.3);color:rgba(110,231,183,.95)}
+.fb.ng{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:rgba(248,113,113,.95)}
+.fb-icon{flex-shrink:0;width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.fb.ok .fb-icon{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff}
+.fb.ng .fb-icon{background:#f87171;color:#fff}
+.fb-head{font-weight:700;font-size:14px;margin-bottom:4px}
+.nav{display:flex;justify-content:flex-end;margin-top:16px}
+.quiz-sidebar{position:sticky;top:80px}
+.prog-card{background:rgba(237,228,255,.08);border:1px solid rgba(168,85,247,.2);border-radius:16px;padding:18px;margin-bottom:14px}
+.prog-card-title{font-size:11px;color:#C39BD3;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(195,155,211,.65);font-weight:600;margin-bottom:7px}
+.prog-bar{height:6px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,#6B3FA0,#E040FB);border-radius:99px;transition:width .4s}
+.q-list{display:flex;flex-direction:column;gap:6px;margin-top:14px}
+.q-dot{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(195,155,211,.5);padding:6px 8px;border-radius:8px}
+.q-dot.current{background:rgba(168,85,247,.15);color:#d8b4fe;font-weight:600}
+.q-dot.done-ok{color:#6ee7b7}
+.q-dot.done-ng{color:#f87171}
+.q-dot-icon{width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.q-dot.current .q-dot-icon{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff}
+.q-dot.done-ok .q-dot-icon{background:rgba(110,231,183,.2);color:#6ee7b7}
+.q-dot.done-ng .q-dot-icon{background:rgba(248,113,113,.2);color:#f87171}
+
+/* ── INTERVIEW ── */
+.interview-layout{display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start}
+.interview-list{display:flex;flex-direction:column;gap:14px}
+.interview-box{background:rgba(237,228,255,.08);border:1px solid rgba(168,85,247,.22);border-radius:16px;padding:20px 22px;backdrop-filter:blur(8px);transition:all .15s;cursor:pointer}
+.interview-box:hover{border-color:rgba(168,85,247,.45);background:rgba(237,228,255,.12)}
+.interview-box.open{border-color:rgba(168,85,247,.5)}
+.interview-q{font-size:14px;font-weight:700;color:#d8b4fe;display:flex;align-items:flex-start;gap:10px}
+.interview-q-icon{flex-shrink:0;width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.interview-q-text{flex:1;line-height:1.6}
+.interview-toggle{flex-shrink:0;font-size:16px;color:rgba(168,85,247,.5);transition:transform .2s;margin-top:2px}
+.interview-box.open .interview-toggle{transform:rotate(180deg)}
+.interview-a{font-size:13px;color:rgba(195,155,211,.85);line-height:1.85;background:rgba(255,255,255,.05);border-radius:12px;padding:14px 16px;border:1px solid rgba(168,85,247,.15);margin-top:14px;display:none}
+.interview-box.open .interview-a{display:block}
+.interview-sidebar{position:sticky;top:80px}
+.keyword-card{background:rgba(237,228,255,.08);border:1px solid rgba(168,85,247,.2);border-radius:16px;padding:18px;margin-bottom:14px}
+.keyword-card-title{font-size:11px;color:#C39BD3;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.keyword-item{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.28);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.keyword-item:last-child{margin-bottom:0}
+.keyword-word{font-size:13px;font-weight:700;color:#d8b4fe;margin-bottom:3px}
+.keyword-def{font-size:11px;color:rgba(195,155,211,.75);line-height:1.6}
+.tip-panel{background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.25);border-radius:14px;padding:16px 18px}
+.tip-panel-title{font-size:11px;color:#6ee7b7;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.tip-panel-body{font-size:12px;color:rgba(110,231,183,.85);line-height:1.75}
+
+/* ── GLOSSARY / COMMON ── */
+.comp{background:rgba(237,228,255,.09);border-radius:20px;padding:48px 32px;text-align:center;border:1px solid rgba(168,85,247,.25);backdrop-filter:blur(8px);max-width:540px;margin:0 auto}
+.comp-ic{width:80px;height:80px;background:linear-gradient(135deg,#6B3FA0,#E040FB);border-radius:22px;display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-bottom:16px;animation:pop .5s cubic-bezier(.175,.885,.32,1.275);box-shadow:0 8px 24px rgba(224,64,251,.35)}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.comp-title{font-size:22px;font-weight:700;color:#FDFAFF;margin-bottom:6px}
+.comp-sub{font-size:13px;color:rgba(195,155,211,.7);margin-bottom:22px;line-height:1.7}
+.comp-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.final{margin-top:22px;padding:16px 18px;background:rgba(168,85,247,.12);border-radius:14px;font-size:13px;color:rgba(237,228,255,.9);line-height:1.8;border:1px solid rgba(168,85,247,.25)}
+.btn{padding:10px 20px;border:1px solid rgba(168,85,247,.3);border-radius:11px;background:rgba(237,228,255,.08);font-size:13px;color:#d8b4fe;font-family:inherit;font-weight:600;cursor:pointer;transition:all .12s}
+.btn:hover:not(:disabled){background:rgba(168,85,247,.2);border-color:rgba(168,85,247,.5)}
+.btn-p{background:linear-gradient(135deg,#6B3FA0,#E040FB);border-color:transparent;color:#fff;box-shadow:0 3px 12px rgba(224,64,251,.3)}
+.btn-p:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 16px rgba(224,64,251,.4)}
+
+/* ── CONTENT BOXES ── */
+.info-box{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);border-radius:11px;padding:13px 16px;margin:10px 0;font-size:13px;color:rgba(237,228,255,.9);line-height:1.75}
+.info-box strong{color:#d8b4fe;font-weight:700}
+.tip-box{background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.25);border-radius:11px;padding:13px 16px;margin:10px 0;font-size:13px;color:rgba(110,231,183,.95);line-height:1.75}
+.tip-box strong{font-weight:700;color:#6ee7b7}
+.warn-box{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:11px;padding:13px 16px;margin:10px 0;font-size:13px;color:rgba(251,191,36,.95);line-height:1.75}
+.compare-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.compare-table th{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;padding:10px 12px;font-weight:600;font-size:12px;letter-spacing:.3px}
+.compare-table td{padding:10px 12px;border-bottom:1px solid rgba(168,85,247,.15);color:rgba(195,155,211,.9);vertical-align:top;line-height:1.6}
+.compare-table tr:nth-child(even) td{background:rgba(168,85,247,.06)}
+.good{color:#6ee7b7;font-weight:600}
+.step-list{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.step-item{display:flex;gap:12px;align-items:flex-start}
+.step-num{flex-shrink:0;width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step-text{font-size:13px;color:rgba(195,155,211,.9);line-height:1.75;flex:1}
+.step-text strong{color:#d8b4fe}
+.usecase-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.usecase-item{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.22);border-radius:12px;padding:12px 14px}
+.usecase-icon{width:30px;height:30px;border-radius:9px;background:rgba(168,85,247,.25);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.usecase-title{font-size:13px;font-weight:600;color:#FDFAFF;margin-bottom:3px}
+.usecase-desc{font-size:11px;color:rgba(195,155,211,.7);line-height:1.5}
+</style>
+</head>
+<body>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">H</div>
+    <div class="logo-txt">HUE / ERP 面接対策</div>
+    <div class="logo-sub">Works Applications</div>
+  </div>
+  <div class="topbar-right">
+    <div class="badge" id="badge">読了0/3 · 完了0/3</div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <button class="nav-item active" id="tab-lesson" onclick="switchTab('lesson')">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+      <span>知識インプット</span>
+    </button>
+    <button class="nav-item" id="tab-quiz" onclick="switchTab('quiz')">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      <span>理解度チェック</span>
+    </button>
+    <button class="nav-item" id="tab-interview" onclick="switchTab('interview')">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>面接想定問答</span>
+    </button>
+    <div class="sidebar-footer">HUE / ERP 面接対策<br>v2.0 Browser Edition</div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="content-wrap" id="app"></div>
+  </main>
+</div>
+
+<script>
+const LESSON_ICONS=[
+  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`
+];
+
+const LESSONS=[
+  {id:'ls1',title:'ERPとは何か？',desc:'企業の基幹システムの概念を理解する',
+   lead:'ERP（Enterprise Resource Planning）とは、企業の主要な業務データを一つのシステムで統合管理する仕組みです。',
+   sections:[
+     {title:'ERPが生まれた背景',body:`<p>昔の企業は、<strong>部門ごとに別々のシステム</strong>を持っていました。経理は経理システム、人事は人事システム、購買は購買システム……とバラバラに動いていました。</p><div class="warn-box"><strong>バラバラなシステムの問題</strong><br>・同じデータを複数の場所に入力する「二重入力」が発生<br>・入力ミスやデータの食い違いが起きやすい<br>・経営者がリアルタイムで全体を把握できない</div><p>この問題を解決するために生まれたのが<strong>ERP</strong>です。</p>`},
+     {title:'ERPとは何か',body:`<p>ERPは<strong>「企業全体の情報を一元管理する統合システム」</strong>です。財務・人事・購買・販売・在庫などを一つのデータベースで管理します。</p><div class="usecase-grid"><div class="usecase-item"><div class="usecase-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><div class="usecase-title">財務・会計</div><div class="usecase-desc">仕訳・決算・資金管理</div></div><div class="usecase-item"><div class="usecase-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div><div class="usecase-title">人事・給与</div><div class="usecase-desc">勤怠・給与計算・評価</div></div><div class="usecase-item"><div class="usecase-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg></div><div class="usecase-title">購買・調達</div><div class="usecase-desc">発注・仕入・支払管理</div></div><div class="usecase-item"><div class="usecase-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div class="usecase-title">在庫・販売</div><div class="usecase-desc">受注・出荷・在庫管理</div></div></div>`},
+     {title:'ERPの導入メリット',body:`<div class="step-list"><div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>データの二重入力がなくなる</strong>　一度入力したデータが全部門に反映される</div></div><div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>入力ミスが減る</strong>　データの一元化により整合性が保たれる</div></div><div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>リアルタイムで経営状況を把握</strong>　経営判断のスピードが上がる</div></div><div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>業務効率化</strong>　手作業・転記作業が激減する</div></div></div><div class="tip-box"><strong>一言で言うと</strong><br>「バラバラだった会社の情報をひとまとめにして、正確に・速く・効率よく管理できるようにするシステム」です。</div>`}
+   ]},
+  {id:'ls2',title:'HUEとは何か？',desc:'ワークスアプリケーションズの主力製品を知る',
+   lead:'HUEはワークスアプリケーションズが開発・提供する、日本の大手企業向けに特化したERPパッケージソフトです。',
+   sections:[
+     {title:'HUEが生まれた理由',body:`<p>世界にはSAP（ドイツ）やOracle（アメリカ）など有名なERPがありますが、<strong>海外製ERPには大きな問題</strong>がありました。</p><div class="warn-box"><strong>海外ERPの問題点</strong><br>・日本独自の商習慣（複雑な経理・税務処理など）に対応できない<br>・カスタマイズに莫大なコストがかかる<br>・「米国に比べてIT投資効率が10年遅れている」と言われるほどの非効率</div><p>ワークスはこの課題に挑み、<strong>日本の大手企業がそのまま使えるERP</strong>の開発を使命として事業を始めました。</p>`},
+     {title:'HUEの特徴',body:`<div class="step-list"><div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>日本企業向けに特化</strong>　日本の複雑な経理・商習慣に対応済み</div></div><div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>大手企業中心に約2,400社が導入</strong>　国内トップクラスのシェア</div></div><div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>SaaSも提供</strong>　HUE Works Suiteなどクラウド型サービスも展開</div></div><div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>財務・債権・債務・固定資産・購買など</strong>　幅広い業務領域をカバー</div></div></div>`},
+     {title:'HUE vs 海外ERP',body:`<table class="compare-table"><tr><th></th><th>HUE（ワークス）</th><th>海外ERP（SAPなど）</th></tr><tr><td>対象</td><td class="good">日本の大手企業</td><td>グローバル企業</td></tr><tr><td>日本対応</td><td class="good">最初から対応済み</td><td>カスタマイズ必要</td></tr><tr><td>導入コスト</td><td class="good">相対的に低い</td><td>非常に高い</td></tr><tr><td>シェア</td><td class="good">国内大手向けでトップクラス</td><td>グローバルで高い</td></tr></table><div class="info-box"><strong>面接で使えるポイント</strong><br>「日本企業のIT投資効率を上げるというミッションに共感した」という一言が志望動機として刺さります。</div>`}
+   ]},
+  {id:'ls3',title:'QAエンジニアの役割',desc:'自分が担う仕事の意味を理解する',
+   lead:'QA（Quality Assurance）エンジニアは、ソフトウェアが正しく動くかを検証し、品質を保証する専門職です。',
+   sections:[
+     {title:'QAエンジニアとは',body:`<p>HUEのような企業の基幹システムは、<strong>バグがあると会社の経営に直結する重大な影響</strong>を与えます。</p><div class="warn-box"><strong>ERPのバグが起きると…</strong><br>・給与の計算が間違える<br>・請求書の金額が狂う<br>・決算データに誤りが出る<br>→ 大企業の業務が止まるレベルの影響</div><p>だからこそQAエンジニアは非常に重要です。開発者が作った機能が<strong>「本当に正しく動くか」「使いやすいか」「バグがないか」</strong>を検証します。</p>`},
+     {title:'具体的な仕事内容',body:`<div class="step-list"><div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>動作確認（テスト）</strong>　ユーザー目線で画面・機能を操作して確認</div></div><div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>UI・レスポンス確認</strong>　使いやすいか・反応速度は適切かをチェック</div></div><div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>自動テストツールの開発</strong>　繰り返しのテストを自動化</div></div><div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>データ分析・改善提案</strong>　バグの傾向を分析して品質改善を提案</div></div></div>`},
+     {title:'あなたの経験がどう活きるか',body:`<div class="tip-box"><strong>ピッコマでの経験との接続</strong><br>コンテンツの全ページ目視検閲・書誌情報との整合性確認という品質管理経験は、QAの「正確に確認して問題を発見する」仕事と本質的に同じです。AIツール構築の経験は自動テスト開発に直結します。</div><div class="info-box"><strong>面接で使えるフレーズ</strong><br>「前職でコンテンツの品質管理を3年以上担当した経験から、正確に確認し問題を発見することの重要性を深く理解しました。QAエンジニアとして品質を守る側から製品づくりに貢献したいと考えています。」</div>`}
+   ]}
+];
+
+const QUIZZES=[
+  {id:'q1',tag:'Ch.1',name:'ERP基礎',
+   ch:[
+    {t:'choice',k:'4択',q:'ERPが解決しようとした企業の課題として最も適切なのはどれですか？',opts:['社員のモチベーション低下','部門ごとにシステムが分散しデータの二重入力や矛盾が生じていた','セキュリティリスクの増大','海外拠点の管理が難しかった'],ans:1,exp:'ERPは「部門別システムのバラバラ管理」を統合するために生まれました。データの二重入力や整合性の欠如が主な解決課題です。'},
+    {t:'fill',k:'穴埋め',q:'ERPを一言で表すと「企業全体の情報を＿＿するシステム」です。（漢字3文字）',ph:'〇〇管理',correct:['一元管理','一括管理'],exp:'「一元管理」が正解。バラバラだったデータをひとつに統合することがERPの本質です。'},
+    {t:'choice',k:'4択',q:'ERP導入のメリットとして正しくないものはどれですか？',opts:['データの二重入力がなくなる','入力ミスが減る','社員の給与が自動的に上がる','リアルタイムで経営状況を把握できる'],ans:2,exp:'給与が上がるのはERPの効果ではありません。ERP導入の主なメリットは業務効率化・データ整合性向上・経営の可視化です。'},
+    {t:'order',k:'並び替え',q:'「ERPが必要になった流れ」を正しい順序に並べてください。',items:['部門ごとに別々のシステムを使っていた','データの二重入力・ミスが頻発した','全社のデータを統合管理する必要が出てきた','ERPが導入され業務が効率化された'],correct:[0,1,2,3],exp:'「バラバラ→問題発生→統合の必要性→ERP導入」という流れがERPの歴史です。'}
+   ]},
+  {id:'q2',tag:'Ch.2',name:'HUEと企業理解',
+   ch:[
+    {t:'choice',k:'4択',q:'HUEを提供している会社はどこですか？',opts:['SAP','Oracle','ワークスアプリケーションズ','富士通'],ans:2,exp:'HUEはワークスアプリケーションズが開発・販売する日本製ERPです。'},
+    {t:'fill',k:'穴埋め',q:'HUEが導入されている企業数はおよそ何社ですか？（数字のみ）',ph:'約〇〇〇〇社',correct:['2400','2,400','約2400','約2,400'],exp:'約2,400社（大手企業中心）に導入されており、国内トップクラスのシェアを誇ります。'},
+    {t:'choice',k:'4択',q:'海外ERP（SAPなど）と比較したHUEの最大の強みは何ですか？',opts:['グローバル展開が得意','日本の商習慣・経理処理に最初から対応している','価格が最も安い','AIが自動で全業務を処理する'],ans:1,exp:'日本独自の複雑な経理・税務・商習慣に対応済みである点がHUEの最大の差別化ポイントです。'},
+    {t:'choice',k:'4択',q:'ワークスアプリケーションズのミッションとして最も近いのはどれですか？',opts:['世界一のゲーム会社になる','日本企業のIT投資効率を上げ、働く人を支援する','海外ERPの販売代理店になる','中小企業向けの会計ソフトを作る'],ans:1,exp:'「企業の生産性を高め、働くの概念を変える」がワークスのミッション。日本企業のIT効率化への課題意識が事業の原点です。'}
+   ]},
+  {id:'q3',tag:'Ch.3',name:'QAエンジニアの理解',
+   ch:[
+    {t:'choice',k:'4択',q:'QAエンジニアの主な役割はどれですか？',opts:['新しい機能を開発する','ソフトウェアが正しく動くかを検証し品質を保証する','顧客からの問い合わせに対応する','営業として顧客に製品を提案する'],ans:1,exp:'QA（Quality Assurance）は品質保証の略。開発者が作った機能を検証し、バグを発見して品質を担保するのが役割です。'},
+    {t:'fill',k:'穴埋め',q:'QAの略称を日本語で答えてください。',ph:'品質〇〇',correct:['品質保証'],exp:'QA = Quality Assurance = 品質保証。面接で聞かれることがあるので覚えておきましょう。'},
+    {t:'order',k:'並び替え',q:'QAエンジニアがバグを発見した際の対応フローを正しい順序に並べてください。',items:['機能をテストし動作確認する','バグ（問題）を発見する','開発チームにバグを報告する','修正後に再テストして確認する'],correct:[0,1,2,3],exp:'テスト→発見→報告→再テストがQAの基本サイクルです。'},
+    {t:'choice',k:'4択',q:'ERPのバグが起きた場合、最も深刻な影響として考えられるのはどれですか？',opts:['会社のホームページが見られなくなる','給与計算の誤りや決算データの不正確など企業経営に直結する問題が起きる','SNSの投稿ができなくなる','社内のチャットが使えなくなる'],ans:1,exp:'ERPは企業の基幹システムのため、バグは給与・請求書・決算など企業経営の根幹に影響します。だからこそQAの役割は非常に重要です。'}
+   ]}
+];
+
+const INTERVIEWS=[
+  {q:'ERPとは何か、説明してください。',a:'ERPとは、企業の財務・人事・購買・在庫など、複数の業務データを一つのシステムで統合管理する仕組みです。従来は部門ごとに別々のシステムがあり、データの二重入力やミスが頻発していました。ERPはこれを解決し、データの一元管理によって業務効率化と正確な経営把握を実現します。'},
+  {q:'HUEとはどういう製品ですか？',a:'HUEはワークスアプリケーションズが提供する、日本の大手企業向けに特化したERPパッケージソフトです。海外製ERPは日本独自の商習慣に対応するためのカスタマイズに膨大なコストがかかりますが、HUEは日本企業がそのまま使えるよう設計されており、現在約2,400社の大手企業に導入されています。'},
+  {q:'なぜQAエンジニアを志望したのですか？',a:'前職でコンテンツの品質管理（全ページ目視検閲・書誌情報との整合性確認）を3年以上担当する中で、「正確に確認して問題を発見する」ことの重要性を深く理解しました。また、AIを活用した業務効率化ツールを自ら構築した経験から、自動化と品質の両立に強い関心を持つようになりました。ERPのような企業の基幹システムは品質が経営に直結するからこそ、QAエンジニアとして品質を守る側から製品づくりに貢献したいと考えています。'},
+  {q:'なぜワークスアプリケーションズを選んだのですか？',a:'日本企業のIT投資効率を上げるというミッションに共感したからです。日本の大手企業が使える国産ERPという独自のポジションで、2,400社以上に選ばれている製品の品質を守る仕事に携われることは非常に意義深いと感じます。また、フルリモート・フルフレックスという働き方が、長期的に集中してキャリアを築く環境として理想的だと考えました。'},
+  {q:'前職を退職した理由を教えてください。',a:'入社前に提示された研修計画と実際の内容に大きな乖離があり、十分な教育体制が整っていないと判断しました。自己学習で補おうと努めましたが、双方にとってプラスにならないと考え、早期ではありますが転職を決意しました。次は研修・育成制度がしっかり整った環境で、長期的に貢献できる会社を選びたいと考えています。'},
+  {q:'未経験ですが、どのように貢献できますか？',a:'前職でコンテンツの全ページ目視検閲・書誌情報との整合性確認という品質管理業務を3年以上担当しており、「正確に確認して問題を発見する」という視点はQAの仕事と本質的に同じだと感じています。また、AIツールを使った業務効率化の経験から、自動テスト開発にも早期に貢献できると考えています。未経験の領域は6ヶ月の研修でしっかり吸収し、主体的に取り組みます。'}
+];
+
+const KEYWORDS=[
+  {word:'ERP',def:'企業全体の業務データを一元管理する統合システム'},
+  {word:'一元管理',def:'バラバラなデータをひとつに統合して管理すること'},
+  {word:'HUE',def:'ワークスが提供する日本大手企業向けERPパッケージ'},
+  {word:'約2,400社',def:'HUEを導入している企業数（大手中心）'},
+  {word:'QA（品質保証）',def:'ソフトウェアが正しく動くかを検証・保証する職種'},
+];
+
+let S={
+  tab:'lesson',
+  lessonView:'list',curLesson:0,
+  quizView:'list',quizLi:0,quizCi:0,ord:[],ans:{},sel:null,fill:'',
+  openIv:new Set(),
+  read:(()=>{try{return JSON.parse(localStorage.getItem('hue_v2_read')||'{}')}catch(e){return{}}})(),
+  done:(()=>{try{return JSON.parse(localStorage.getItem('hue_v2_done')||'{}')}catch(e){return{}}})()
+};
+function save(){try{localStorage.setItem('hue_v2_read',JSON.stringify(S.read));localStorage.setItem('hue_v2_done',JSON.stringify(S.done))}catch(e){}}
+
+function upBadge(){
+  const r=LESSONS.filter(l=>S.read[l.id]).length;
+  const d=QUIZZES.filter(q=>S.done[q.id]).length;
+  document.getElementById('badge').textContent=`読了${r}/3 · 完了${d}/3`;
+}
+
+function switchTab(t){
+  S.tab=t;
+  ['lesson','quiz','interview'].forEach(id=>document.getElementById('tab-'+id).classList.toggle('active',id===t));
+  render();
+}
+
+function render(){
+  if(S.tab==='lesson') renderLesson();
+  else if(S.tab==='quiz') renderQuiz();
+  else renderInterview();
+  upBadge();
+}
+
+/* ===== LESSON ===== */
+function renderLesson(){S.lessonView==='list'?renderLessonList():renderLessonDetail()}
+
+function renderLessonList(){
+  const rc=LESSONS.filter(l=>S.read[l.id]).length;
+  let h=`<div class="hero"><div class="hero-inner"><div class="hero-text">
+    <div class="hero-tag">Knowledge Input</div>
+    <div class="hero-title">HUE / ERP 知識インプット</div>
+    <div class="hero-sub">面接に必要な概念を3章で効率よく理解しましょう</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n">${rc}/3</div><div class="hero-stat-l">読了章数</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">約30分</div><div class="hero-stat-l">で身に付く</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">${Math.round(rc/3*100)}%</div><div class="hero-stat-l">達成率</div></div>
+    </div>
+  </div></div>
+  <div class="pbar-wrap"><div class="pbar-top"><span>学習進捗</span><span>${Math.round(rc/3*100)}%</span></div><div class="pbar-bg"><div class="pbar-fill" style="width:${Math.round(rc/3*100)}%"></div></div></div>
+  </div>
+  <div class="sec-label">3章構成</div>
+  <div class="card-grid">`;
+  LESSONS.forEach((ls,i)=>{
+    const r=S.read[ls.id];
+    h+=`<div class="lesson-card${r?' read':''}" onclick="openLesson(${i})">
+      <div class="lesson-card-head">
+        <div class="lesson-icon">${LESSON_ICONS[i]}</div>
+        <div class="lesson-card-body">
+          ${r?'<span class="lesson-read-pill">✓ 読了</span>':''}
+          <div class="lesson-card-title">Chapter ${i+1}｜${ls.title}</div>
+          <div class="lesson-card-desc">${ls.desc}</div>
+        </div>
+        <div class="lesson-card-arr">›</div>
+      </div>
+    </div>`;
+  });
+  h+=`</div>`;
+  document.getElementById('app').innerHTML=h;
+}
+
+function openLesson(i){S.lessonView='detail';S.curLesson=i;renderLessonDetail()}
+
+function renderLessonDetail(){
+  const ls=LESSONS[S.curLesson];const r=S.read[ls.id];
+  let main=`<button class="back-btn" onclick="backLesson()">← 一覧に戻る</button>
+  <div class="lesson-content">
+    <div class="lesson-content-hero">
+      <div class="lesson-content-icon-wrap">${LESSON_ICONS[S.curLesson]}</div>
+      <div class="lesson-content-text">
+        <div class="lesson-content-title">Chapter ${S.curLesson+1}｜${ls.title}</div>
+        <div class="lesson-content-lead">${ls.lead}</div>
+      </div>
+    </div>`;
+  ls.sections.forEach(s=>{
+    main+=`<div class="lesson-section"><div class="lesson-section-title">${s.title}</div><div class="lesson-body">${s.body}</div></div>`;
+  });
+  main+=`</div>
+  <button class="lesson-done-btn${r?' done':''}" onclick="markRead(${S.curLesson})">${r?'✓ 読了済み':'この章を読了にする'}</button>`;
+
+  let side=`<div class="chapter-nav"><div class="chapter-nav-title">章一覧</div>`;
+  LESSONS.forEach((l,i)=>{
+    const done=S.read[l.id];const cur=i===S.curLesson;
+    side+=`<div class="chapter-nav-item${cur?' current':done?' done':''}" onclick="openLesson(${i})">
+      <div class="chapter-nav-dot">${done?'✓':(i+1)}</div>
+      Ch.${i+1} ${l.title}
+    </div>`;
+  });
+  side+=`</div>`;
+
+  document.getElementById('app').innerHTML=`<div class="detail-layout"><div>${main}</div><div>${side}</div></div>`;
+}
+function backLesson(){S.lessonView='list';renderLessonList()}
+function markRead(i){S.read[LESSONS[i].id]=true;save();renderLessonDetail()}
+
+/* ===== QUIZ ===== */
+function renderQuiz(){
+  if(S.quizView==='list') renderQuizList();
+  else if(S.quizView==='playing') renderQuizPlay();
+  else renderQuizComp();
+}
+
+function renderQuizList(){
+  const dc=QUIZZES.filter(q=>S.done[q.id]).length;
+  let h=`<div class="hero"><div class="hero-inner"><div class="hero-text">
+    <div class="hero-tag">Quiz</div>
+    <div class="hero-title">理解度チェック</div>
+    <div class="hero-sub">3チャプター・計12問で知識を確認しましょう</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n">${dc}/3</div><div class="hero-stat-l">完了章数</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">12</div><div class="hero-stat-l">総問題数</div></div>
+    </div>
+  </div></div>
+  <div class="pbar-wrap"><div class="pbar-top"><span>完了率</span><span>${Math.round(dc/3*100)}%</span></div><div class="pbar-bg"><div class="pbar-fill" style="width:${Math.round(dc/3*100)}%"></div></div></div>
+  </div>
+  <div class="sec-label">チャプター選択</div>
+  <div class="card-grid">`;
+  QUIZZES.forEach((qz,i)=>{
+    const done=S.done[qz.id];const prev=i===0||S.done[QUIZZES[i-1].id];const locked=!prev;
+    h+=`<div class="lesson-card${done?' read':''}" ${!locked?`onclick="startQuiz(${i})"`:''} style="${locked?'opacity:.45;cursor:default':''}">
+      <div class="lesson-card-head">
+        <div class="lesson-icon">${done?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>':locked?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(195,155,211,.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>':'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d8b4fe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'}</div>
+        <div class="lesson-card-body">
+          ${done?'<span class="lesson-read-pill">✓ 完了</span>':locked?'<span class="lesson-read-pill" style="background:rgba(255,255,255,.06);color:rgba(195,155,211,.5);border-color:rgba(255,255,255,.1)">🔒 前章を完了してください</span>':''}
+          <div class="lesson-card-title">${qz.tag}｜${qz.name}</div>
+          <div class="lesson-card-desc">${qz.ch.length}問</div>
+        </div>
+        <div class="lesson-card-arr">›</div>
+      </div>
+    </div>`;
+  });
+  h+=`</div>`;
+  document.getElementById('app').innerHTML=h;
+}
+
+function startQuiz(i){S.quizView='playing';S.quizLi=i;S.quizCi=0;S.ans={};S.sel=null;S.fill='';initQ();renderQuizPlay()}
+
+function initQ(){
+  const ch=QUIZZES[S.quizLi].ch[S.quizCi];
+  if(ch.t==='order'){
+    const a=ch.items.map((_,i)=>i);
+    for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    let t=0;while(a.every((v,i)=>v===ch.correct[i])&&t++<5)for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+    S.ord=a;
+  }
+}
+
+function renderQuizPlay(){
+  const qz=QUIZZES[S.quizLi];const ch=qz.ch[S.quizCi];const tot=qz.ch.length;const ansd=S.ans[S.quizCi]!==undefined;
+  const pct=Math.round(((S.quizCi+(ansd?1:0))/tot)*100);
+
+  let main=`<button class="back-btn" onclick="backQuiz()">← 一覧に戻る</button>
+  <div class="ch-card">
+    <div class="ch-head"><span class="ch-type ${ch.t}">${ch.k}</span><span class="ch-qnum">Q${S.quizCi+1} / ${tot}</span></div>
+    <div class="ch-q">${ch.q}</div>`;
+
+  if(ch.t==='choice'){
+    main+=`<div class="opts">`;
+    ch.opts.forEach((o,i)=>{
+      let c='opt';if(ansd){if(i===ch.ans)c+=' correct';else if(i===S.sel&&i!==ch.ans)c+=' wrong';}
+      main+=`<button class="${c}" ${ansd?'disabled':''} onclick="chkC(${i})"><span class="opt-mk">${['A','B','C','D'][i]}</span><span>${o}</span></button>`;
+    });
+    main+=`</div>`;
+  } else if(ch.t==='fill'){
+    const a=S.ans[S.quizCi];const ic=a===undefined?'':a?'correct':'wrong';
+    main+=`<div class="fill-row"><input id="fi" type="text" placeholder="${ch.ph||''}" value="${esca(S.fill)}" ${a!==undefined?'disabled':''} class="${ic}"><button class="btn btn-p" onclick="chkF()" ${a!==undefined?'disabled':''}>確認</button></div>`;
+  } else if(ch.t==='order'){
+    main+=`<div class="ord-list" id="ordlist">`;
+    S.ord.forEach((oi,pos)=>{
+      main+=`<div class="ord-item" draggable="true" data-pos="${pos}"><span class="ord-n">${pos+1}</span><span>${esc(ch.items[oi])}</span><span class="ord-hdl">⋮⋮</span></div>`;
+    });
+    main+=`</div>`;
+    if(!ansd) main+=`<button class="btn btn-p" onclick="chkOrd()">答え合わせ</button>`;
+  }
+
+  if(ansd){
+    const ok=S.ans[S.quizCi];
+    main+=`<div class="fb ${ok?'ok':'ng'}"><span class="fb-icon">${ok?'✓':'✗'}</span><div><div class="fb-head">${ok?'正解！':'不正解'}</div><div>${ch.exp}</div></div></div>
+    <div class="nav"><button class="btn btn-p" onclick="nextQ()">${S.quizCi+1<tot?'次の問題 →':'完了 →'}</button></div>`;
+  }
+  main+=`</div>`;
+
+  let side=`<div class="quiz-sidebar"><div class="prog-card">
+    <div class="prog-card-title">${qz.tag}｜${qz.name}</div>
+    <div class="prog-label"><span>進捗</span><span>${pct}%</span></div>
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="q-list">`;
+  qz.ch.forEach((_,i)=>{
+    const a=S.ans[i];const cur=i===S.quizCi;
+    let cls='q-dot';if(cur)cls+=' current';else if(a!==undefined)cls+=a?' done-ok':' done-ng';
+    side+=`<div class="${cls}"><div class="q-dot-icon">${a!==undefined?(a?'✓':'✗'):(i+1)}</div>Q${i+1}</div>`;
+  });
+  side+=`</div></div></div>`;
+
+  document.getElementById('app').innerHTML=`<div class="quiz-play-layout"><div>${main}</div><div>${side}</div></div>`;
+
+  if(ch.t==='fill'){
+    const inp=document.getElementById('fi');
+    if(inp&&S.ans[S.quizCi]===undefined){inp.addEventListener('input',e=>S.fill=e.target.value);inp.addEventListener('keydown',e=>{if(e.key==='Enter')chkF()});inp.focus();}
+  }
+  if(ch.t==='order') setupDD();
+}
+
+function backQuiz(){S.quizView='list';renderQuizList()}
+function chkC(i){S.sel=i;S.ans[S.quizCi]=(i===QUIZZES[S.quizLi].ch[S.quizCi].ans);renderQuizPlay()}
+function chkF(){
+  const ch=QUIZZES[S.quizLi].ch[S.quizCi];const v=S.fill.trim();
+  const n=s=>s.toLowerCase().replace(/\s+/g,'').replace(/,/g,'');
+  S.ans[S.quizCi]=ch.correct.some(c=>n(c)===n(v));renderQuizPlay();
+}
+function chkOrd(){S.ans[S.quizCi]=S.ord.every((v,i)=>v===QUIZZES[S.quizLi].ch[S.quizCi].correct[i]);renderQuizPlay()}
+function nextQ(){
+  if(S.quizCi+1<QUIZZES[S.quizLi].ch.length){S.quizCi++;S.sel=null;S.fill='';initQ();renderQuizPlay();}
+  else{S.done[QUIZZES[S.quizLi].id]=true;save();S.quizView='comp';renderQuizComp();}
+}
+function renderQuizComp(){
+  const qz=QUIZZES[S.quizLi];const isLast=S.quizLi===QUIZZES.length-1;const allDone=QUIZZES.every(q=>S.done[q.id]);
+  let h=`<div class="comp"><div class="comp-ic"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="comp-title">${qz.tag} クリア！</div>
+    <div class="comp-sub">${qz.name}の理解度チェック完了</div>
+    <div class="comp-btns">${!isLast?`<button class="btn btn-p" onclick="startQuiz(${S.quizLi+1})">次のチャプターへ →</button>`:''}<button class="btn" onclick="backQuiz()">一覧に戻る</button></div>
+    ${allDone?'<div class="final"><strong>🎉 全チャプター完了！</strong><br>次は「面接想定問答」タブで実際の答え方を練習しましょう！</div>':''}
+  </div>`;
+  document.getElementById('app').innerHTML=h;
+}
+
+function setupDD(){
+  const area=document.getElementById('ordlist');if(!area)return;
+  let dp=null;
+  area.querySelectorAll('.ord-item').forEach(el=>{
+    el.addEventListener('dragstart',e=>{dp=+el.dataset.pos;el.style.opacity='.4';e.dataTransfer.effectAllowed='move'});
+    el.addEventListener('dragend',()=>{el.style.opacity='1';area.querySelectorAll('.ord-item').forEach(x=>x.classList.remove('drag-over-top','drag-over-bot'))});
+    el.addEventListener('dragover',e=>{e.preventDefault();area.querySelectorAll('.ord-item').forEach(x=>x.classList.remove('drag-over-top','drag-over-bot'));const mid=el.getBoundingClientRect().top+el.offsetHeight/2;el.classList.add(e.clientY<mid?'drag-over-top':'drag-over-bot')});
+    el.addEventListener('drop',e=>{e.preventDefault();const mid=el.getBoundingClientRect().top+el.offsetHeight/2;let tp=+el.dataset.pos;if(e.clientY>=mid)tp++;if(dp===null)return;const it=S.ord.splice(dp,1)[0];if(tp>dp)tp--;S.ord.splice(tp,0,it);dp=null;renderQuizPlay()});
+  });
+}
+
+/* ===== INTERVIEW ===== */
+function renderInterview(){
+  let hero=`<div class="hero"><div class="hero-inner"><div class="hero-text">
+    <div class="hero-tag">Interview Prep</div>
+    <div class="hero-title">面接想定問答</div>
+    <div class="hero-sub">よく聞かれる質問と模範回答。クリックして展開し、声に出して練習しましょう。</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n">${INTERVIEWS.length}</div><div class="hero-stat-l">想定問答</div></div>
+      <div class="hero-stat"><div class="hero-stat-n">声出し</div><div class="hero-stat-l">練習推奨</div></div>
+    </div>
+  </div></div></div>`;
+
+  let ivList=`<div class="interview-list">`;
+  INTERVIEWS.forEach((iv,i)=>{
+    const open=S.openIv.has(i);
+    ivList+=`<div class="interview-box${open?' open':''}" onclick="toggleIv(${i})">
+      <div class="interview-q">
+        <span class="interview-q-icon">Q</span>
+        <span class="interview-q-text">Q${i+1}｜${iv.q}</span>
+        <span class="interview-toggle">▾</span>
+      </div>
+      <div class="interview-a">${iv.a}</div>
+    </div>`;
+  });
+  ivList+=`</div>`;
+
+  let side=`<div class="interview-sidebar">
+    <div class="keyword-card">
+      <div class="keyword-card-title">核心キーワード</div>`;
+  KEYWORDS.forEach(k=>{
+    side+=`<div class="keyword-item"><div class="keyword-word">${k.word}</div><div class="keyword-def">${k.def}</div></div>`;
+  });
+  side+=`</div>
+    <div class="tip-panel">
+      <div class="tip-panel-title">練習のコツ</div>
+      <div class="tip-panel-body">模範回答をそのまま暗記するより、左の「核心キーワード」を押さえた上で自分の言葉で話せるようにしましょう。声に出すことで本番のスムーズさが大きく変わります。</div>
+    </div>
+  </div>`;
+
+  document.getElementById('app').innerHTML=hero+`<div class="interview-layout"><div>${ivList}</div><div>${side}</div></div>`;
+}
+
+function toggleIv(i){
+  if(S.openIv.has(i)) S.openIv.delete(i);
+  else S.openIv.add(i);
+  renderInterview();
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function esca(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}
+
+render();
+</script>
+</body>
+</html>
