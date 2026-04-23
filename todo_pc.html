@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MY TODO</title>
-<link href="https://fonts.googleapis.com/css2?  family=Kosugi+Maru&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --dp:#1a0a2e;--dm:#2d1b69;--pm:#6B3FA0;--pl:#9B59B6;
@@ -16,7 +16,6 @@
 body{font-family:'Kosugi Maru',sans-serif;background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%);min-height:100vh;color:var(--white);display:flex;flex-direction:column}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 65% 25%,rgba(168,85,247,.14) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(224,64,251,.09) 0%,transparent 50%);pointer-events:none;z-index:0}
 
-/* ── TOPBAR ── */
 .topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(13,7,24,.88);border-bottom:1px solid rgba(168,85,247,.25);backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 28px;gap:16px;z-index:50}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--pm),var(--acc));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 2px 10px rgba(224,64,251,.35)}
@@ -30,10 +29,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .prog-inline-bar{width:80px;height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden}
 .prog-inline-fill{height:100%;background:linear-gradient(90deg,var(--pl),var(--acc));border-radius:99px;transition:width .5s}
 
-/* ── LAYOUT ── */
 .layout{display:flex;min-height:100vh;padding-top:56px;position:relative;z-index:1}
 
-/* ── SIDEBAR ── */
 .sidebar{width:240px;flex-shrink:0;position:fixed;top:56px;bottom:0;left:0;background:rgba(13,7,24,.72);border-right:1px solid rgba(168,85,247,.2);backdrop-filter:blur(20px);padding:20px 14px;display:flex;flex-direction:column;gap:4px;overflow-y:auto}
 .sidebar-label{font-size:10px;font-weight:700;color:rgba(195,155,211,.5);letter-spacing:.12em;text-transform:uppercase;padding:10px 10px 6px;margin-top:6px}
 .sidebar-label:first-child{margin-top:0}
@@ -44,14 +41,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .nav-count{margin-left:auto;background:rgba(168,85,247,.2);border-radius:99px;padding:1px 7px;font-size:10px;font-weight:700;color:#d8b4fe}
 .sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid rgba(168,85,247,.15);font-size:10px;color:rgba(195,155,211,.3);text-align:center;line-height:1.7}
 
-/* ── MAIN ── */
 .main{margin-left:240px;flex:1;padding:28px 36px;max-width:calc(100% - 240px)}
 .content-wrap{max-width:1000px;margin:0 auto}
-
-/* ── TOP ROW ── */
 .top-row{display:grid;grid-template-columns:1fr 280px;gap:20px;margin-bottom:24px;align-items:start}
 
-/* ── ADD CARD ── */
 .add-card{background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px}
 .add-card-title{font-size:11px;font-weight:700;color:var(--pale);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .add-card-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(195,155,211,.35),transparent)}
@@ -61,14 +54,29 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .add-input:focus{border-color:rgba(168,85,247,.6);background:rgba(255,255,255,.16);box-shadow:0 0 0 3px rgba(168,85,247,.14)}
 .add-btn{background:linear-gradient(135deg,var(--pm),var(--acc));border:none;border-radius:11px;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;box-shadow:0 4px 14px rgba(168,85,247,.38);flex-shrink:0}
 .add-btn:hover{transform:scale(1.07)}
-.add-opts{display:flex;gap:8px;flex-wrap:wrap}
+.add-opts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .opt-select,.due-input{flex:1;min-width:110px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:9px;padding:7px 10px;color:var(--white);font-size:12px;font-family:inherit;outline:none}
 .opt-select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.4)'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px;cursor:pointer}
 .opt-select option{background:#2d1b69;color:#fff}
 .opt-select:focus,.due-input:focus{border-color:rgba(168,85,247,.5)}
 .due-input{color-scheme:dark}
 
-/* ── CALENDAR CARD ── */
+/* カテゴリ追加エリア */
+.section-add-wrap{display:flex;gap:6px;margin-top:8px;align-items:center;animation:fu .25s ease}
+.section-add-input{flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(168,85,247,.4);border-radius:9px;padding:7px 10px;color:var(--white);font-size:12px;font-family:inherit;outline:none;transition:all .2s}
+.section-add-input::placeholder{color:rgba(255,255,255,.3)}
+.section-add-input:focus{border-color:rgba(168,85,247,.7);box-shadow:0 0 0 2px rgba(168,85,247,.15)}
+.section-add-ok{background:linear-gradient(135deg,var(--pm),var(--acc));border:none;border-radius:8px;padding:7px 12px;color:#fff;font-size:12px;font-family:inherit;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.section-add-ok:hover{opacity:.88}
+.section-add-cancel{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:7px 10px;color:rgba(255,255,255,.5);font-size:12px;font-family:inherit;cursor:pointer;transition:all .15s}
+.section-add-cancel:hover{background:rgba(255,255,255,.15);color:#fff}
+.add-section-btn{background:rgba(168,85,247,.15);border:1px dashed rgba(168,85,247,.4);border-radius:9px;padding:7px 12px;color:rgba(168,85,247,.8);font-size:12px;font-family:inherit;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.add-section-btn:hover{background:rgba(168,85,247,.25);border-color:rgba(168,85,247,.7);color:#d8b4fe}
+
+/* カスタムカテゴリのサイドバー削除ボタン */
+.nav-del{margin-left:4px;background:none;border:none;color:rgba(248,113,113,.3);cursor:pointer;font-size:11px;padding:1px 3px;border-radius:4px;transition:all .15s;line-height:1}
+.nav-del:hover{color:#f87171;background:rgba(248,113,113,.1)}
+
 .cal-card{background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:16px}
 .cal-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .cal-nav-btn{background:none;border:none;color:var(--pale);cursor:pointer;font-size:14px;padding:3px 7px;border-radius:7px;transition:all .15s;font-family:inherit}
@@ -80,13 +88,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .cal-day.today{background:linear-gradient(135deg,var(--pm),var(--acc));color:#fff;font-weight:700;box-shadow:0 0 8px rgba(224,64,251,.4)}
 .cal-day.other-month{color:rgba(255,255,255,.2)}
 
-/* ── ACTION BAR ── */
-.action-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.act-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:7px 14px;color:rgba(255,255,255,.65);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:6px}
-.act-btn:hover{background:rgba(255,255,255,.16);color:var(--white)}
-.act-btn.danger:hover{background:rgba(231,76,60,.18);color:#f87171;border-color:rgba(231,76,60,.3)}
-
-/* ── TODO LIST ── */
 .list-area{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
 .sec{animation:fu .4s both}
 .sec-title{color:var(--pale);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;padding-left:2px;display:flex;align-items:center;gap:8px}
@@ -119,7 +120,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .edit-btn:hover{color:var(--pm);background:rgba(107,63,160,.1)}
 .empty{text-align:center;padding:40px 0;color:rgba(255,255,255,.25);font-size:13px;grid-column:1/-1}
 
-/* ── MODAL ── */
 .overlay{position:fixed;inset:0;background:rgba(26,10,46,.8);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeOv .2s ease}
 .overlay.hidden{display:none}
 .modal{background:linear-gradient(135deg,#2d1b69,#1a0a2e);border:1px solid rgba(168,85,247,.35);border-radius:22px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:popIn .25s ease}
@@ -142,7 +142,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
     <div class="logo-icon">✓</div>
@@ -161,8 +160,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 
 <div class="layout">
-  <!-- SIDEBAR -->
-  <nav class="sidebar">
+  <nav class="sidebar" id="sidebar">
     <div class="sidebar-label">フィルター</div>
     <button class="nav-item active" data-filter="all">
       <span class="nav-dot" style="background:#d8b4fe"></span>すべて
@@ -198,11 +196,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="sidebar-footer">継続は力なり。<br>今日もお疲れ様！</div>
   </nav>
 
-  <!-- MAIN -->
   <main class="main">
     <div class="content-wrap">
-
-      <!-- TOP ROW: ADD + CALENDAR -->
       <div class="top-row">
         <div class="add-card">
           <div class="add-card-title">タスクを追加</div>
@@ -216,15 +211,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
               <option value="soon">🟡 もうすぐ</option>
               <option value="ongoing" selected>🟣 継続</option>
             </select>
-            <select class="opt-select" id="newSection">
-              <option value="今すぐ">今すぐ</option>
-              <option value="もうすぐ">もうすぐ</option>
-              <option value="継続">継続</option>
-              <option value="転職活動">転職活動</option>
-              <option value="マイタスク" selected>マイタスク</option>
-            </select>
+            <select class="opt-select" id="newSection"></select>
             <input class="due-input" id="newDue" type="date" title="期限日">
           </div>
+          <!-- カテゴリ追加エリア -->
+          <div id="sectionAddArea"></div>
         </div>
 
         <div class="cal-card">
@@ -237,14 +228,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
         </div>
       </div>
 
-      <!-- LIST -->
       <div class="list-area" id="listWrap"></div>
-
     </div>
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="overlay hidden" id="overlay">
   <div class="modal">
     <h3>
@@ -265,13 +253,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </div>
     <div class="modal-field">
       <label class="modal-label">カテゴリ</label>
-      <select class="modal-select" id="editSection">
-        <option value="今すぐ">今すぐ</option>
-        <option value="もうすぐ">もうすぐ</option>
-        <option value="継続">継続</option>
-        <option value="転職活動">転職活動</option>
-        <option value="マイタスク">マイタスク</option>
-      </select>
+      <select class="modal-select" id="editSection"></select>
     </div>
     <div class="modal-field">
       <label class="modal-label">期限日</label>
@@ -286,15 +268,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <script>
 const KEY='mitsubashi_v3';
+const SECTIONS_KEY='mitsubashi_sections_v1';
 const TAG_LABELS={urgent:'今すぐ',soon:'もうすぐ',ongoing:'継続'};
+const DEFAULT_SECTIONS=['今すぐ','もうすぐ','継続','転職活動','マイタスク'];
+
+function loadSections(){
+  try{const s=localStorage.getItem(SECTIONS_KEY);return s?JSON.parse(s):[...DEFAULT_SECTIONS];}catch{return[...DEFAULT_SECTIONS];}
+}
+function saveSections(){try{localStorage.setItem(SECTIONS_KEY,JSON.stringify(sections));}catch{}}
 
 function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):[];}catch{return[];}}
 function save(t){try{localStorage.setItem(KEY,JSON.stringify(t));}catch{}}
 
 let todos=load();
+let sections=loadSections();
 let nextId=Math.max(0,...todos.map(t=>t.id))+1;
 let filter='all';
 let editingId=null;
+let showingSectionInput=false;
 
 function todayStr(){return new Date().toISOString().split('T')[0];}
 
@@ -318,50 +309,143 @@ function grouped(list){
   return m;
 }
 
+// ── セクション選択肢を全selectに反映 ──
+function rebuildSectionSelects(selectedVal){
+  ['newSection','editSection'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    const cur=selectedVal!==undefined?selectedVal:el.value;
+    el.innerHTML=sections.map(s=>`<option value="${s}"${s===cur?' selected':''}>${s}</option>`).join('');
+  });
+}
+
+// ── カテゴリ追加UIの描画 ──
+function renderSectionAddArea(){
+  const area=document.getElementById('sectionAddArea');
+  if(!area)return;
+  if(showingSectionInput){
+    area.innerHTML=`
+      <div class="section-add-wrap">
+        <input class="section-add-input" id="sectionInputField" type="text" placeholder="新しいカテゴリ名..." maxlength="20">
+        <button class="section-add-ok" onclick="confirmAddSection()">追加</button>
+        <button class="section-add-cancel" onclick="cancelAddSection()">✕</button>
+      </div>`;
+    const inp=document.getElementById('sectionInputField');
+    if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')confirmAddSection();if(e.key==='Escape')cancelAddSection();});}
+  } else {
+    area.innerHTML=`
+      <div style="margin-top:8px">
+        <button class="add-section-btn" onclick="showSectionInput()">＋ カテゴリを追加</button>
+      </div>`;
+  }
+}
+
+function showSectionInput(){showingSectionInput=true;renderSectionAddArea();}
+function cancelAddSection(){showingSectionInput=false;renderSectionAddArea();}
+
+function confirmAddSection(){
+  const inp=document.getElementById('sectionInputField');
+  if(!inp)return;
+  const val=inp.value.trim();
+  if(!val)return;
+  if(sections.includes(val)){inp.style.borderColor='#f87171';inp.placeholder='既に存在します';inp.value='';return;}
+  sections.push(val);
+  saveSections();
+  showingSectionInput=false;
+  rebuildSectionSelects(val);
+  renderSectionAddArea();
+  renderSidebarCustomSections();
+  // 追加したカテゴリを選択状態に
+  const ns=document.getElementById('newSection');if(ns)ns.value=val;
+}
+
+function deleteSection(sec){
+  if(DEFAULT_SECTIONS.includes(sec))return;
+  if(!confirm(`カテゴリ「${sec}」を削除しますか？\n（このカテゴリのタスクは「マイタスク」に移動します）`))return;
+  todos=todos.map(t=>t.section===sec?{...t,section:'マイタスク'}:t);
+  sections=sections.filter(s=>s!==sec);
+  save(todos);saveSections();
+  rebuildSectionSelects('マイタスク');
+  renderSidebarCustomSections();
+  render();
+}
+
+// ── サイドバーのカスタムカテゴリ部分を再描画 ──
+function renderSidebarCustomSections(){
+  const existing=document.getElementById('custom-section-group');
+  if(existing)existing.remove();
+  const customSecs=sections.filter(s=>!DEFAULT_SECTIONS.includes(s));
+  if(customSecs.length===0)return;
+  const sidebar=document.getElementById('sidebar');
+  const footer=sidebar.querySelector('.sidebar-footer');
+  const group=document.createElement('div');
+  group.id='custom-section-group';
+  group.innerHTML=`<div class="sidebar-label" style="margin-top:10px">カスタムカテゴリ</div>`
+    +customSecs.map(s=>`
+      <button class="nav-item" style="justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:8px;flex:1" onclick="filterBySection('${s}')">
+          <span class="nav-dot" style="background:#c084fc"></span>${s}
+        </span>
+        <button class="nav-del" onclick="event.stopPropagation();deleteSection('${s}')" title="削除">✕</button>
+      </button>`).join('');
+  sidebar.insertBefore(group,footer);
+}
+
+function filterBySection(sec){
+  // カスタムカテゴリでフィルタ（section単位）
+  const wrap=document.getElementById('listWrap');
+  document.querySelectorAll('[data-filter]').forEach(b=>b.classList.remove('active'));
+  const list=todos.filter(t=>!t.done&&t.section===sec);
+  wrap.innerHTML='';
+  if(list.length===0){wrap.innerHTML='<div class="empty">タスクがありません</div>';return;}
+  const sd=document.createElement('div');
+  sd.className='sec';
+  sd.innerHTML=`<div class="sec-title">${sec}</div>`;
+  list.forEach(todo=>sd.appendChild(buildItem(todo)));
+  wrap.appendChild(sd);
+}
+
+function buildItem(todo){
+  const dl=dueLabel(todo.due);
+  const el=document.createElement('div');
+  el.className='item'+(todo.done?' done':'');
+  el.dataset.id=todo.id;
+  el.innerHTML=`
+    <div class="chk"><span class="chk-mark">✓</span></div>
+    <div class="item-body">
+      <div class="item-text">${todo.text}</div>
+      <div class="item-meta">
+        <span class="tag tag-${todo.tag}" data-id="${todo.id}">${TAG_LABELS[todo.tag]}</span>
+        ${dl?`<span class="due ${dl.cls}">${dl.text}</span>`:''}
+      </div>
+    </div>
+    <div class="item-actions">
+      <button class="edit-btn" title="編集"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+      <button class="del-btn" title="削除"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>`;
+  el.querySelector('.edit-btn').addEventListener('click',e=>{e.stopPropagation();openEdit(todo.id);});
+  el.querySelector('.del-btn').addEventListener('click',e=>{e.stopPropagation();del(todo.id);});
+  el.querySelector('.tag').addEventListener('click',e=>{e.stopPropagation();cycleTag(todo.id);});
+  el.addEventListener('click',e=>{if(e.target.closest('.item-actions')||e.target.closest('.tag'))return;toggle(todo.id);});
+  return el;
+}
+
 function render(){
   const wrap=document.getElementById('listWrap');
   const list=getFiltered();
   wrap.innerHTML='';
-
-  // Update sidebar counts
   const active=todos.filter(t=>!t.done);
   document.getElementById('cnt-all').textContent=active.length;
   document.getElementById('cnt-urgent').textContent=active.filter(t=>t.tag==='urgent').length;
   document.getElementById('cnt-soon').textContent=active.filter(t=>t.tag==='soon').length;
   document.getElementById('cnt-ongoing').textContent=active.filter(t=>t.tag==='ongoing').length;
   document.getElementById('cnt-done').textContent=todos.filter(t=>t.done).length;
-
   if(list.length===0){wrap.innerHTML='<div class="empty">タスクがありません</div>';updateProg();return;}
-
-  const sections=grouped(list);
-  Object.entries(sections).forEach(([sec,items],si)=>{
+  const secs=grouped(list);
+  Object.entries(secs).forEach(([sec,items],si)=>{
     const sd=document.createElement('div');
     sd.className='sec';sd.style.animationDelay=(si*.06)+'s';
     sd.innerHTML=`<div class="sec-title">${sec}</div>`;
-    items.forEach(todo=>{
-      const dl=dueLabel(todo.due);
-      const el=document.createElement('div');
-      el.className='item'+(todo.done?' done':'');
-      el.dataset.id=todo.id;
-      el.innerHTML=`
-        <div class="chk"><span class="chk-mark">✓</span></div>
-        <div class="item-body">
-          <div class="item-text">${todo.text}</div>
-          <div class="item-meta">
-            <span class="tag tag-${todo.tag}" data-id="${todo.id}">${TAG_LABELS[todo.tag]}</span>
-            ${dl?`<span class="due ${dl.cls}">${dl.text}</span>`:''}
-          </div>
-        </div>
-        <div class="item-actions">
-          <button class="edit-btn" title="編集"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="del-btn" title="削除"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-        </div>`;
-      el.querySelector('.edit-btn').addEventListener('click',e=>{e.stopPropagation();openEdit(todo.id);});
-      el.querySelector('.del-btn').addEventListener('click',e=>{e.stopPropagation();del(todo.id);});
-      el.querySelector('.tag').addEventListener('click',e=>{e.stopPropagation();cycleTag(todo.id);});
-      el.addEventListener('click',e=>{if(e.target.closest('.item-actions')||e.target.closest('.tag'))return;toggle(todo.id);});
-      sd.appendChild(el);
-    });
+    items.forEach(todo=>sd.appendChild(buildItem(todo)));
     wrap.appendChild(sd);
   });
   updateProg();
@@ -403,8 +487,7 @@ function sortByDue(){
   save(todos);render();
 }
 
-// Sidebar filter
-document.querySelector('.sidebar').addEventListener('click',e=>{
+document.getElementById('sidebar').addEventListener('click',e=>{
   const btn=e.target.closest('[data-filter]');if(!btn)return;
   filter=btn.dataset.filter;
   document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
@@ -416,6 +499,7 @@ function openEdit(id){
   editingId=id;
   document.getElementById('editText').value=t.text;
   document.getElementById('editTag').value=t.tag;
+  rebuildSectionSelects(t.section);
   document.getElementById('editSection').value=t.section;
   document.getElementById('editDue').value=t.due||'';
   document.getElementById('overlay').classList.remove('hidden');
@@ -431,6 +515,10 @@ document.getElementById('overlay').addEventListener('click',e=>{if(e.target===do
 document.getElementById('newText').addEventListener('keydown',e=>{if(e.key==='Enter')addTodo();});
 document.getElementById('editText').addEventListener('keydown',e=>{if(e.key==='Enter')saveEdit();});
 
+// 初期化
+rebuildSectionSelects('マイタスク');
+renderSectionAddArea();
+renderSidebarCustomSections();
 render();
 
 // CLOCK
@@ -446,10 +534,8 @@ function tickClock(){
   if(cd)cd.textContent=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日（'+WDAYS[now.getDay()]+'）';
 }
 
-// CALENDAR
 const WMONTHS=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
-
 function renderCal(){
   const now=new Date();
   const todayY=now.getFullYear(),todayM=now.getMonth(),todayD=now.getDate();
@@ -470,17 +556,13 @@ function renderCal(){
   if(rem>0){for(let i=1;i<=7-rem;i++)html+=`<div class="cal-day other-month">${i}</div>`;}
   gel.innerHTML=html;
 }
-
 function changeMonth(dir){
   calMonth+=dir;
   if(calMonth>11){calMonth=0;calYear++;}
   if(calMonth<0){calMonth=11;calYear--;}
   renderCal();
 }
-
-tickClock();
-renderCal();
-setInterval(tickClock,1000);
+tickClock();renderCal();setInterval(tickClock,1000);
 </script>
 </body>
 </html>
