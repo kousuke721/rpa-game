@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>面接準備ツール</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-s:#1a0a2e;--bg-m:#2d1b69;--bg-e:#6b3fa0;
+  --card:rgba(237,228,255,.10);--card2:rgba(237,228,255,.15);
+  --border:rgba(168,85,247,.22);--border2:rgba(168,85,247,.38);
+  --primary:#A855F7;--primary-dim:rgba(168,85,247,.20);
+  --accent:#E040FB;--accent-dim:rgba(224,64,251,.15);
+  --success:#6ee7b7;--success-dim:rgba(110,231,183,.15);
+  --warn:#fbbf24;--danger:#f87171;--danger-dim:rgba(248,113,113,.15);
+  --text:#FDFAFF;--muted:rgba(195,155,211,.85);
+  --dim:rgba(195,155,211,.40);--pale:#C39BD3;
+  --sidebar:240px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%) fixed;color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ===== LAYOUT ===== */
+.layout{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:rgba(10,3,25,.55);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;height:100vh;
+  display:flex;flex-direction:column;
+  padding:28px 16px 24px;
+  backdrop-filter:blur(20px);
+  z-index:50;
+}
+.logo{margin-bottom:36px;padding:0 4px}
+.logo-title{font-size:16px;font-weight:900;letter-spacing:-.3px;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:11px;color:var(--dim);margin-top:3px}
+
+.nav-items{flex:1;display:flex;flex-direction:column;gap:4px}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:all .2s;color:var(--muted)}
+.ni svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.ni span{font-size:13px;font-weight:700}
+.ni:hover{background:var(--card);color:var(--text)}
+.ni.on{background:var(--primary-dim);color:var(--primary);border:1px solid var(--border)}
+
+.sidebar-bottom{font-size:11px;color:var(--dim);padding:0 4px;line-height:1.6}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;padding:36px 40px;min-height:100vh;max-width:calc(100vw - var(--sidebar))}
+
+/* VIEWS */
+.view{display:none}.view.on{display:block}
+
+/* PAGE HEADER */
+.ph{margin-bottom:28px}
+.ph h1{font-size:26px;font-weight:900;letter-spacing:-.5px}
+.ph p{font-size:13px;color:var(--muted);margin-top:4px}
+.phr{display:flex;align-items:center;justify-content:space-between}
+.sec{font-size:11px;font-weight:700;color:var(--pale);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px}
+.card2{background:var(--card2);border:1px solid var(--border2);border-radius:16px;padding:20px;margin-bottom:14px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+
+/* STAT ROW */
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center}
+.sv{font-size:32px;font-weight:900;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:6px}
+.sl{font-size:11px;color:var(--muted);font-weight:500}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:11px;font-size:13px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer;border:none;transition:all .2s;width:100%}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-p{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;box-shadow:0 0 16px rgba(168,85,247,.25)}
+.btn-p:hover{opacity:.9;transform:translateY(-1px)}
+.btn-p:active{opacity:.8;transform:translateY(0)}
+.btn-s{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
+.btn-s:hover{background:var(--card);border-color:var(--border2)}
+.btn-g{background:transparent;color:var(--primary);border:1px solid var(--border2);width:auto;padding:8px 14px}
+.btn-g:hover{background:var(--primary-dim)}
+.btn-d{background:var(--danger-dim);border:1px solid rgba(248,113,113,.30);color:var(--danger);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;width:auto;transition:opacity .2s}
+.btn-d:hover{opacity:.8}
+.btn-sm{width:auto;padding:8px 14px;font-size:12px}
+
+/* INPUTS */
+input,textarea,select{width:100%;background:rgba(10,3,25,.55);border:1px solid var(--border2);border-radius:11px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;padding:11px 14px;outline:none;transition:border-color .2s;resize:none}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim)}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+select option{background:#1a0a2e}
+label{display:block;font-size:11px;font-weight:700;color:var(--pale);margin-bottom:6px;letter-spacing:.3px}
+.fg{margin-bottom:14px}
+
+/* MODAL - centered dialog */
+.mo{display:none;position:fixed;inset:0;background:rgba(10,3,25,.85);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center;padding:20px}
+.mo.on{display:flex}
+.mbox{background:linear-gradient(160deg,#2d1b69,#1a0a2e);border:1px solid var(--border2);border-radius:20px;padding:32px;width:100%;max-width:560px;animation:fd .25s ease;max-height:90vh;overflow-y:auto}
+@keyframes fd{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+.mt{font-size:20px;font-weight:900;margin-bottom:24px}
+
+/* BADGE / CHIP */
+.badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700}
+.bp{background:var(--primary-dim);color:var(--primary)}
+.bs{background:var(--success-dim);color:var(--success)}
+.bw{background:rgba(251,191,36,.15);color:var(--warn)}
+.ba{background:var(--accent-dim);color:var(--accent)}
+.chip{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-dim);color:var(--primary);border:1px solid var(--border);margin:2px}
+
+/* PROGRESS BAR */
+.pbw{margin-bottom:8px}
+.pbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:5px}
+.pb{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.pbf{height:100%;border-radius:4px;background:linear-gradient(90deg,#A855F7,#E040FB);transition:width .6s ease}
+
+/* TABS */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .2s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif}
+.tab:hover{color:var(--text);border-color:var(--border2)}
+.tab.on{background:var(--primary-dim);border-color:var(--primary);color:var(--primary)}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;color:var(--dim)}
+.empty svg{width:44px;height:44px;stroke:var(--dim);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:14px}
+.empty p{font-size:13px;line-height:1.7}
+
+/* TOAST */
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-80px);background:rgba(12,4,28,.96);border:1px solid var(--border2);border-radius:12px;padding:12px 24px;font-size:13px;font-weight:700;color:var(--text);z-index:999;transition:transform .3s ease;backdrop-filter:blur(16px);white-space:nowrap}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fi .3s ease}
+
+/* ===== HOME ===== */
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.qs{background:linear-gradient(135deg,rgba(107,63,160,.3),rgba(224,64,251,.15));border:1px solid var(--border2);border-radius:20px;padding:24px;margin-bottom:28px;position:relative;overflow:hidden}
+.qs::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;border-radius:50%;background:rgba(224,64,251,.08);pointer-events:none}
+.memo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.memo-card:hover{background:var(--card2);border-color:var(--border2);transform:translateY(-1px)}
+.memo-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.memo-preview{font-size:12px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ===== MEMO PC ===== */
+.memo-layout{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start}
+.memo-sidebar{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;position:sticky;top:20px}
+.memo-filter-title{font-size:11px;font-weight:700;color:var(--pale);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;padding:0 4px}
+.filter-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .2s;margin-bottom:2px}
+.filter-item:hover{background:var(--card2);color:var(--text)}
+.filter-item.on{background:var(--primary-dim);color:var(--primary);font-weight:700}
+.filter-count{font-size:11px;background:var(--border2);padding:1px 6px;border-radius:10px;min-width:20px;text-align:center}
+.memo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-items:start}
+
+/* ===== CHECK PC ===== */
+.ck-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ck-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ck-item:last-child{border-bottom:none}
+.ck-box{width:22px;height:22px;border-radius:7px;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .2s;margin-top:1px}
+.ck-box.done{background:var(--success);border-color:var(--success)}
+.ck-box svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity .2s}
+.ck-box.done svg{opacity:1}
+.ck-text{font-size:13px;line-height:1.5;flex:1;transition:color .2s;cursor:pointer}
+.ck-text.done{color:var(--dim);text-decoration:line-through;text-decoration-color:var(--dim)}
+.ck-group{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:0}
+.ck-group-title{font-size:13px;font-weight:700;margin-bottom:10px}
+
+/* ===== STAR PC ===== */
+.star-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.star-field{margin-bottom:14px}
+.star-label{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.star-letter{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0}
+.sl-s{background:rgba(168,85,247,.30);color:var(--primary)}
+.sl-t{background:rgba(224,64,251,.25);color:var(--accent)}
+.sl-a{background:rgba(110,231,183,.20);color:var(--success)}
+.sl-r{background:rgba(251,191,36,.20);color:var(--warn)}
+.star-out{background:rgba(10,3,25,.7);border:1px solid var(--border2);border-radius:14px;padding:20px;margin-bottom:16px;font-size:14px;line-height:2;color:var(--text);white-space:pre-wrap}
+.star-saved{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.star-saved:hover{background:var(--card2);border-color:var(--border2);transform:translateY(-1px)}
+.star-saved-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.star-saved-preview{font-size:12px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="toast" id="toast"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-title">面接準備ツール</div>
+    <div class="logo-sub">PC版 · ローカル保存</div>
+  </div>
+  <div class="nav-items">
+    <div class="ni on" id="ni-home" onclick="nav('home')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>ダッシュボード</span>
+    </div>
+    <div class="ni" id="ni-memo" onclick="nav('memo')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>回答メモ帳</span>
+    </div>
+    <div class="ni" id="ni-check" onclick="nav('check')">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>準備チェック</span>
+    </div>
+    <div class="ni" id="ni-star" onclick="nav('star')">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <span>STAR法メモ</span>
+    </div>
+  </div>
+  <div class="sidebar-bottom">
+    データはブラウザに保存されます<br>削除・キャッシュクリアで消えます
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+<!-- HOME -->
+<div class="view on" id="v-home">
+  <div class="ph">
+    <h1>ダッシュボード</h1>
+    <p>面接準備の状況を一目で確認</p>
+  </div>
+  <div class="sr">
+    <div class="sc"><div class="sv" id="st-memo">0</div><div class="sl">回答メモ</div></div>
+    <div class="sc"><div class="sv" id="st-ck">0%</div><div class="sl">準備完了率</div></div>
+    <div class="sc"><div class="sv" id="st-star">0</div><div class="sl">STAR法メモ</div></div>
+  </div>
+
+  <div class="qs">
+    <div style="font-size:20px;font-weight:900;margin-bottom:8px">今日やること</div>
+    <div id="h-todo" style="font-size:14px;color:var(--muted);line-height:2"></div>
+  </div>
+
+  <div class="home-grid">
+    <div>
+      <div class="sec">チェックリスト進捗</div>
+      <div id="h-progress"></div>
+    </div>
+    <div>
+      <div class="sec">最近更新したメモ</div>
+      <div id="h-recent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MEMO -->
+<div class="view" id="v-memo">
+  <div class="ph phr">
+    <div><h1>回答メモ帳</h1><p>企業×カテゴリ別にストック・履歴管理</p></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-g" onclick="openCoMgr()">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>企業管理
+      </button>
+      <button class="btn btn-g" onclick="openAddMemo()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>メモを追加
+      </button>
+    </div>
+  </div>
+  <div class="memo-layout">
+    <!-- Filter sidebar -->
+    <div class="memo-sidebar">
+      <div class="memo-filter-title">企業</div>
+      <div id="memo-co-filters"></div>
+      <div class="divider"></div>
+      <div class="memo-filter-title">カテゴリ</div>
+      <div id="memo-cat-filters"></div>
+    </div>
+    <!-- Memo list -->
+    <div>
+      <div class="memo-grid" id="memo-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHECK -->
+<div class="view" id="v-check">
+  <div class="ph phr">
+    <div><h1>準備チェック</h1><p>よくある質問の準備状況を管理</p></div>
+    <button class="btn btn-g btn-sm" onclick="resetCheck()">リセット</button>
+  </div>
+  <div class="card2" id="ck-overall" style="margin-bottom:24px"></div>
+  <div class="ck-grid" id="ck-body"></div>
+</div>
+
+<!-- STAR -->
+<div class="view" id="v-star">
+  <div class="ph"><h1>STAR法メモ</h1><p>行動事例の回答を4要素で整理して文章化</p></div>
+  <div class="star-layout">
+    <!-- Left: form -->
+    <div>
+      <div class="card2">
+        <div class="fg"><label>タイトル（どんな質問に使うか）</label><input id="st-title" type="text" placeholder="例：困難を乗り越えた経験"></div>
+        <div class="star-field">
+          <div class="star-label"><div class="star-letter sl-s">S</div><label style="margin:0;font-size:12px;color:var(--pale)">Situation — 状況・背景</label></div>
+          <textarea id="st-s" rows="3" placeholder="例：前職でコールセンターの離職率が高く、チームの士気が低下していた"></textarea>
+        </div>
+        <div class="star-field">
+          <div class="star-label"><div class="star-letter sl-t">T</div><label style="margin:0;font-size:12px;color:var(--pale)">Task — 自分の役割・課題</label></div>
+          <textarea id="st-t" rows="3" placeholder="例：チームリーダーとして、離職率改善策を立案・実行する立場だった"></textarea>
+        </div>
+        <div class="star-field">
+          <div class="star-label"><div class="star-letter sl-a">A</div><label style="margin:0;font-size:12px;color:var(--pale)">Action — 自分がとった行動</label></div>
+          <textarea id="st-a" rows="3" placeholder="例：週次で1on1を導入し、メンバーの不満や課題を可視化した"></textarea>
+        </div>
+        <div class="star-field">
+          <div class="star-label"><div class="star-letter sl-r">R</div><label style="margin:0;font-size:12px;color:var(--pale)">Result — 結果・成果</label></div>
+          <textarea id="st-r" rows="3" placeholder="例：3ヶ月で離職率が30%改善し、チームの目標達成率も向上した"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-p" style="flex:1" onclick="formatStar()">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>文章化する
+          </button>
+          <button class="btn btn-s" style="width:auto;padding:11px 14px" onclick="clearStar()">
+            <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.37"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: output + saved -->
+    <div>
+      <div id="st-out" style="display:none">
+        <div class="sec">生成された回答文</div>
+        <div class="star-out" id="st-out-text"></div>
+        <div style="display:flex;gap:8px;margin-bottom:24px">
+          <button class="btn btn-p" style="flex:1" onclick="saveStar()">
+            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>保存する
+          </button>
+          <button class="btn btn-s" style="width:auto;padding:11px 16px" onclick="copyOut()">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="st-saved-wrap" style="display:none">
+        <div class="sec">保存済みSTAR</div>
+        <div id="st-saved-list"></div>
+      </div>
+
+      <div id="st-empty-right" class="card" style="text-align:center;padding:40px 20px;color:var(--dim)">
+        <svg viewBox="0 0 24 24" style="width:40px;height:40px;stroke:var(--dim);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:12px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <p style="font-size:13px">左のフォームを入力して<br>「文章化する」を押してください</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div><!-- /layout -->
+
+<!-- MODAL: Add/Edit Memo -->
+<div class="mo" id="mo-memo">
+  <div class="mbox">
+    <div class="mt" id="mo-memo-title">メモを追加</div>
+    <input type="hidden" id="m-id">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="fg">
+        <label>企業</label>
+        <select id="m-co"><option value="">共通（企業指定なし）</option></select>
+      </div>
+      <div class="fg">
+        <label>カテゴリ</label>
+        <select id="m-cat">
+          <option>志望動機</option><option>自己PR</option><option>強み</option>
+          <option>弱み</option><option>キャリア目標</option><option>逆質問</option><option>その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label>タイトル</label><input id="m-title" type="text" placeholder="例：なぜこの会社を選んだか"></div>
+    <div class="fg"><label>回答内容</label><textarea id="m-body" rows="7" placeholder="面接で話す内容を書いておこう..."></textarea></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-p" style="flex:1" onclick="saveMemo()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>保存する</button>
+      <button class="btn btn-s" style="flex:0 0 auto;width:auto;padding:11px 20px" onclick="closeMo('mo-memo')">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Company Manager -->
+<div class="mo" id="mo-co">
+  <div class="mbox">
+    <div class="mt">企業管理</div>
+    <div id="co-list" style="margin-bottom:20px"></div>
+    <div class="divider"></div>
+    <div style="font-size:13px;font-weight:700;color:var(--pale);margin:16px 0 12px">企業を追加</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fg"><label>企業名</label><input id="co-name" type="text" placeholder="例：ワークスアプリケーションズ"></div>
+      <div class="fg"><label>応募職種</label><input id="co-role" type="text" placeholder="例：カスタマーサポート"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-p" style="flex:1" onclick="addCompany()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>追加する</button>
+      <button class="btn btn-s" style="flex:0 0 auto;width:auto;padding:11px 20px" onclick="closeMo('mo-co')">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Memo Detail -->
+<div class="mo" id="mo-detail">
+  <div class="mbox" style="max-width:680px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div>
+        <div class="mt" id="mo-detail-title" style="margin-bottom:8px"></div>
+        <div style="display:flex;gap:6px">
+          <span class="badge ba" id="mo-detail-co"></span>
+          <span class="badge bp" id="mo-detail-cat"></span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;margin-left:16px">
+        <button class="btn btn-g btn-sm" onclick="editFromDetail()">編集</button>
+        <button class="btn-d" onclick="deleteMemoFromDetail()">削除</button>
+      </div>
+    </div>
+    <div id="mo-detail-body" style="font-size:14px;line-height:2;color:var(--text);white-space:pre-wrap;background:var(--card);border-radius:12px;padding:16px;margin-bottom:20px"></div>
+    <div class="divider"></div>
+    <div class="sec" style="margin-top:16px">編集履歴</div>
+    <div id="mo-detail-hist"></div>
+    <button class="btn btn-s" style="margin-top:20px;width:auto;padding:11px 24px" onclick="closeMo('mo-detail')">閉じる</button>
+  </div>
+</div>
+
+<!-- MODAL: STAR Detail -->
+<div class="mo" id="mo-star">
+  <div class="mbox" style="max-width:680px">
+    <div class="mt" id="mo-star-title"></div>
+    <div id="mo-star-body" style="font-size:14px;line-height:2;color:var(--text);white-space:pre-wrap;background:var(--card);border-radius:12px;padding:16px;margin-bottom:20px"></div>
+    <div class="divider"></div>
+    <div class="sec" style="margin-top:16px">STAR内訳</div>
+    <div id="mo-star-detail" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"></div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-s" style="flex:1" onclick="closeMo('mo-star')">閉じる</button>
+      <button class="btn-d" onclick="deleteStarFromModal()" style="flex:0 0 auto">削除</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MEMO_CATS = ['すべて','志望動機','自己PR','強み','弱み','キャリア目標','逆質問','その他'];
+const CK_DATA = [
+  {group:'志望動機・企業理解',items:['なぜこの会社を選んだのか','なぜこの職種を選んだのか','当社のビジネスモデルを説明してください','当社の強みと課題は何だと思いますか','同業他社ではなくなぜ当社なのか']},
+  {group:'自己紹介・自己PR',items:['自己紹介をしてください（1〜2分）','あなたの強みを教えてください','あなたの弱みと改善策を教えてください','これまでのキャリアを教えてください','あなたを一言で表すと何ですか']},
+  {group:'行動事例',items:['困難を乗り越えた経験を教えてください','チームで成果を出した経験を教えてください','失敗から学んだ経験を教えてください','リーダーシップを発揮した経験を教えてください','主体的に取り組んだ経験を教えてください']},
+  {group:'キャリア・将来',items:['5年後・10年後どうなっていたいですか','前職（学業）で一番学んだことは何ですか','転職（就活）しようと思った理由は何ですか','入社後にやってみたい仕事は何ですか','希望しない部署に配属されたらどうしますか']},
+  {group:'逆質問',items:['活躍している社員の共通点は何ですか','入社前に身につけておくべきスキルはありますか','チームの雰囲気・働き方について教えてください','評価制度について教えてください','入社後の研修・育成体制について教えてください']},
+];
+
+let memos    = JSON.parse(localStorage.getItem('ip_memos')||'[]');
+let checks   = JSON.parse(localStorage.getItem('ip_checks')||'{}');
+let stars    = JSON.parse(localStorage.getItem('ip_stars')||'[]');
+let companies= JSON.parse(localStorage.getItem('ip_companies')||'[]');
+
+let curMemoCat='すべて', curMemoCo='', detailId=null, starModalId=null;
+let currentOutput='';
+
+function save(){
+  localStorage.setItem('ip_memos',JSON.stringify(memos));
+  localStorage.setItem('ip_checks',JSON.stringify(checks));
+  localStorage.setItem('ip_stars',JSON.stringify(stars));
+  localStorage.setItem('ip_companies',JSON.stringify(companies));
+}
+
+/* NAV */
+function nav(page){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('v-'+page).classList.add('on');
+  document.getElementById('ni-'+page).classList.add('on');
+  window.scrollTo(0,0);
+  if(page==='home') renderHome();
+  if(page==='memo') renderMemo();
+  if(page==='check') renderCheck();
+  if(page==='star') renderStarPage();
+}
+
+/* HOME */
+function renderHome(){
+  document.getElementById('st-memo').textContent=memos.length;
+  const {done,total}=ckStats();
+  document.getElementById('st-ck').textContent=total?Math.round(done/total*100)+'%':'0%';
+  document.getElementById('st-star').textContent=stars.length;
+  const todo=[];
+  if(!memos.length) todo.push('回答メモを1件追加してみよう');
+  if(done<total) todo.push(`チェックリスト残り${total-done}問 — 準備を進めよう`);
+  if(!stars.length) todo.push('STAR法で行動事例を整理してみよう');
+  if(!todo.length) todo.push('今日の準備は完了！面接本番を頑張ろう');
+  document.getElementById('h-todo').innerHTML=todo.map(t=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0"></div>${t}</div>`).join('');
+  document.getElementById('h-progress').innerHTML=CK_DATA.map(g=>{
+    const d=g.items.filter(q=>checks[q]).length;
+    const pct=Math.round(d/g.items.length*100);
+    return `<div class="pbw"><div class="pbl"><span>${g.group}</span><span>${d}/${g.items.length}</span></div><div class="pb"><div class="pbf" style="width:${pct}%"></div></div></div>`;
+  }).join('');
+  const rec=[...memos].sort((a,b)=>b.updated-a.updated).slice(0,4);
+  const el=document.getElementById('h-recent');
+  el.innerHTML=rec.length?rec.map(memoCard).join(''):`<div class="empty" style="padding:20px"><p>まだメモがありません</p></div>`;
+}
+
+/* MEMO */
+function renderMemo(){
+  // Company filters
+  const coEl=document.getElementById('memo-co-filters');
+  const coItems=[
+    {id:'',label:'すべて'},
+    {id:'__none__',label:'共通'},
+    ...companies.map(c=>({id:c.id,label:c.name}))
+  ];
+  const coCount=(id)=>{
+    if(id==='') return memos.length;
+    if(id==='__none__') return memos.filter(m=>!m.coId).length;
+    return memos.filter(m=>m.coId===id).length;
+  };
+  coEl.innerHTML=coItems.map(c=>`
+    <div class="filter-item ${curMemoCo===c.id?'on':''}" onclick="setMemoCo('${c.id}')">
+      <span>${c.label}</span>
+      <span class="filter-count">${coCount(c.id)}</span>
+    </div>`).join('');
+
+  // Category filters
+  const catEl=document.getElementById('memo-cat-filters');
+  catEl.innerHTML=MEMO_CATS.map(c=>{
+    let base=memos;
+    if(curMemoCo==='__none__') base=base.filter(m=>!m.coId);
+    else if(curMemoCo) base=base.filter(m=>m.coId===curMemoCo);
+    const cnt=c==='すべて'?base.length:base.filter(m=>m.cat===c).length;
+    return `<div class="filter-item ${curMemoCat===c?'on':''}" onclick="setMemoCat('${c}')">
+      <span>${c}</span><span class="filter-count">${cnt}</span>
+    </div>`;
+  }).join('');
+
+  // Memo grid
+  let filtered=memos;
+  if(curMemoCo==='__none__') filtered=filtered.filter(m=>!m.coId);
+  else if(curMemoCo) filtered=filtered.filter(m=>m.coId===curMemoCo);
+  if(curMemoCat!=='すべて') filtered=filtered.filter(m=>m.cat===curMemoCat);
+  const sorted=[...filtered].sort((a,b)=>b.updated-a.updated);
+  const el=document.getElementById('memo-list');
+  if(!sorted.length){
+    el.style.display='block';
+    el.innerHTML=`<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>このフィルターにメモがありません<br>右上の「メモを追加」から作成しよう</p></div>`;
+    return;
+  }
+  el.style.display='grid';
+  el.innerHTML=sorted.map(memoCard).join('');
+}
+
+function memoCard(m){
+  const dt=new Date(m.updated).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'});
+  const ver=m.history?m.history.length+1:1;
+  const co=companies.find(c=>c.id===m.coId);
+  return `<div class="memo-card fi" onclick="showDetail('${m.id}')">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        ${co?`<span class="badge ba">${co.name}</span>`:'<span class="badge" style="background:var(--card2);color:var(--dim)">共通</span>'}
+        <span class="badge bp">${m.cat}</span>
+      </div>
+      <span style="font-size:11px;color:var(--dim);flex-shrink:0;margin-left:6px">v${ver} · ${dt}</span>
+    </div>
+    <div class="memo-title">${m.title}</div>
+    <div class="memo-preview">${m.body}</div>
+  </div>`;
+}
+
+function setMemoCat(cat){curMemoCat=cat;renderMemo()}
+function setMemoCo(co){curMemoCo=co;curMemoCat='すべて';renderMemo()}
+
+function openAddMemo(){
+  document.getElementById('m-id').value='';
+  document.getElementById('m-title').value='';
+  document.getElementById('m-body').value='';
+  document.getElementById('m-cat').value='志望動機';
+  const sel=document.getElementById('m-co');
+  sel.innerHTML='<option value="">共通（企業指定なし）</option>'+companies.map(c=>`<option value="${c.id}">${c.name} · ${c.role}</option>`).join('');
+  sel.value=curMemoCo&&curMemoCo!=='__none__'?curMemoCo:'';
+  document.getElementById('mo-memo-title').textContent='メモを追加';
+  openMo('mo-memo');
+}
+
+function saveMemo(){
+  const title=document.getElementById('m-title').value.trim();
+  const body=document.getElementById('m-body').value.trim();
+  if(!title||!body){toast('タイトルと内容を入力してください');return}
+  const cat=document.getElementById('m-cat').value;
+  const coId=document.getElementById('m-co').value||null;
+  const id=document.getElementById('m-id').value;
+  if(id){
+    const idx=memos.findIndex(m=>m.id===id);
+    if(idx>=0){
+      const m=memos[idx];
+      if(!m.history)m.history=[];
+      m.history.push({body:m.body,date:m.updated});
+      m.title=title;m.body=body;m.cat=cat;m.coId=coId;m.updated=Date.now();
+    }
+  } else {
+    memos.push({id:Date.now().toString(),title,body,cat,coId,created:Date.now(),updated:Date.now(),history:[]});
+  }
+  save();closeMo('mo-memo');renderMemo();toast('保存しました');
+}
+
+function showDetail(id){
+  const m=memos.find(x=>x.id===id);if(!m)return;
+  detailId=id;
+  const co=companies.find(c=>c.id===m.coId);
+  document.getElementById('mo-detail-title').textContent=m.title;
+  document.getElementById('mo-detail-cat').textContent=m.cat;
+  document.getElementById('mo-detail-co').textContent=co?co.name:'共通';
+  document.getElementById('mo-detail-body').textContent=m.body;
+  const hist=m.history||[];
+  document.getElementById('mo-detail-hist').innerHTML=hist.length
+    ?[...hist].reverse().map((h,i)=>`
+      <div style="margin-bottom:12px;padding:12px;background:var(--card);border-radius:10px">
+        <div style="font-size:11px;color:var(--dim);margin-bottom:6px">v${hist.length-i} · ${new Date(h.date).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">${h.body.substring(0,100)}${h.body.length>100?'...':''}</div>
+      </div>`).join('')
+    :`<div style="font-size:12px;color:var(--dim)">まだ編集履歴はありません</div>`;
+  openMo('mo-detail');
+}
+
+function editFromDetail(){
+  const m=memos.find(x=>x.id===detailId);if(!m)return;
+  closeMo('mo-detail');
+  document.getElementById('m-id').value=m.id;
+  document.getElementById('m-title').value=m.title;
+  document.getElementById('m-body').value=m.body;
+  document.getElementById('m-cat').value=m.cat;
+  const sel=document.getElementById('m-co');
+  sel.innerHTML='<option value="">共通（企業指定なし）</option>'+companies.map(c=>`<option value="${c.id}">${c.name} · ${c.role}</option>`).join('');
+  sel.value=m.coId||'';
+  document.getElementById('mo-memo-title').textContent='メモを編集';
+  openMo('mo-memo');
+}
+
+function deleteMemoFromDetail(){
+  if(!confirm('このメモを削除しますか？'))return;
+  memos=memos.filter(m=>m.id!==detailId);
+  save();closeMo('mo-detail');renderMemo();toast('削除しました');
+}
+
+/* COMPANY */
+function openCoMgr(){
+  renderCoList();
+  document.getElementById('co-name').value='';
+  document.getElementById('co-role').value='';
+  openMo('mo-co');
+}
+function renderCoList(){
+  const el=document.getElementById('co-list');
+  if(!companies.length){el.innerHTML=`<div style="font-size:13px;color:var(--dim);text-align:center;padding:12px 0">登録された企業はありません</div>`;return}
+  el.innerHTML=companies.map(c=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:12px;margin-bottom:8px">
+      <div style="flex:1"><div style="font-size:14px;font-weight:700">${c.name}</div><div style="font-size:12px;color:var(--muted)">${c.role}</div></div>
+      <button class="btn-d" onclick="deleteCo('${c.id}')">削除</button>
+    </div>`).join('');
+}
+function addCompany(){
+  const name=document.getElementById('co-name').value.trim();
+  const role=document.getElementById('co-role').value.trim();
+  if(!name||!role){toast('企業名と職種を入力してください');return}
+  companies.push({id:Date.now().toString(),name,role,created:Date.now()});
+  save();document.getElementById('co-name').value='';document.getElementById('co-role').value='';
+  renderCoList();toast('登録しました');
+}
+function deleteCo(id){
+  if(!confirm('この企業を削除しますか？\n（関連するメモは「共通」に移動されます）'))return;
+  companies=companies.filter(c=>c.id!==id);
+  memos=memos.map(m=>m.coId===id?{...m,coId:null}:m);
+  save();renderCoList();renderMemo();toast('削除しました');
+}
+
+/* CHECKLIST */
+function ckStats(){
+  const all=CK_DATA.flatMap(g=>g.items);
+  return{done:all.filter(q=>checks[q]).length,total:all.length};
+}
+function renderCheck(){
+  const {done,total}=ckStats();
+  const pct=Math.round(done/total*100);
+  document.getElementById('ck-overall').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-size:15px;font-weight:700">全体の準備完了率</div>
+      <div style="font-size:28px;font-weight:900;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${pct}%</div>
+    </div>
+    <div class="pb"><div class="pbf" style="width:${pct}%"></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">${done}問 / ${total}問 完了</div>`;
+  document.getElementById('ck-body').innerHTML=CK_DATA.map(g=>{
+    const d=g.items.filter(q=>checks[q]).length;
+    return `<div class="ck-group">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="ck-group-title">${g.group}</div>
+        <span class="badge ${d===g.items.length?'bs':'bp'}">${d}/${g.items.length}</span>
+      </div>
+      <div>${g.items.map(q=>`
+        <div class="ck-item" onclick="toggleCk(this,'${q.replace(/'/g,"\\'")}')">
+          <div class="ck-box ${checks[q]?'done':''}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="ck-text ${checks[q]?'done':''}">${q}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleCk(el,q){
+  checks[q]=!checks[q];save();
+  el.querySelector('.ck-box').classList.toggle('done',checks[q]);
+  el.querySelector('.ck-text').classList.toggle('done',checks[q]);
+  const {done,total}=ckStats();const pct=Math.round(done/total*100);
+  document.getElementById('ck-overall').querySelector('.pbf').style.width=pct+'%';
+  document.getElementById('ck-overall').querySelector('[style*="font-size:28px"]').textContent=pct+'%';
+  document.getElementById('ck-overall').lastElementChild.textContent=`${done}問 / ${total}問 完了`;
+}
+function resetCheck(){
+  if(!confirm('チェックをすべてリセットしますか？'))return;
+  checks={};save();renderCheck();toast('リセットしました');
+}
+
+/* STAR */
+function formatStar(){
+  const s=document.getElementById('st-s').value.trim();
+  const t=document.getElementById('st-t').value.trim();
+  const a=document.getElementById('st-a').value.trim();
+  const r=document.getElementById('st-r').value.trim();
+  if(!s||!a){toast('少なくともS（状況）とA（行動）を入力してください');return}
+  let text='';
+  if(s&&t) text+=`${s}という状況の中で、私は${t}という立場から課題に向き合いました。\n\n`;
+  else if(s) text+=`${s}という状況に直面したとき、私は主体的に動くことを決めました。\n\n`;
+  if(a) text+=`そこで私は、${a}という取り組みを行いました。\n\n`;
+  if(r) text+=`その結果、${r}という成果につながりました。\n\nこの経験を通じて、状況を分析し主体的に行動することの大切さを改めて実感しました。`;
+  else text+=`この取り組みを通じて、課題解決に向けて主体的に動くことの重要性を改めて実感しました。`;
+  currentOutput=text;
+  document.getElementById('st-out-text').textContent=text;
+  document.getElementById('st-out').style.display='block';
+  document.getElementById('st-empty-right').style.display='none';
+}
+function clearStar(){
+  ['st-title','st-s','st-t','st-a','st-r'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('st-out').style.display='none';
+  document.getElementById('st-empty-right').style.display='block';
+  currentOutput='';
+}
+function saveStar(){
+  const title=document.getElementById('st-title').value.trim()||'無題のSTAR';
+  stars.push({id:Date.now().toString(),title,s:document.getElementById('st-s').value.trim(),t:document.getElementById('st-t').value.trim(),a:document.getElementById('st-a').value.trim(),r:document.getElementById('st-r').value.trim(),output:currentOutput,date:Date.now()});
+  save();renderStarSaved();toast('保存しました');
+}
+function copyOut(){
+  navigator.clipboard.writeText(currentOutput).then(()=>toast('コピーしました')).catch(()=>toast('コピーできませんでした'));
+}
+function renderStarPage(){renderStarSaved()}
+function renderStarSaved(){
+  const w=document.getElementById('st-saved-wrap');
+  const el=document.getElementById('st-saved-list');
+  if(!stars.length){w.style.display='none';return}
+  w.style.display='block';
+  el.innerHTML=[...stars].reverse().map(s=>`
+    <div class="star-saved" onclick="showStar('${s.id}')">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <div class="star-saved-title">${s.title}</div>
+        <div style="font-size:11px;color:var(--dim)">${new Date(s.date).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric'})}</div>
+      </div>
+      <div class="star-saved-preview">${s.output}</div>
+    </div>`).join('');
+}
+function showStar(id){
+  const s=stars.find(x=>x.id===id);if(!s)return;
+  starModalId=id;
+  document.getElementById('mo-star-title').textContent=s.title;
+  document.getElementById('mo-star-body').textContent=s.output;
+  document.getElementById('mo-star-detail').innerHTML=
+    [['S','状況',s.s,'var(--primary)'],['T','役割',s.t,'var(--accent)'],['A','行動',s.a,'var(--success)'],['R','結果',s.r,'var(--warn)']].filter(x=>x[2]).map(([l,n,v,c])=>`
+      <div style="padding:12px;background:var(--card);border-radius:10px">
+        <div style="font-size:11px;font-weight:700;color:${c};margin-bottom:6px">${l}: ${n}</div>
+        <div style="font-size:13px;line-height:1.6;color:var(--muted)">${v}</div>
+      </div>`).join('');
+  openMo('mo-star');
+}
+function deleteStarFromModal(){
+  if(!confirm('このSTARを削除しますか？'))return;
+  stars=stars.filter(s=>s.id!==starModalId);
+  save();closeMo('mo-star');renderStarSaved();toast('削除しました');
+}
+
+/* UTILS */
+function openMo(id){document.getElementById(id).classList.add('on')}
+function closeMo(id){document.getElementById(id).classList.remove('on')}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2500)}
+
+/* INIT */
+renderHome();
+</script>
+</body>
+</html>
