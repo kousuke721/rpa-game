@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="面接対策AI">
+<meta name="theme-color" content="#1a0a2e">
+<title>面接対策AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-s:#1a0a2e;--bg-m:#2d1b69;--bg-e:#6b3fa0;
+  --card:rgba(237,228,255,.10);--card2:rgba(237,228,255,.15);
+  --border:rgba(168,85,247,.22);--border2:rgba(168,85,247,.38);
+  --primary:#A855F7;--primary-dim:rgba(168,85,247,.20);
+  --accent:#E040FB;--accent-dim:rgba(224,64,251,.15);
+  --success:#6ee7b7;--success-dim:rgba(110,231,183,.15);
+  --warn:#fbbf24;--danger:#f87171;--danger-dim:rgba(248,113,113,.15);
+  --text:#FDFAFF;--muted:rgba(195,155,211,.85);
+  --dim:rgba(195,155,211,.40);--pale:#C39BD3;
+  --code-bg:#0d0718;--code-text:#a8d8a8;
+  --nav-h:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{height:-webkit-fill-available}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%) fixed;
+  color:var(--text);min-height:100dvh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+#app{max-width:480px;margin:0 auto;min-height:100dvh;position:relative}
+
+.main{
+  padding:20px 16px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 20px);
+  min-height:100dvh;
+}
+
+/* NAV */
+.nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;
+  height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+  background:rgba(12,4,28,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  display:flex;align-items:flex-start;padding-top:10px;
+  padding-bottom:env(safe-area-inset-bottom,0px);z-index:100;
+}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 0}
+.ni svg{width:22px;height:22px;stroke:var(--dim);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.ni span{font-size:10px;color:var(--dim);font-weight:500;transition:color .2s}
+.ni.on svg{stroke:var(--primary)}.ni.on span{color:var(--primary)}
+
+/* VIEWS */
+.view{display:none}.view.on{display:block}
+
+/* TYPOGRAPHY */
+.ph{margin-bottom:24px;padding-top:8px}
+.ph h1{font-size:22px;font-weight:900;letter-spacing:-.5px}
+.ph p{font-size:13px;color:var(--muted);margin-top:4px}
+.sec{font-size:12px;font-weight:700;color:var(--pale);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.card2{background:var(--card2);border:1px solid var(--border2);border-radius:16px;padding:16px;margin-bottom:12px}
+.divider{height:1px;background:var(--border);margin:14px 0}
+
+/* STAT ROW */
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center}
+.sv{font-size:26px;font-weight:900;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px}
+.sl{font-size:10px;color:var(--muted);font-weight:500}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;font-family:'Noto Sans JP',sans-serif;cursor:pointer;border:none;transition:all .2s;width:100%}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-p{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;box-shadow:0 0 16px rgba(168,85,247,.30)}
+.btn-p:active{opacity:.8;transform:scale(.98)}
+.btn-p:disabled{opacity:.4;pointer-events:none}
+.btn-s{background:var(--card2);color:var(--text);border:1px solid var(--border2)}
+.btn-g{background:transparent;color:var(--primary);border:1px solid var(--border2);width:auto;padding:9px 14px}
+.btn-d{background:var(--danger-dim);border:1px solid rgba(248,113,113,.30);color:var(--danger);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;width:auto}
+
+/* INPUTS */
+input,textarea,select{
+  width:100%;background:rgba(10,3,25,.55);border:1px solid var(--border2);
+  border-radius:12px;color:var(--text);font-family:'Noto Sans JP',sans-serif;
+  font-size:14px;padding:12px 14px;outline:none;transition:border-color .2s;resize:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-dim)}
+input::placeholder,textarea::placeholder{color:var(--dim)}
+select option{background:#1a0a2e}
+label{display:block;font-size:12px;font-weight:700;color:var(--pale);margin-bottom:6px;letter-spacing:.3px}
+.fg{margin-bottom:14px}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(10,3,25,.85);backdrop-filter:blur(8px);z-index:200;align-items:flex-end;justify-content:center}
+.mo.on{display:flex}
+.mbox{background:linear-gradient(160deg,#2d1b69,#1a0a2e);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;animation:su .3s ease;max-height:85dvh;overflow-y:auto}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mh{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.mt{font-size:18px;font-weight:900;margin-bottom:20px}
+
+/* COMPANY CARD */
+.cc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s,background .2s}
+.cc:active,.cc.sel{background:var(--card2)}
+.cc.sel{border-color:var(--primary);background:var(--primary-dim)}
+.ci{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#6B3FA0,#E040FB);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cn{font-size:14px;font-weight:700}
+.cr{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700}
+.bp{background:var(--primary-dim);color:var(--primary)}
+.bs{background:var(--success-dim);color:var(--success)}
+.bw{background:rgba(251,191,36,.15);color:var(--warn)}
+.bd{background:var(--danger-dim);color:var(--danger)}
+.ba{background:var(--accent-dim);color:var(--accent)}
+
+/* CHIP */
+.chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;background:var(--primary-dim);color:var(--primary);border:1px solid var(--border);margin:2px}
+
+/* CHAT */
+.chat{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.bubble{max-width:88%;padding:12px 14px;border-radius:16px;font-size:14px;line-height:1.6}
+.bubble.ai{background:var(--card2);border:1px solid var(--border);border-top-left-radius:4px;align-self:flex-start}
+.bubble.user{background:linear-gradient(135deg,rgba(107,63,160,.6),rgba(224,64,251,.3));border:1px solid var(--border2);border-bottom-right-radius:4px;align-self:flex-end}
+.bubble.fb{max-width:100%;background:var(--success-dim);border:1px solid rgba(110,231,183,.30);border-radius:14px;align-self:stretch}
+
+/* PROGRESS */
+.pdots{display:flex;gap:4px;margin-bottom:16px}
+.pd{flex:1;height:4px;border-radius:2px;background:var(--border);transition:background .3s}
+.pd.done{background:var(--success)}.pd.cur{background:var(--primary)}
+
+/* SCORE BAR */
+.sbw{margin:8px 0}
+.sbar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.sbf{height:100%;border-radius:3px;background:linear-gradient(90deg,#A855F7,#E040FB);transition:width .8s ease}
+
+/* WEAKNESS */
+.wr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.wc{font-size:12px;color:var(--muted);width:80px;flex-shrink:0;line-height:1.3}
+.wb{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.wbf{height:100%;border-radius:4px}
+.ws{font-size:12px;font-weight:700;color:var(--pale);width:28px;text-align:right}
+
+/* SESSION ITEM */
+.si{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:background .2s}
+.si:active{background:var(--card2)}
+.sh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.sd{font-size:11px;color:var(--dim)}
+
+/* QUICK START */
+.qs{background:linear-gradient(135deg,rgba(107,63,160,.3),rgba(224,64,251,.15));border:1px solid var(--border2);border-radius:20px;padding:20px;margin-bottom:20px;overflow:hidden;position:relative}
+.qs::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:rgba(224,64,251,.10);pointer-events:none}
+.qt{font-size:18px;font-weight:900;margin-bottom:6px}
+.qs{font-size:13px}
+
+/* RESULT */
+.rsc{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(107,63,160,.4),rgba(224,64,251,.2));border:2px solid var(--primary);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 0 32px rgba(168,85,247,.40)}
+.rsn{font-size:32px;font-weight:900;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.rsmax{font-size:11px;color:var(--dim);margin-top:2px}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--dim)}
+.empty svg{width:40px;height:40px;stroke:var(--dim);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin-bottom:12px}
+.empty p{font-size:13px;line-height:1.7}
+
+/* SPINNER */
+.spin{width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--primary);border-radius:50%;animation:rot .8s linear infinite;display:inline-block}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:rgba(12,4,28,.96);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:700;color:var(--text);z-index:999;transition:transform .3s ease;backdrop-filter:blur(16px);white-space:nowrap}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fi .35s ease}
+
+.phr{display:flex;align-items:center;justify-content:space-between}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="toast" id="toast"></div>
+
+<div class="main">
+
+<!-- ===== HOME ===== -->
+<div class="view on" id="v-home">
+  <div class="ph">
+    <h1>面接対策AI</h1>
+    <p>今日も一歩、内定に近づこう</p>
+  </div>
+  <div class="sr">
+    <div class="sc"><div class="sv" id="st-sess">0</div><div class="sl">練習回数</div></div>
+    <div class="sc"><div class="sv" id="st-co">0</div><div class="sl">登録企業</div></div>
+    <div class="sc"><div class="sv" id="st-avg">-</div><div class="sl">平均スコア</div></div>
+  </div>
+  <div class="qs">
+    <div class="qt">模擬面接を始める</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">企業を選択してAI面接官と本番さながらに練習</p>
+    <button class="btn btn-p" onclick="nav('interview')">
+      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>面接スタート
+    </button>
+  </div>
+  <div class="sec">苦手カテゴリ分析</div>
+  <div class="card" id="h-weak"></div>
+  <div class="sec" style="margin-top:16px">最近の練習</div>
+  <div id="h-recent"></div>
+</div>
+
+<!-- ===== COMPANIES ===== -->
+<div class="view" id="v-companies">
+  <div class="ph phr">
+    <div><h1>企業管理</h1><p>志望企業を登録して対策を最適化</p></div>
+    <button class="btn btn-g" onclick="openAddCo()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>追加
+    </button>
+  </div>
+  <div id="co-list"></div>
+</div>
+
+<!-- ===== INTERVIEW ===== -->
+<div class="view" id="v-interview">
+  <!-- setup -->
+  <div id="iv-setup">
+    <div class="ph"><h1>企業を選択</h1><p>面接する企業と質問数を選んでください</p></div>
+    <div id="iv-colist"></div>
+    <div class="fg" style="margin-top:16px">
+      <label>質問数</label>
+      <select id="iv-qn">
+        <option value="3">3問（約10分）</option>
+        <option value="5" selected>5問（約15分）</option>
+        <option value="7">7問（約25分）</option>
+      </select>
+    </div>
+    <button class="btn btn-p" id="iv-startbtn" onclick="startIV()" disabled>
+      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>面接開始
+    </button>
+  </div>
+  <!-- loading -->
+  <div id="iv-load" style="display:none;text-align:center;padding:80px 20px">
+    <div class="spin" style="width:44px;height:44px;border-width:3px;margin:0 auto 16px"></div>
+    <div style="font-size:14px;color:var(--muted)">AI面接官が質問を準備中...</div>
+  </div>
+  <!-- active -->
+  <div id="iv-active" style="display:none">
+    <div class="ph phr" style="margin-bottom:12px">
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:900" id="iv-co-label"></div>
+        <div style="font-size:12px;color:var(--muted)" id="iv-prog-txt"></div>
+      </div>
+      <button class="btn btn-g" style="padding:8px 12px;font-size:12px" onclick="endConfirm()">終了</button>
+    </div>
+    <div class="pdots" id="iv-dots"></div>
+    <div class="chat" id="iv-chat"></div>
+    <div id="iv-inp">
+      <textarea id="iv-ans" placeholder="回答を入力してください..." rows="4" style="margin-bottom:10px"></textarea>
+      <button class="btn btn-p" id="iv-subbtn" onclick="submitAns()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>回答する
+      </button>
+    </div>
+    <div id="iv-next" style="display:none">
+      <button class="btn btn-p" id="iv-nextbtn" onclick="nextQ()">次の質問へ<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+  </div>
+  <!-- result -->
+  <div id="iv-res" style="display:none">
+    <div class="ph"><h1>面接終了</h1><p>お疲れ様でした！</p></div>
+    <div class="rsc"><div class="rsn" id="iv-fscore">0</div><div class="rsmax">/ 5.0</div></div>
+    <div class="card" id="iv-breakdown"></div>
+    <button class="btn btn-p" style="margin-top:16px" onclick="resetIV()">
+      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.37"/></svg>もう一度練習する
+    </button>
+    <button class="btn btn-s" style="margin-top:10px" onclick="nav('home')">ホームへ戻る</button>
+  </div>
+</div>
+
+<!-- ===== STOCK ===== -->
+<div class="view" id="v-stock">
+  <div class="ph"><h1>回答ストック</h1><p>過去の練習と弱点分析</p></div>
+  <div class="sec">カテゴリ別スコア</div>
+  <div class="card" id="sk-weak"></div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;margin-top:8px">
+    <select id="sk-fco" style="flex:1;padding:10px 12px;font-size:13px" onchange="renderStock()">
+      <option value="">全企業</option>
+    </select>
+  </div>
+  <div class="sec">練習履歴</div>
+  <div id="sk-sess"></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="ni on" id="ni-home" onclick="nav('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>ホーム</span>
+  </div>
+  <div class="ni" id="ni-companies" onclick="nav('companies')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+    <span>企業</span>
+  </div>
+  <div class="ni" id="ni-interview" onclick="nav('interview')">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>面接</span>
+  </div>
+  <div class="ni" id="ni-stock" onclick="nav('stock')">
+    <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+    <span>ストック</span>
+  </div>
+</nav>
+</div><!-- /app -->
+
+<!-- MODAL: Add Company -->
+<div class="mo" id="mo-co">
+  <div class="mbox">
+    <div class="mh"></div>
+    <div class="mt">企業を登録</div>
+    <div class="fg"><label>企業名</label><input id="c-name" type="text" placeholder="例：ワークスアプリケーションズ"></div>
+    <div class="fg"><label>応募職種</label><input id="c-role" type="text" placeholder="例：カスタマーサポート"></div>
+    <div class="fg"><label>補足情報（任意）</label><textarea id="c-note" rows="3" placeholder="例：ERP製品サポート担当、中小企業向けSaaS..."></textarea></div>
+    <button class="btn btn-p" onclick="saveCo()"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>登録する</button>
+    <button class="btn btn-s" style="margin-top:10px" onclick="closeMo('mo-co')">キャンセル</button>
+  </div>
+</div>
+
+<!-- MODAL: Session Detail -->
+<div class="mo" id="mo-sess">
+  <div class="mbox">
+    <div class="mh"></div>
+    <div class="mt" id="mo-sess-title"></div>
+    <div id="mo-sess-body"></div>
+    <button class="btn btn-s" style="margin-top:16px" onclick="closeMo('mo-sess')">閉じる</button>
+  </div>
+</div>
+
+<script>
+const CATS = ['志望動機','自己PR','強み・弱み','行動事例','キャリア目標','職種理解','企業理解'];
+
+let companies = JSON.parse(localStorage.getItem('iv2_co')||'[]');
+let sessions  = JSON.parse(localStorage.getItem('iv2_ss')||'[]');
+
+let curCo = null, curQs = [], curAs = [], curQi = 0, busy = false;
+
+function save(){
+  localStorage.setItem('iv2_co',JSON.stringify(companies));
+  localStorage.setItem('iv2_ss',JSON.stringify(sessions));
+}
+
+/* ===== NAV ===== */
+function nav(page){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('v-'+page).classList.add('on');
+  document.getElementById('ni-'+page).classList.add('on');
+  window.scrollTo(0,0);
+  if(page==='home') renderHome();
+  if(page==='companies') renderCo();
+  if(page==='interview') resetIV();
+  if(page==='stock') renderStock();
+}
+
+/* ===== HOME ===== */
+function renderHome(){
+  document.getElementById('st-sess').textContent = sessions.length;
+  document.getElementById('st-co').textContent = companies.length;
+  const all = sessions.flatMap(s=>s.qs.map(q=>q.score).filter(Boolean));
+  document.getElementById('st-avg').textContent = all.length ? (all.reduce((a,b)=>a+b,0)/all.length).toFixed(1) : '-';
+  renderWeak('h-weak');
+  const rec = [...sessions].reverse().slice(0,3);
+  const el = document.getElementById('h-recent');
+  el.innerHTML = rec.length ? rec.map(sessCard).join('') : `<div class="empty"><p>まだ練習記録がありません</p></div>`;
+}
+
+function sessCard(s){
+  const co = companies.find(c=>c.id===s.coId);
+  const sc = s.qs.map(q=>q.score).filter(Boolean);
+  const avg = sc.length ? (sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(1) : '-';
+  const dt = new Date(s.date).toLocaleDateString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  const bc = avg>=4?'bs':avg>=3?'bp':avg!=='-'?'bw':'bp';
+  return `<div class="si" onclick="showSess('${s.id}')">
+    <div class="sh">
+      <div><div style="font-size:14px;font-weight:700">${co?co.name:'不明'}</div><div class="sd">${dt} · ${s.qs.length}問</div></div>
+      <span class="badge ${bc}">avg ${avg}</span>
+    </div>
+    <div>${s.qs.map(q=>`<span class="chip">${q.cat}</span>`).join('')}</div>
+  </div>`;
+}
+
+/* ===== WEAKNESS ===== */
+function getWeak(){
+  const d={};CATS.forEach(c=>{d[c]={t:0,n:0}});
+  sessions.forEach(s=>s.qs.forEach(q=>{if(q.score&&d[q.cat]){d[q.cat].t+=q.score;d[q.cat].n++}}));
+  return CATS.filter(c=>d[c].n>0).map(c=>({cat:c,avg:d[c].t/d[c].n,n:d[c].n})).sort((a,b)=>a.avg-b.avg);
+}
+function renderWeak(id){
+  const data=getWeak(),el=document.getElementById(id);
+  if(!data.length){el.innerHTML=`<div class="empty" style="padding:20px"><p>練習を重ねると分析結果が表示されます</p></div>`;return}
+  el.innerHTML=data.map(d=>{
+    const pct=(d.avg/5)*100;
+    const col=d.avg<3?'var(--danger)':d.avg<4?'var(--warn)':'var(--success)';
+    return `<div class="wr"><div class="wc">${d.cat}</div><div class="wb"><div class="wbf" style="width:${pct}%;background:${col}"></div></div><div class="ws" style="color:${col}">${d.avg.toFixed(1)}</div></div>`;
+  }).join('');
+}
+
+/* ===== COMPANIES ===== */
+function renderCo(){
+  const el=document.getElementById('co-list');
+  if(!companies.length){
+    el.innerHTML=`<div class="empty"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><p>企業が登録されていません<br>右上の「追加」から登録しよう</p></div>`;
+    return;
+  }
+  el.innerHTML=companies.map(c=>`
+    <div class="cc">
+      <div class="ci"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+      <div style="flex:1"><div class="cn">${c.name}</div><div class="cr">${c.role}</div></div>
+      <button class="btn btn-d" onclick="delCo('${c.id}',event)">削除</button>
+    </div>`).join('');
+}
+function openAddCo(){
+  ['c-name','c-role','c-note'].forEach(id=>document.getElementById(id).value='');
+  openMo('mo-co');
+}
+function saveCo(){
+  const name=document.getElementById('c-name').value.trim();
+  const role=document.getElementById('c-role').value.trim();
+  if(!name||!role){toast('企業名と職種を入力してください');return}
+  companies.push({id:Date.now().toString(),name,role,note:document.getElementById('c-note').value.trim(),created:Date.now()});
+  save();closeMo('mo-co');renderCo();toast('登録しました');
+}
+function delCo(id,e){
+  e.stopPropagation();
+  if(!confirm('この企業を削除しますか？'))return;
+  companies=companies.filter(c=>c.id!==id);save();renderCo();toast('削除しました');
+}
+
+/* ===== INTERVIEW ===== */
+function resetIV(){
+  curCo=null;curQs=[];curAs=[];curQi=0;busy=false;
+  document.getElementById('iv-setup').style.display='block';
+  document.getElementById('iv-load').style.display='none';
+  document.getElementById('iv-active').style.display='none';
+  document.getElementById('iv-res').style.display='none';
+  document.getElementById('iv-startbtn').disabled=true;
+  renderIVCoList();
+}
+function renderIVCoList(){
+  const el=document.getElementById('iv-colist');
+  if(!companies.length){
+    el.innerHTML=`<div class="card" style="text-align:center;padding:20px"><div style="color:var(--muted);font-size:14px;margin-bottom:12px">先に企業を登録してください</div><button class="btn btn-s" onclick="nav('companies')">企業を登録する</button></div>`;
+    return;
+  }
+  el.innerHTML=companies.map(c=>`
+    <div class="cc" id="iv-c-${c.id}" onclick="selCo('${c.id}')">
+      <div class="ci"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+      <div style="flex:1"><div class="cn">${c.name}</div><div class="cr">${c.role}</div></div>
+    </div>`).join('');
+}
+function selCo(id){
+  curCo=companies.find(c=>c.id===id);
+  document.querySelectorAll('#iv-colist .cc').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('iv-c-'+id).classList.add('sel');
+  document.getElementById('iv-startbtn').disabled=false;
+}
+
+async function startIV(){
+  if(!curCo)return;
+  const n=parseInt(document.getElementById('iv-qn').value);
+  document.getElementById('iv-setup').style.display='none';
+  document.getElementById('iv-load').style.display='block';
+  try{
+    curQs=await genQs(curCo,n);
+    curAs=[];curQi=0;
+    document.getElementById('iv-load').style.display='none';
+    document.getElementById('iv-active').style.display='block';
+    document.getElementById('iv-co-label').textContent=curCo.name+' · '+curCo.role;
+    renderDots();renderQ();
+  }catch(e){
+    document.getElementById('iv-load').style.display='none';
+    document.getElementById('iv-setup').style.display='block';
+    toast('エラーが発生しました。もう一度お試しください');
+    console.error(e);
+  }
+}
+
+function renderDots(){
+  document.getElementById('iv-dots').innerHTML=curQs.map((_,i)=>`<div class="pd ${i<curQi?'done':i===curQi?'cur':''}"></div>`).join('');
+  document.getElementById('iv-prog-txt').textContent=`${curQi+1} / ${curQs.length}問`;
+}
+
+function renderQ(){
+  const chat=document.getElementById('iv-chat');
+  chat.innerHTML='';
+  const q=curQs[curQi];
+  const b=document.createElement('div');
+  b.className='bubble ai fi';
+  b.innerHTML=`<div style="font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px">${q.cat}</div>${q.q}`;
+  chat.appendChild(b);
+  document.getElementById('iv-ans').value='';
+  document.getElementById('iv-inp').style.display='block';
+  document.getElementById('iv-next').style.display='none';
+  document.getElementById('iv-subbtn').disabled=false;
+  setTimeout(()=>document.getElementById('iv-ans').scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+}
+
+async function submitAns(){
+  const ans=document.getElementById('iv-ans').value.trim();
+  if(!ans){toast('回答を入力してください');return}
+  if(busy)return;busy=true;
+  document.getElementById('iv-subbtn').disabled=true;
+  const chat=document.getElementById('iv-chat');
+  const ub=document.createElement('div');ub.className='bubble user fi';ub.textContent=ans;chat.appendChild(ub);
+  document.getElementById('iv-inp').style.display='none';
+  const ld=document.createElement('div');
+  ld.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 0';
+  ld.innerHTML=`<div class="spin"></div><span style="font-size:13px;color:var(--muted)">評価中...</span>`;
+  chat.appendChild(ld);ub.scrollIntoView({behavior:'smooth',block:'nearest'});
+  try{
+    const q=curQs[curQi];
+    const fb=await getFB(q,ans,curCo);
+    ld.remove();
+    const sc=fb.score;
+    const col=sc>=4?'var(--success)':sc>=3?'var(--warn)':'var(--danger)';
+    const fb2=document.createElement('div');fb2.className='bubble fb fi';
+    fb2.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--success)">AIフィードバック</div>
+        <div style="font-size:20px;font-weight:900;color:${col}">${sc}<span style="font-size:11px;color:var(--dim)">/5</span></div>
+      </div>
+      <div class="sbw"><div class="sbar"><div class="sbf" style="width:${sc*20}%"></div></div></div>
+      <div style="font-size:13px;line-height:1.7;margin:10px 0">${fb.comment}</div>
+      <div style="font-size:12px;color:var(--accent);font-weight:700;margin-bottom:4px">改善ポイント</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6">${fb.tip}</div>`;
+    chat.appendChild(fb2);
+    curAs.push({q:q.q,cat:q.cat,ans,score:sc,comment:fb.comment,tip:fb.tip});
+    fb2.scrollIntoView({behavior:'smooth',block:'nearest'});
+    const isLast=curQi>=curQs.length-1;
+    document.getElementById('iv-nextbtn').textContent=isLast?'結果を見る →':'次の質問へ →';
+    document.getElementById('iv-next').style.display='block';
+  }catch(e){
+    ld.remove();document.getElementById('iv-inp').style.display='block';
+    document.getElementById('iv-subbtn').disabled=false;
+    toast('評価中にエラーが発生しました');console.error(e);
+  }
+  busy=false;
+}
+
+function nextQ(){
+  curQi++;
+  if(curQi>=curQs.length){showRes();return}
+  renderDots();renderQ();
+  document.getElementById('iv-chat').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function endConfirm(){
+  if(confirm('面接を終了しますか？（回答済みの分は保存されます）')){
+    if(curAs.length>0)saveSession();
+    resetIV();
+  }
+}
+
+function showRes(){
+  const sc=curAs.map(a=>a.score);
+  const avg=sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(1):'0';
+  saveSession();
+  document.getElementById('iv-active').style.display='none';
+  document.getElementById('iv-res').style.display='block';
+  document.getElementById('iv-fscore').textContent=avg;
+  document.getElementById('iv-breakdown').innerHTML=`
+    <div style="font-size:13px;font-weight:700;color:var(--pale);margin-bottom:12px">質問ごとの評価</div>
+    ${curAs.map((a,i)=>{
+      const col=a.score>=4?'var(--success)':a.score>=3?'var(--warn)':'var(--danger)';
+      return `<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="chip">${a.cat}</span>
+          <span style="font-weight:900;color:${col}">${a.score}/5</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5">${a.q.substring(0,70)}${a.q.length>70?'...':''}</div>
+      </div>`;
+    }).join('')}`;
+  document.getElementById('iv-res').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function saveSession(){
+  sessions.push({
+    id:Date.now().toString(),coId:curCo.id,date:Date.now(),
+    qs:curAs.map(a=>({q:a.q,cat:a.cat,ans:a.ans,score:a.score,comment:a.comment,tip:a.tip}))
+  });
+  save();
+}
+
+/* ===== STOCK ===== */
+function renderStock(){
+  renderWeak('sk-weak');
+  const fco=document.getElementById('sk-fco');
+  const cur=fco.value;
+  fco.innerHTML='<option value="">全企業</option>'+companies.map(c=>`<option value="${c.id}" ${c.id===cur?'selected':''}>${c.name}</option>`).join('');
+  let data=cur?sessions.filter(s=>s.coId===cur):sessions;
+  data=[...data].reverse();
+  const el=document.getElementById('sk-sess');
+  el.innerHTML=data.length?data.map(sessCard).join(''):`<div class="empty"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><p>練習履歴がありません</p></div>`;
+}
+
+/* ===== SESSION DETAIL ===== */
+function showSess(id){
+  const s=sessions.find(x=>x.id===id);if(!s)return;
+  const co=companies.find(c=>c.id===s.coId);
+  const dt=new Date(s.date).toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('mo-sess-title').textContent=(co?.name||'不明')+' 模擬面接';
+  document.getElementById('mo-sess-body').innerHTML=`
+    <div style="font-size:12px;color:var(--dim);margin-bottom:16px">${dt}</div>
+    ${s.qs.map((q,i)=>`
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span class="chip">${q.cat}</span>
+          <span style="font-size:11px;color:var(--dim)">Q${i+1}</span>
+        </div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;line-height:1.5">${q.q}</div>
+        <div style="font-size:12px;color:var(--muted);background:var(--card);border-radius:10px;padding:10px;margin-bottom:8px;line-height:1.6">${q.ans}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div class="sbar" style="flex:1"><div class="sbf" style="width:${q.score*20}%"></div></div>
+          <span style="font-size:13px;font-weight:900;color:${q.score>=4?'var(--success)':q.score>=3?'var(--warn)':'var(--danger)'}">${q.score}/5</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5">${q.comment||''}</div>
+      </div>
+      <div class="divider"></div>`).join('')}`;
+  openMo('mo-sess');
+}
+
+/* ===== API ===== */
+async function genQs(co,n){
+  const prompt=`あなたは日本の就職面接の面接官です。
+以下の企業・職種への応募者に対する面接質問を${n}個生成してください。
+
+企業名: ${co.name}
+応募職種: ${co.role}
+${co.note?'補足情報: '+co.note:''}
+
+使用するカテゴリ（バランスよく選ぶ）: ${CATS.join('、')}
+
+JSONのみで回答してください（前後に余分なテキスト・マークダウン記法不要）:
+[{"q":"質問文","cat":"カテゴリ名"},...]`;
+
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  });
+  const d=await r.json();
+  return JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
+}
+
+async function getFB(q,ans,co){
+  const prompt=`あなたは日本の就職面接の評価者です。以下を評価してください。
+
+企業: ${co.name} / 職種: ${co.role}
+カテゴリ: ${q.cat}
+質問: ${q.q}
+回答: ${ans}
+
+JSONのみで回答してください（前後にテキスト・マークダウン不要）:
+{"score":1〜5の整数,"comment":"評価コメント（2〜3文、具体的に）","tip":"改善アドバイス（1〜2文）"}
+
+評価基準: 5=非常に優秀/具体的で説得力あり, 4=良い/概ね的確, 3=普通/具体性不足, 2=不十分/曖昧, 1=要改善/質問と乖離`;
+
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  });
+  const d=await r.json();
+  return JSON.parse(d.content[0].text.replace(/```json|```/g,'').trim());
+}
+
+/* ===== UTILS ===== */
+function openMo(id){document.getElementById(id).classList.add('on')}
+function closeMo(id){document.getElementById(id).classList.remove('on')}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
+
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2500);
+}
+
+/* ===== INIT ===== */
+renderHome();
+</script>
+</body>
+</html>
