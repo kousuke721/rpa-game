@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>転職活動マネージャー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-s:#1a0a2e;--bg-m:#2d1b69;--bg-e:#6b3fa0;
+  --card:rgba(237,228,255,.10);--card2:rgba(237,228,255,.15);
+  --border:rgba(168,85,247,.22);--border2:rgba(168,85,247,.38);
+  --primary:#A855F7;--primary-dim:rgba(168,85,247,.20);
+  --accent:#E040FB;--accent-dim:rgba(224,64,251,.15);
+  --success:#6ee7b7;--success-dim:rgba(110,231,183,.15);
+  --warn:#fbbf24;--warn-dim:rgba(251,191,36,.15);
+  --danger:#f87171;--danger-dim:rgba(248,113,113,.15);
+  --text:#FDFAFF;--muted:rgba(195,155,211,.85);
+  --dim:rgba(195,155,211,.40);--pale:#C39BD3;
+  --r:14px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%) fixed;min-height:100vh;color:var(--text);font-size:14px}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(12,4,28,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:0 16px;display:flex;align-items:center;gap:2px;height:52px;overflow-x:auto}
+nav::-webkit-scrollbar{display:none}
+.nav-logo{font-weight:900;font-size:14px;letter-spacing:.04em;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:10px;white-space:nowrap;flex-shrink:0}
+.nav-tab{display:flex;align-items:center;gap:5px;padding:6px 11px;border-radius:7px;cursor:pointer;color:var(--muted);font-size:12px;font-weight:500;border:none;background:none;transition:all .2s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;flex-shrink:0}
+.nav-tab:hover{background:var(--card);color:var(--text)}
+.nav-tab.active{background:var(--primary-dim);color:var(--primary)}
+.nav-tab svg{width:13px;height:13px;flex-shrink:0}
+
+/* MAIN */
+main{padding:20px 16px;max-width:980px;margin:0 auto}
+.section{display:none}
+.section.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+
+/* SEC TITLE */
+.sec-title{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--pale);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.bp{background:var(--primary-dim);color:var(--primary)}
+.ba{background:var(--accent-dim);color:var(--accent)}
+.bs{background:var(--success-dim);color:var(--success)}
+.bw{background:var(--warn-dim);color:var(--warn)}
+.bd{background:var(--danger-dim);color:var(--danger)}
+.bm{background:rgba(195,155,211,.12);color:var(--muted)}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;border:none;font-family:'Noto Sans JP',sans-serif;transition:all .2s;text-decoration:none}
+.btn svg{width:13px;height:13px;flex-shrink:0}
+.btn-primary{background:linear-gradient(135deg,#6B3FA0,#E040FB);color:#fff;box-shadow:0 0 12px rgba(168,85,247,.25)}
+.btn-primary:hover{box-shadow:0 0 24px rgba(224,64,251,.4);transform:translateY(-1px)}
+.btn-ghost{background:var(--card);border:1px solid var(--border);color:var(--muted)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+.btn-sm{padding:4px 9px;font-size:11px}
+.btn-danger{background:var(--danger-dim);border:1px solid rgba(248,113,113,.3);color:var(--danger)}
+.btn-success{background:var(--success-dim);border:1px solid rgba(110,231,183,.3);color:var(--success)}
+
+/* STATS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center}
+.stat-num{font-size:26px;font-weight:900;line-height:1}
+.s-primary .stat-num{background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.s-success .stat-num{color:var(--success)}
+.s-warn .stat-num{color:var(--warn)}
+.s-accent .stat-num{color:var(--accent)}
+.stat-label{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* COUNTDOWN */
+.countdown-card{background:linear-gradient(135deg,rgba(107,63,160,.35),rgba(224,64,251,.18));border:1px solid var(--border2);border-radius:var(--r);padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.cd-num{font-size:50px;font-weight:900;line-height:1;background:linear-gradient(135deg,#A855F7,#E040FB);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'JetBrains Mono',monospace;min-width:80px}
+.cd-label{font-size:14px;font-weight:700}
+.cd-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* ACTION ITEM */
+.action-item{display:flex;align-items:flex-start;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.action-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.action-title{font-size:12px;font-weight:600}
+.action-sub{font-size:10px;color:var(--muted);margin-top:1px}
+.action-date{margin-left:auto;font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+
+/* PROGRESS */
+.prog-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:5px}
+.prog-fill{height:100%;background:linear-gradient(90deg,#A855F7,#E040FB);border-radius:2px;transition:width .4s}
+
+/* KANBAN */
+.kanban-wrap{overflow-x:auto;padding-bottom:8px}
+.kanban-wrap::-webkit-scrollbar{height:5px}
+.kanban-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.kanban{display:flex;gap:10px;min-width:max-content;align-items:flex-start}
+.kanban-col{width:175px;background:rgba(13,7,24,.4);border:1px solid var(--border);border-radius:var(--r);padding:10px;flex-shrink:0}
+.kanban-col-title{font-size:10px;font-weight:700;color:var(--pale);letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase}
+.kanban-count{font-size:10px;background:var(--primary-dim);color:var(--primary);padding:1px 6px;border-radius:10px}
+.kanban-card{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:9px 10px;margin-bottom:6px;cursor:pointer;transition:border-color .15s,transform .15s}
+.kanban-card:hover{border-color:var(--primary);transform:translateY(-1px)}
+.kanban-card-name{font-size:11px;font-weight:700;margin-bottom:3px}
+.kanban-card-role{font-size:10px;color:var(--muted)}
+.kanban-empty{font-size:10px;color:var(--dim);text-align:center;padding:10px 0}
+.kanban-col.col-offer{border-color:rgba(110,231,183,.3)}
+.kanban-col.col-rejected{border-color:rgba(248,113,113,.2)}
+
+/* COMPANY CARD */
+.company-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px;transition:border-color .2s}
+.company-card:hover{border-color:var(--border2)}
+.cc-header{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:10px}
+.cc-icon{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,#6B3FA0,#E040FB);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cc-icon svg{width:18px;height:18px;color:#fff}
+.cc-name{font-size:14px;font-weight:700}
+.cc-role{font-size:11px;color:var(--muted);margin-top:1px}
+.cc-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.cc-body{padding:0 16px 14px}
+
+/* PIPELINE */
+.pipeline{display:flex;margin:10px 0;border-radius:6px;overflow:hidden}
+.pipe-step{flex:1;text-align:center;padding:5px 2px;font-size:9px;font-weight:500;color:var(--dim);cursor:pointer;transition:all .15s;border-right:1px solid rgba(168,85,247,.1)}
+.pipe-step:last-child{border-right:none}
+.pipe-step:hover{background:var(--primary-dim);color:var(--primary)}
+.pipe-step.done{background:var(--primary-dim);color:var(--primary)}
+.pipe-step.current{background:linear-gradient(135deg,rgba(168,85,247,.35),rgba(224,64,251,.3));color:var(--accent);font-weight:700}
+.pipe-step.rejected-step{background:var(--danger-dim);color:var(--danger)}
+
+/* EXPAND */
+.expand-content{display:none;margin-top:10px;animation:fadeIn .2s ease}
+.expand-content.open{display:block}
+
+/* CHECKLIST */
+.checklist-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.checklist-item:last-child{border-bottom:none}
+.check-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.check-box.ck{background:var(--primary);border-color:var(--primary)}
+.check-box svg{width:9px;height:9px;color:#fff;display:none}
+.check-box.ck svg{display:block}
+.check-text{font-size:12px}
+.check-text.ck{text-decoration:line-through;color:var(--dim)}
+
+/* AGENT CARD */
+.agent-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.agent-header{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.agent-avatar{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;color:#fff}
+.agent-body{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.agent-row{display:flex;align-items:flex-start;gap:8px}
+.arl{font-size:10px;color:var(--pale);font-weight:700;min-width:68px;padding-top:1px;text-transform:uppercase;letter-spacing:.04em}
+.arv{font-size:12px;line-height:1.5;flex:1}
+
+/* MEETING */
+.meeting-item{display:flex;align-items:center;gap:8px;background:var(--accent-dim);border:1px solid rgba(224,64,251,.2);border-radius:7px;padding:8px 10px}
+.meeting-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);font-weight:600;min-width:80px}
+.meeting-label{font-size:11px;color:var(--muted);flex:1}
+.meeting-actions{display:flex;gap:4px;flex-shrink:0}
+
+/* TASK */
+.task-item{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:background .15s}
+.task-item:hover{background:var(--card2)}
+.task-item.done{opacity:.5}
+.task-ck{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.task-ck.ck{background:var(--primary);border-color:var(--primary)}
+.task-ck.ck svg{display:block!important}
+.task-ck svg{width:9px;height:9px;color:#fff;display:none}
+.task-text{font-size:12px;flex:1}
+.task-item.done .task-text{text-decoration:line-through;color:var(--dim)}
+.task-due{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--dim)}
+.task-co{font-size:10px;color:var(--primary);background:var(--primary-dim);padding:1px 6px;border-radius:10px;white-space:nowrap}
+
+/* SNIPPET */
+.snippet-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.snippet-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;display:flex;flex-direction:column}
+.snippet-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.snippet-cat{font-size:10px;color:var(--muted);margin-bottom:10px}
+.snippet-preview{font-size:11px;color:var(--muted);line-height:1.6;flex:1;max-height:80px;overflow:hidden;mask-image:linear-gradient(to bottom,#000 50%,transparent 100%)}
+.snippet-actions{display:flex;gap:6px;margin-top:10px}
+
+/* MEMO */
+.memo-box{background:rgba(13,7,24,.5);border:1px solid var(--border);border-radius:7px;padding:8px 10px;font-size:12px;color:var(--muted);line-height:1.6;width:100%;resize:vertical;min-height:60px;font-family:'Noto Sans JP',sans-serif;outline:none}
+.memo-box:focus{border-color:var(--primary);color:var(--text)}
+
+/* DOC LINK */
+.doc-link{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--primary);text-decoration:none;padding:3px 8px;background:var(--primary-dim);border-radius:6px}
+.doc-link:hover{background:rgba(168,85,247,.3)}
+
+/* LOG */
+.log-entry{background:rgba(13,7,24,.5);border-left:3px solid var(--primary);border-radius:0 7px 7px 0;padding:10px 12px;margin-bottom:8px}
+.log-date{font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;margin-bottom:5px}
+.log-fl{font-size:10px;color:var(--pale);font-weight:700;margin-top:5px;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+.log-fv{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* COMPARE TABLE */
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th{font-size:10px;color:var(--pale);font-weight:700;padding:6px 10px;text-align:left;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em}
+.compare-table td{font-size:12px;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.compare-table tr:last-child td{border-bottom:none}
+
+/* FILTER BAR */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filter-btn{padding:4px 11px;border-radius:20px;cursor:pointer;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--card);color:var(--muted);transition:all .15s;font-family:'Noto Sans JP',sans-serif}
+.filter-btn:hover,.filter-btn.active{background:var(--primary-dim);border-color:var(--primary);color:var(--primary)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(10,3,25,.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:linear-gradient(135deg,#1e0d3a,#2a1860);border:1px solid var(--border2);border-radius:18px;padding:22px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 0 60px rgba(168,85,247,.2)}
+.modal::-webkit-scrollbar{width:4px}
+.modal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.modal-title{font-size:14px;font-weight:700;margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* FORM */
+.form-group{margin-bottom:12px}
+.form-label{font-size:10px;color:var(--pale);font-weight:700;margin-bottom:5px;display:block;letter-spacing:.05em;text-transform:uppercase}
+.form-input,.form-select,.form-textarea{width:100%;padding:8px 10px;border-radius:7px;background:rgba(13,7,24,.6);border:1px solid var(--border2);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-dim)}
+.form-select option{background:#1a0a2e}
+.form-textarea{resize:vertical;min-height:70px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-hint{font-size:10px;color:var(--dim);margin-top:3px}
+
+/* COPY TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--success-dim);border:1px solid rgba(110,231,183,.3);color:var(--success);padding:10px 16px;border-radius:10px;font-size:12px;font-weight:600;z-index:300;animation:fadeIn .2s ease;display:none}
+.toast.show{display:block}
+
+/* EMPTY */
+.empty{text-align:center;padding:30px;color:var(--dim);font-size:13px}
+
+/* ROWS TOOLBAR */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.toolbar-left{display:flex;gap:6px;flex-wrap:wrap}
+.toolbar-right{display:flex;gap:6px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+@media(max-width:600px){
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .grid2,.snippet-grid,.form-row{grid-template-columns:1fr}
+  main{padding:14px 12px}
+  .cd-num{font-size:38px}
+  .toolbar{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">JOB MGR</span>
+  <button class="nav-tab active" onclick="showTab('dashboard',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    ダッシュボード
+  </button>
+  <button class="nav-tab" onclick="showTab('kanban',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+    カンバン
+  </button>
+  <button class="nav-tab" onclick="showTab('companies',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 11h2m8 0h2M6 15h2m8 0h2M10 21v-4h4v4M3 7l9-4 9 4"/></svg>
+    企業
+  </button>
+  <button class="nav-tab" onclick="showTab('agents',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    エージェント
+  </button>
+  <button class="nav-tab" onclick="showTab('tasks',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    タスク
+  </button>
+  <button class="nav-tab" onclick="showTab('snippets',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    スニペット
+  </button>
+</nav>
+
+<main>
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="section active">
+    <div id="cd-area"></div>
+    <div class="stat-row">
+      <div class="stat-card s-primary"><div class="stat-num" id="st-total">0</div><div class="stat-label">応募・検討中</div></div>
+      <div class="stat-card s-warn"><div class="stat-num" id="st-active">0</div><div class="stat-label">選考中</div></div>
+      <div class="stat-card s-success"><div class="stat-num" id="st-offer">0</div><div class="stat-label">内定</div></div>
+      <div class="stat-card s-accent"><div class="stat-num" id="st-agents">0</div><div class="stat-label">エージェント数</div></div>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="sec-title">直近のアクション</div>
+        <div id="dash-actions"></div>
+      </div>
+      <div>
+        <div class="sec-title">タスク進捗</div>
+        <div class="card" style="padding:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+            <span style="font-size:12px;font-weight:600">全体</span>
+            <span style="font-size:11px;color:var(--muted)" id="dash-prog-label">0/0</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" id="dash-prog-fill" style="width:0%"></div></div>
+          <div style="margin-top:12px" id="dash-task-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KANBAN -->
+  <section id="kanban" class="section">
+    <div class="kanban-wrap"><div class="kanban" id="kanban-board"></div></div>
+  </section>
+
+  <!-- COMPANIES -->
+  <section id="companies" class="section">
+    <div class="toolbar">
+      <div class="toolbar-left filter-bar" style="margin-bottom:0">
+        <button class="filter-btn active" onclick="setCFilter('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setCFilter('主軸',this)">主軸</button>
+        <button class="filter-btn" onclick="setCFilter('副軸',this)">副軸</button>
+        <button class="filter-btn" onclick="setCFilter('検討中',this)">検討中</button>
+        <button class="filter-btn" onclick="setCFilter('rejected',this)">お見送り</button>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="openSalaryCompare()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          給与比較
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="openCompanyModal(null)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          企業を追加
+        </button>
+      </div>
+    </div>
+    <div id="company-list"></div>
+  </section>
+
+  <!-- AGENTS -->
+  <section id="agents" class="section">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+      <button class="btn btn-primary btn-sm" onclick="openAgentModal(null)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        エージェントを追加
+      </button>
+    </div>
+    <div id="agent-list"></div>
+    <div style="margin-top:16px">
+      <div class="sec-title">面談チェックリスト</div>
+      <div class="card">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">面談時に必ず伝えるべき情報</div>
+        <div id="agent-cl"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TASKS -->
+  <section id="tasks" class="section">
+    <div class="toolbar">
+      <div class="toolbar-left filter-bar" style="margin-bottom:0" id="task-fb">
+        <button class="filter-btn active" onclick="setTFilter('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setTFilter('応募準備',this)">応募準備</button>
+        <button class="filter-btn" onclick="setTFilter('面接対策',this)">面接対策</button>
+        <button class="filter-btn" onclick="setTFilter('エージェント',this)">エージェント</button>
+        <button class="filter-btn" onclick="setTFilter('スキルアップ',this)">スキルアップ</button>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openTaskModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          タスクを追加
+        </button>
+      </div>
+    </div>
+    <div id="task-list"></div>
+  </section>
+
+  <!-- SNIPPETS -->
+  <section id="snippets" class="section">
+    <div class="toolbar">
+      <div class="toolbar-left filter-bar" style="margin-bottom:0" id="sn-fb">
+        <button class="filter-btn active" onclick="setSnFilter('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setSnFilter('common',this)">共通</button>
+        <div id="sn-co-filters" style="display:contents"></div>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-primary btn-sm" onclick="openSnippetModal(null)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          スニペットを追加
+        </button>
+      </div>
+    </div>
+    <div class="snippet-grid" id="snippet-grid"></div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlay(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title"></div>
+    <div id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+// ============================================================
+// CONSTANTS
+// ============================================================
+const STEPS = ['準備中','応募済み','書類選考','一次面接','最終面接','内定','お見送り'];
+const PBADGE = {'主軸':'ba','副軸':'bp','検討中':'bw'};
+const AVATARBG = [
+  'linear-gradient(135deg,#0070f3,#00b4d8)',
+  'linear-gradient(135deg,#e63946,#ff6b6b)',
+  'linear-gradient(135deg,#6B3FA0,#E040FB)',
+  'linear-gradient(135deg,#059669,#34d399)',
+  'linear-gradient(135deg,#f59e0b,#ef4444)'
+];
+const INTERVIEW_CL = [
+  '企業HPの最終確認',
+  '志望動機の声出し練習（30秒以内）',
+  '身だしなみチェック',
+  '必要書類・筆記用具の準備',
+  '交通経路・所要時間の確認',
+  '逆質問の準備（2〜3個）',
+  '前回面接ログの振り返り確認'
+];
+const AGENT_CL = [
+  '希望職種：DX・IT・AI系（QAエンジニア、RPA等）',
+  '希望年収：300万〜（できれば350万以上）',
+  '勤務地：熊本市内・転勤不可',
+  '通勤手当：支給ありを希望',
+  'CENTRIC短期退職の理由を明確に説明する',
+  'ワークスアプリケーションズ QAエンジニアを第一志望と伝える',
+  '雇用形態：正社員・完全週休二日'
+];
+
+// ============================================================
+// STATE & STORAGE
+// ============================================================
+let S = {};
+let cFilter = 'all';
+let tFilter = 'all';
+let snFilter = 'all';
+let MC = {}; // modal context
+let _uid = Date.now();
+const uid = () => ++_uid;
+
+const DEFAULT = () => ({
+  companies:[
+    {id:1,name:'ワークスアプリケーションズ',role:'QAエンジニア',priority:'主軸',agentIds:[1,2],status:0,
+     memo:'第一志望。面接対策資料・志望動機PDF作成済み。',
+     salary:'400〜600万（予想）',conditions:'完全週休2日・社会保険完備・通勤手当要確認',
+     docUrl:'',interviewLogs:[],clDone:Array(7).fill(false),rejectedReason:''},
+    {id:2,name:'株式会社エフ',role:'EC支援カスタマーサポート',priority:'検討中',agentIds:[2],status:0,
+     memo:'年収300〜500万・土日祝・通勤手当なし。\nエージェント相談後に応募判断予定。',
+     salary:'300〜500万',conditions:'完全週休2日・通勤手当なし',
+     docUrl:'',interviewLogs:[],clDone:Array(7).fill(false),rejectedReason:''}
+  ],
+  agents:[
+    {id:1,name:'doda',company:'パーソルキャリア株式会社',contact:'',meetings:[{date:'2026-04-30',label:'初回面談'}],memo:''},
+    {id:2,name:'リクルートエージェント',company:'株式会社リクルート',contact:'',meetings:[{date:'2026-04-30',label:'初回面談'}],memo:''}
+  ],
+  tasks:[
+    {id:1,text:'履歴書・職務経歴書の最終確認',tag:'応募準備',cid:null,done:false,due:'2026-04-29'},
+    {id:2,text:'退職理由スクリプトの声出し練習（30秒）',tag:'面接対策',cid:null,done:false,due:'2026-04-29'},
+    {id:3,text:'エージェント面談の事前メモ作成',tag:'エージェント',cid:null,done:false,due:'2026-04-29'},
+    {id:4,text:'ワークス QA — 面接Q&Aの見直し',tag:'面接対策',cid:1,done:false,due:''},
+    {id:5,text:'VBA基礎 — マクロ入門（第1章）',tag:'スキルアップ',cid:null,done:true,due:''}
+  ],
+  snippets:[
+    {id:1,title:'退職理由（30秒）',cat:'面談用',cid:null,
+     content:'前職のCENTRICでは、採用面接時に説明を受けた研修内容と実際の業務内容に大きな乖離がありました。本来12週間の体系的な研修が予定されていたにもかかわらず、まともな研修を受けられないまま実務へ送り出される状況で、自身のキャリア形成に合致しないと判断し退職を決意しました。研修を通じてRPA・VBA・Azure AI等の基礎は習得しており、次は研修と実務がきちんと連動した環境で貢献したいと考えています。'},
+    {id:2,title:'自己PR（AI・業務改善）',cat:'面接用',cid:null,
+     content:'前職のピッコマ熊本では、コンテンツ品質管理業務において業務上のボトルネックを特定し、AIツール（Gemini）を活用した業務支援システムを自主的に設計・構築しました。導入後は1件あたりの作業時間を約50%削減し、月間300時間規模の工数削減効果をもたらし、代表取締役から直接評価されました。「課題の本質を掴み、ツールで解決する」アプローチを強みとしています。'},
+    {id:3,title:'志望動機（ワークス QA）',cat:'面接用',cid:1,
+     content:'ERPという日本の大手企業の基幹業務を支えるプロダクトのQAに携わりながら、品質を通じてお客様の業務に直接貢献できる環境に魅力を感じています。前職でのAI活用・業務改善の経験から、「問題を的確に特定し仕組みとして解決する」姿勢はQAの本質と重なると感じています。熊本在住で長期的に腰を据えて貢献したいと考えており、貴社の体系的なキャリアパスと安定した事業基盤に強く魅力を感じています。'}
+  ],
+  agentClDone: Array(7).fill(false)
+});
+
+function save(){ try{ localStorage.setItem('jmgr_v3', JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    const d = localStorage.getItem('jmgr_v3');
+    S = d ? JSON.parse(d) : DEFAULT();
+    if(!S.agentClDone) S.agentClDone = Array(7).fill(false);
+    // ensure backward compat fields
+    S.snippets.forEach(s=>{ if(s.cid===undefined) s.cid=null; });
+    S.companies.forEach(c=>{      if(!c.interviewLogs) c.interviewLogs=[];
+      if(!c.clDone) c.clDone=Array(7).fill(false);
+      if(!c.agentIds) c.agentIds=[];
+      if(c.rejectedReason===undefined) c.rejectedReason='';
+    });
+  }catch(e){ S = DEFAULT(); }
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtD(d){ if(!d)return''; const p=d.split('-'); return `${p[1]}/${p[2]}`; }
+function daysTo(ds){
+  if(!ds)return null;
+  const now=new Date(); now.setHours(0,0,0,0);
+  const t=new Date(ds); t.setHours(0,0,0,0);
+  return Math.round((t-now)/(864e5));
+}
+function agentName(id){ const a=S.agents.find(x=>x.id===id); return a?a.name:''; }
+function companyName(id){ const c=S.companies.find(x=>x.id===id); return c?c.name:''; }
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(id, btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  renderSection(id);
+}
+function renderSection(id){
+  ({dashboard:renderDashboard,kanban:renderKanban,companies:renderCompanies,
+    agents:renderAgents,tasks:renderTasks,snippets:renderSnippets}[id]||(() => {}))();
+}
+function renderAll(){
+  renderDashboard(); renderKanban(); renderCompanies();
+  renderAgents(); renderTasks(); renderSnippets();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard(){
+  renderCountdown();
+  document.getElementById('st-total').textContent = S.companies.filter(c=>c.status<6).length;
+  document.getElementById('st-active').textContent = S.companies.filter(c=>c.status>=1&&c.status<5).length;
+  document.getElementById('st-offer').textContent = S.companies.filter(c=>c.status===5).length;
+  document.getElementById('st-agents').textContent = S.agents.length;
+  renderDashActions();
+  renderDashTasks();
+}
+
+function renderCountdown(){
+  const el = document.getElementById('cd-area');
+  const evts = [];
+  S.agents.forEach(a => a.meetings.forEach(m=>{
+    const d = daysTo(m.date);
+    if(d !== null && d >= 0) evts.push({days:d, label:m.label, sub:a.name, date:m.date});
+  }));
+  evts.sort((a,b)=>a.days-b.days);
+  if(!evts.length){ el.innerHTML=''; return; }
+  const e = evts[0];
+  const urgency = e.days===0?'今日！':e.days===1?'明日':e.days<=3?'もうすぐ':'';
+  el.innerHTML = `
+    <div class="countdown-card">
+      <div class="cd-num">${e.days}</div>
+      <div>
+        <div class="cd-label">日後 — ${esc(e.label)}${urgency?` <span class="badge ba">${urgency}</span>`:''}</div>
+        <div class="cd-sub">${esc(e.sub)}&nbsp;·&nbsp;${e.date}</div>
+        ${evts.length>1?`<div class="cd-sub" style="margin-top:3px;color:var(--dim)">他${evts.length-1}件のイベントあり</div>`:''}
+      </div>
+    </div>`;
+}
+
+function renderDashActions(){
+  const el = document.getElementById('dash-actions');
+  const items = [];
+  S.agents.forEach(a => a.meetings.forEach(m=>{
+    const d = daysTo(m.date);
+    if(d!==null && d>=0 && d<=14)
+      items.push({color:'var(--accent)',title:`${m.label}（${a.name}）`,sub:'エージェント面談',date:fmtD(m.date),sort:d});
+  }));
+  S.tasks.filter(t=>!t.done && t.due).forEach(t=>{
+    const d = daysTo(t.due);
+    if(d!==null && d>=0 && d<=14)
+      items.push({color:'var(--primary)',title:t.text,sub:t.tag+(t.cid?` · ${companyName(t.cid)}`:''),date:fmtD(t.due),sort:d});
+  });
+  items.sort((a,b)=>a.sort-b.sort);
+  S.tasks.filter(t=>!t.done && !t.due).slice(0,3).forEach(t=>{
+    items.push({color:'var(--dim)',title:t.text,sub:t.tag,date:'',sort:999});
+  });
+  el.innerHTML = items.slice(0,6).map(i=>`
+    <div class="action-item">
+      <div class="action-dot" style="background:${i.color}"></div>
+      <div><div class="action-title">${esc(i.title)}</div><div class="action-sub">${esc(i.sub)}</div></div>
+      ${i.date?`<div class="action-date">${i.date}</div>`:''}
+    </div>`).join('') || '<div class="empty">アクションなし</div>';
+}
+
+function renderDashTasks(){
+  const done = S.tasks.filter(t=>t.done).length;
+  const total = S.tasks.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('dash-prog-label').textContent = `${done}/${total}`;
+  document.getElementById('dash-prog-fill').style.width = pct+'%';
+  const pending = S.tasks.filter(t=>!t.done).slice(0,4);
+  document.getElementById('dash-task-list').innerHTML = pending.map(t=>`
+    <div class="task-item" onclick="toggleTask(${t.id});renderDashboard()">
+      <div class="task-ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <span class="task-text" style="font-size:11px">${esc(t.text)}</span>
+    </div>`).join('') || (done===total && total>0 ? '<div style="font-size:12px;color:var(--success);padding:6px 0">全タスク完了!</div>' : '');
+}
+
+// ============================================================
+// KANBAN
+// ============================================================
+function renderKanban(){
+  const el = document.getElementById('kanban-board');
+  el.innerHTML = STEPS.map((s,i)=>{
+    const cards = S.companies.filter(c=>c.status===i);
+    const extra = i===5?'col-offer':i===6?'col-rejected':'';
+    return `
+      <div class="kanban-col ${extra}">
+        <div class="kanban-col-title">${esc(s)}<span class="kanban-count">${cards.length}</span></div>
+        ${cards.map(c=>`
+          <div class="kanban-card" onclick="openCompanyModal(${c.id})">
+            <div class="kanban-card-name">${esc(c.name)}</div>
+            <div class="kanban-card-role">${esc(c.role)}</div>
+            <div style="margin-top:5px"><span class="badge ${PBADGE[c.priority]||'bm'}">${c.priority}</span></div>
+          </div>`).join('')}
+        ${!cards.length?'<div class="kanban-empty">—</div>':''}
+      </div>`;
+  }).join('');
+}
+
+// ============================================================
+// COMPANIES
+// ============================================================
+function renderCompanies(){
+  const el = document.getElementById('company-list');
+  let list = S.companies;
+  if(cFilter==='rejected') list = list.filter(c=>c.status===6);
+  else if(cFilter!=='all') list = list.filter(c=>c.priority===cFilter && c.status!==6);
+  else list = list.filter(c=>c.status!==6);
+  if(!list.length){ el.innerHTML='<div class="empty">企業が登録されていません</div>'; return; }
+  el.innerHTML = list.map(c=>renderCompanyCard(c)).join('');
+}
+
+function renderCompanyCard(c){
+  const agents = c.agentIds.map(agentName).filter(Boolean).join(' / ');
+  const ckCnt = c.clDone.filter(Boolean).length;
+  const pipeHtml = STEPS.map((s,i)=>{
+    let cls = i<c.status?'done':i===c.status?'current':'';
+    if(c.status===6 && i===6) cls='rejected-step';
+    return `<div class="pipe-step ${cls}" onclick="setCS(${c.id},${i})" title="${s}">${s}</div>`;
+  }).join('');
+  return `
+    <div class="company-card" id="cc-${c.id}">
+      <div class="cc-header">
+        <div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 11h2m8 0h2M6 15h2m8 0h2M10 21v-4h4v4M3 7l9-4 9 4"/></svg></div>
+        <div style="flex:1">
+          <div class="cc-name">${esc(c.name)}</div>
+          <div class="cc-role">${esc(c.role)}</div>
+          <div class="cc-meta">
+            <span class="badge ${PBADGE[c.priority]||'bm'}">${c.priority}</span>
+            ${agents?`<span class="badge bm">${esc(agents)}</span>`:''}
+            ${c.docUrl?`<a href="${esc(c.docUrl)}" target="_blank" class="doc-link"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>書類</a>`:''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="openCompanyModal(${c.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            編集
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="rmCompany(${c.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="cc-body">
+        <div class="pipeline">${pipeHtml}</div>
+        ${c.salary?`<div style="font-size:11px;color:var(--muted);margin-bottom:6px"><span style="color:var(--pale);font-weight:700">給与：</span>${esc(c.salary)}</div>`:''}
+        <textarea class="memo-box" onchange="updCMemo(${c.id},this.value)">${esc(c.memo)}</textarea>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-ghost btn-sm" onclick="toggleExpand('ecl-${c.id}',this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            面接チェックリスト (${ckCnt}/${c.clDone.length})
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="openInterviewLog(${c.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            面接ログ (${c.interviewLogs.length})
+          </button>
+        </div>
+        <div id="ecl-${c.id}" class="expand-content">
+          ${INTERVIEW_CL.map((item,i)=>`
+            <div class="checklist-item" onclick="toggleCL(${c.id},${i})">
+              <div class="check-box ${c.clDone[i]?'ck':''}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <span class="check-text ${c.clDone[i]?'ck':''}">${esc(item)}</span>
+            </div>`).join('')}
+        </div>
+        ${c.status===6?`
+          <div style="margin-top:10px;padding:10px;background:var(--danger-dim);border-radius:7px;border:1px solid rgba(248,113,113,.2)">
+            <div style="font-size:10px;color:var(--danger);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">お見送り理由</div>
+            <textarea class="memo-box" style="min-height:44px" onchange="updRejReason(${c.id},this.value)">${esc(c.rejectedReason)}</textarea>
+          </div>`:''}
+      </div>
+    </div>`;
+}
+
+function setCFilter(val, btn){
+  cFilter=val;
+  document.querySelectorAll('#companies .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCompanies();
+}
+function setCS(cid, status){
+  const c = S.companies.find(x=>x.id===cid);
+  if(c){ c.status=status; save(); renderCompanies(); renderKanban(); renderDashboard(); }
+}
+function updCMemo(id, val){ const c=S.companies.find(x=>x.id===id); if(c){c.memo=val;save();} }
+function updRejReason(id, val){ const c=S.companies.find(x=>x.id===id); if(c){c.rejectedReason=val;save();} }
+function toggleCL(cid, idx){
+  const c=S.companies.find(x=>x.id===cid);
+  if(c){c.clDone[idx]=!c.clDone[idx];save();renderCompanies();}
+}
+function toggleExpand(contentId, btn){
+  const el=document.getElementById(contentId);
+  el.classList.toggle('open');
+}
+function rmCompanyFromSnippets(id){
+  const c = S.companies.find(x=>x.id===id);
+  if(!c)return;
+  if(!confirm(`「${c.name}」を削除しますか？\n関連スニペットは「共通」に移動します。`))return;
+  S.companies=S.companies.filter(x=>x.id!==id);
+  S.snippets.forEach(s=>{ if(s.cid===id) s.cid=null; });
+  if(snFilter===String(id)) snFilter='all';
+  save();renderAll();
+}
+function rmCompany(id){
+  if(!confirm('この企業を削除しますか？'))return;
+  S.companies=S.companies.filter(x=>x.id!==id);
+  S.snippets.forEach(s=>{ if(s.cid===id) s.cid=null; });
+  save();renderAll();
+}
+
+// ============================================================
+// COMPANY MODAL
+// ============================================================
+function openCompanyModal(id){
+  const c = id ? S.companies.find(x=>x.id===id) : null;
+  MC = {type:'company', editId:id||null};
+  const aopts = S.agents.map(a=>`<option value="${a.id}" ${c&&c.agentIds.includes(a.id)?'selected':''}>${esc(a.name)}</option>`).join('');
+  openModal(
+    c ? `企業を編集 — ${c.name}` : '企業を追加',
+    `<div class="form-row">
+      <div class="form-group"><label class="form-label">会社名</label><input class="form-input" id="cm-name" value="${esc(c?c.name:'')}"></div>
+      <div class="form-group"><label class="form-label">職種・ポジション</label><input class="form-input" id="cm-role" value="${esc(c?c.role:'')}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">優先度</label>
+        <select class="form-select" id="cm-priority">${['主軸','副軸','検討中'].map(p=>`<option ${c&&c.priority===p?'selected':''}>${p}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label class="form-label">選考ステータス</label>
+        <select class="form-select" id="cm-status">${STEPS.map((s,i)=>`<option value="${i}" ${c&&c.status===i?'selected':''}>${s}</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">担当エージェント（複数選択可）</label>
+      <select class="form-select" id="cm-agents" multiple style="height:66px">${aopts||'<option disabled>先にエージェントを登録してください</option>'}</select>
+      <div class="form-hint">Mac: Cmd+クリック / Win: Ctrl+クリック で複数選択</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">給与</label><input class="form-input" id="cm-salary" placeholder="例：400〜600万" value="${esc(c?c.salary:'')}"></div>
+      <div class="form-group"><label class="form-label">書類URL（Drive等）</label><input class="form-input" id="cm-docurl" placeholder="https://..." value="${esc(c?c.docUrl:'')}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">勤務条件メモ</label><textarea class="form-textarea" id="cm-cond">${esc(c?c.conditions:'')}</textarea></div>
+    <div class="form-group"><label class="form-label">メモ</label><textarea class="form-textarea" id="cm-memo">${esc(c?c.memo:'')}</textarea></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
+     <button class="btn btn-primary" onclick="saveCompany()">保存</button>`
+  );
+}
+
+function saveCompany(){
+  const name = document.getElementById('cm-name').value.trim();
+  if(!name){ alert('会社名を入力してください'); return; }
+  const sel = document.getElementById('cm-agents');
+  const agentIds = Array.from(sel.selectedOptions).map(o=>parseInt(o.value));
+  const data = {
+    name, role: document.getElementById('cm-role').value.trim(),
+    priority: document.getElementById('cm-priority').value,
+    status: parseInt(document.getElementById('cm-status').value),
+    agentIds, salary: document.getElementById('cm-salary').value.trim(),
+    docUrl: document.getElementById('cm-docurl').value.trim(),
+    conditions: document.getElementById('cm-cond').value.trim(),
+    memo: document.getElementById('cm-memo').value.trim()
+  };
+  if(MC.editId){
+    Object.assign(S.companies.find(x=>x.id===MC.editId), data);
+  } else {
+    S.companies.push({id:uid(),...data,interviewLogs:[],clDone:Array(7).fill(false),rejectedReason:''});
+  }
+  save(); closeModal(); renderAll();
+}
+
+// ============================================================
+// INTERVIEW LOG
+// ============================================================
+function openInterviewLog(cid){
+  const c = S.companies.find(x=>x.id===cid);
+  if(!c)return;
+  MC = {type:'log', cid};
+  const logs = c.interviewLogs.map(l=>`
+    <div class="log-entry">
+      <div class="log-date">${l.date}</div>
+      <div class="log-fl">聞かれた質問</div><div class="log-fv">${esc(l.q)}</div>
+      ${l.a?`<div class="log-fl">回答・ポイント</div><div class="log-fv">${esc(l.a)}</div>`:''}
+      ${l.r?`<div class="log-fl">反省・改善点</div><div class="log-fv">${esc(l.r)}</div>`:''}
+    </div>`).join('');
+  openModal(
+    `面接ログ — ${c.name}`,
+    `${logs||'<div class="empty" style="padding:12px 0">面接ログはまだありません</div>'}
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:12px;font-weight:700;margin-bottom:10px">新しいログを追加</div>
+      <div class="form-group"><label class="form-label">面接日</label><input class="form-input" id="log-date" type="date"></div>
+      <div class="form-group"><label class="form-label">聞かれた質問</label><textarea class="form-textarea" id="log-q" placeholder="聞かれた内容..."></textarea></div>
+      <div class="form-group"><label class="form-label">回答・ポイント</label><textarea class="form-textarea" id="log-a" placeholder="答えた内容・うまくいった点..."></textarea></div>
+      <div class="form-group"><label class="form-label">反省・改善点</label><textarea class="form-textarea" id="log-r" placeholder="次回への改善点..."></textarea></div>
+    </div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">閉じる</button>
+     <button class="btn btn-primary" onclick="saveLog()">ログを追加</button>`
+  );
+}
+
+function saveLog(){
+  const c = S.companies.find(x=>x.id===MC.cid);
+  if(!c)return;
+  const date = document.getElementById('log-date').value;
+  const q = document.getElementById('log-q').value.trim();
+  if(!date||!q){ alert('面接日と質問を入力してください'); return; }
+  c.interviewLogs.push({id:uid(),date,q,a:document.getElementById('log-a').value.trim(),r:document.getElementById('log-r').value.trim()});
+  save(); closeModal(); renderCompanies();
+}
+
+// ============================================================
+// SALARY COMPARE
+// ============================================================
+function openSalaryCompare(){
+  const rows = S.companies.filter(c=>c.status!==6).map(c=>`
+    <tr>
+      <td><strong>${esc(c.name)}</strong><br><span style="font-size:10px;color:var(--muted)">${esc(c.role)}</span></td>
+      <td>${esc(c.salary)||'—'}</td>
+      <td style="font-size:11px;color:var(--muted)">${esc(c.conditions)||'—'}</td>
+      <td><span class="badge ${PBADGE[c.priority]||'bm'}">${c.priority}</span></td>
+    </tr>`).join('');
+  openModal('給与・条件比較',
+    `<table class="compare-table">
+      <thead><tr><th>企業</th><th>給与</th><th>条件</th><th>優先度</th></tr></thead>
+      <tbody>${rows||'<tr><td colspan="4" style="text-align:center;color:var(--dim)">データなし</td></tr>'}</tbody>
+    </table>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">閉じる</button>`
+  );
+}
+
+// ============================================================
+// AGENTS
+// ============================================================
+function renderAgents(){
+  const el = document.getElementById('agent-list');
+  if(!S.agents.length){ el.innerHTML='<div class="empty">エージェントが登録されていません</div>'; }
+  else el.innerHTML = S.agents.map((a,i)=>renderAgentCard(a,i)).join('');
+  renderAgentCL();
+}
+
+function renderAgentCard(a, ai){
+  const color = AVATARBG[ai%AVATARBG.length];
+  const abbr = a.name.slice(0,2).toUpperCase();
+  const mtgs = a.meetings.map((m,mi)=>`
+    <div class="meeting-item">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="meeting-date">${m.date}</div>
+      <div class="meeting-label">${esc(m.label)}</div>
+      <div class="meeting-actions">
+        <button class="btn btn-ghost btn-sm" onclick="exportICS(${a.id},${mi})" title=".icsをダウンロード">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          .ics
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="openGCal(${a.id},${mi})" title="Googleカレンダーで開く">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          GCal
+        </button>
+      </div>
+    </div>`).join('');
+  return `
+    <div class="agent-card">
+      <div class="agent-header">
+        <div class="agent-avatar" style="background:${color}">${abbr}</div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700">${esc(a.name)}</div>
+          <div style="font-size:11px;color:var(--muted)">${esc(a.company)}</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button class="btn btn-ghost btn-sm" onclick="openAgentModal(${a.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            編集
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="rmAgent(${a.id})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="agent-body">
+        ${mtgs||'<div style="font-size:11px;color:var(--dim)">面談予定なし</div>'}
+        <div class="agent-row"><span class="arl">担当者</span><span class="arv">${esc(a.contact)||'未確認'}</span></div>
+        <div>
+          <div class="form-label" style="margin-bottom:5px">メモ</div>
+          <textarea class="memo-box" onchange="updAMemo(${a.id},this.value)">${esc(a.memo)}</textarea>
+        </div>
+      </div>
+    </div>`;
+}
+
+function updAMemo(id, val){ const a=S.agents.find(x=>x.id===id); if(a){a.memo=val;save();} }
+function rmAgent(id){
+  if(!confirm('このエージェントを削除しますか？'))return;
+  S.agents=S.agents.filter(x=>x.id!==id);
+  save();renderAll();
+}
+
+function renderAgentCL(){
+  document.getElementById('agent-cl').innerHTML = AGENT_CL.map((item,i)=>`
+    <div class="checklist-item" onclick="toggleACL(${i})">
+      <div class="check-box ${S.agentClDone[i]?'ck':''}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <span class="check-text ${S.agentClDone[i]?'ck':''}">${esc(item)}</span>
+    </div>`).join('');
+}
+function toggleACL(i){
+  S.agentClDone[i]=!S.agentClDone[i];
+  save();renderAgentCL();
+}
+
+// ============================================================
+// AGENT MODAL
+// ============================================================
+function openAgentModal(id){
+  const a = id ? S.agents.find(x=>x.id===id) : null;
+  MC = {type:'agent', editId:id||null};
+  const mtgRows = (a?a.meetings:[]).map((m,i)=>mtgRowHTML(i, m.label, m.date)).join('');
+  openModal(
+    a ? `エージェントを編集 — ${a.name}` : 'エージェントを追加',
+    `<div class="form-row">
+      <div class="form-group"><label class="form-label">エージェント名</label><input class="form-input" id="am-name" value="${esc(a?a.name:'')}"></div>
+      <div class="form-group"><label class="form-label">所属会社</label><input class="form-input" id="am-company" value="${esc(a?a.company:'')}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">担当者名</label><input class="form-input" id="am-contact" value="${esc(a?a.contact:'')}"></div>
+    <div class="form-group">
+      <label class="form-label">面談予定</label>
+      <div id="am-mtgs">${mtgRows}</div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:6px" onclick="addMtgRow()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        面談を追加
+      </button>
+    </div>
+    <div class="form-group"><label class="form-label">メモ</label><textarea class="form-textarea" id="am-memo">${esc(a?a.memo:'')}</textarea></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
+     <button class="btn btn-primary" onclick="saveAgent()">保存</button>`
+  );
+}
+
+let _mtgIdx = 0;
+function mtgRowHTML(i, label='', date=''){
+  return `<div class="meeting-item" style="margin-bottom:6px" id="mr-${i}">
+    <input class="form-input" style="flex:1;min-width:0" placeholder="面談名" value="${esc(label)}" data-mfield="label">
+    <input class="form-input" style="width:130px;flex-shrink:0" type="date" value="${date}" data-mfield="date">
+    <button class="btn btn-danger btn-sm" style="flex-shrink:0" onclick="this.closest('[id^=mr-]').remove()">✕</button>
+  </div>`;
+}
+function addMtgRow(){
+  const c = document.getElementById('am-mtgs');
+  const div = document.createElement('div');
+  div.innerHTML = mtgRowHTML('n'+(_mtgIdx++));
+  c.appendChild(div.firstElementChild);
+}
+function saveAgent(){
+  const name = document.getElementById('am-name').value.trim();
+  if(!name){ alert('エージェント名を入力してください'); return; }
+  const rows = document.getElementById('am-mtgs').querySelectorAll('[id^="mr-"]');
+  const meetings = [];
+  rows.forEach(row=>{
+    const label = row.querySelector('[data-mfield="label"]').value.trim();
+    const date = row.querySelector('[data-mfield="date"]').value;
+    if(date) meetings.push({label:label||'面談', date});
+  });
+  const data = {name,company:document.getElementById('am-company').value.trim(),
+    contact:document.getElementById('am-contact').value.trim(),meetings,
+    memo:document.getElementById('am-memo').value.trim()};
+  if(MC.editId){ Object.assign(S.agents.find(x=>x.id===MC.editId),data); }
+  else { S.agents.push({id:uid(),...data}); }
+  save(); closeModal(); renderAll();
+}
+
+// ============================================================
+// iCAL / GCAL
+// ============================================================
+function exportICS(agentId, mi){
+  const a = S.agents.find(x=>x.id===agentId); if(!a)return;
+  const m = a.meetings[mi];
+  const d = m.date.replace(/-/g,'');
+  const ics = `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//JobMgr//JA\r\nBEGIN:VEVENT\r\nDTSTART:${d}T100000\r\nDTEND:${d}T110000\r\nSUMMARY:${m.label}（${a.name}）\r\nDESCRIPTION:${a.name} ${a.company}\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+  const blob = new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href=url; link.download=`${m.label}_${m.date}.ics`; link.click();
+  URL.revokeObjectURL(url);
+}
+function openGCal(agentId, mi){
+  const a = S.agents.find(x=>x.id===agentId); if(!a)return;
+  const m = a.meetings[mi];
+  const d = m.date.replace(/-/g,'');
+  const title = encodeURIComponent(`${m.label}（${a.name}）`);
+  const details = encodeURIComponent(`${a.name} ${a.company}`);
+  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${d}T100000/${d}T110000&details=${details}`,'_blank');
+}
+
+// ============================================================
+// TASKS
+// ============================================================
+function renderTasks(){
+  const el = document.getElementById('task-list');
+  let list = tFilter==='all' ? S.tasks : S.tasks.filter(t=>t.tag===tFilter);
+  el.innerHTML = list.map(t=>{
+    const co = t.cid ? S.companies.find(x=>x.id===t.cid) : null;
+    const overdue = t.due && daysTo(t.due) < 0 && !t.done;
+    return `
+      <div class="task-item ${t.done?'done':''}" onclick="toggleTask(${t.id})">
+        <div class="task-ck ${t.done?'ck':''}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <span class="task-text">${esc(t.text)}</span>
+        ${co?`<span class="task-co">${esc(co.name)}</span>`:''}
+        ${t.due?`<span class="task-due" style="${overdue?'color:var(--danger)':''}">${fmtD(t.due)}</span>`:''}
+        <button class="btn btn-danger btn-sm" style="padding:2px 6px;flex-shrink:0" onclick="event.stopPropagation();rmTask(${t.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>`;
+  }).join('') || '<div class="empty">タスクがありません</div>';
+}
+
+function toggleTask(id){
+  const t = S.tasks.find(x=>x.id===id);
+  if(t){ t.done=!t.done; save(); renderTasks(); renderDashboard(); }
+}
+function rmTask(id){ S.tasks=S.tasks.filter(x=>x.id!==id); save(); renderTasks(); renderDashboard(); }
+function setTFilter(val, btn){
+  tFilter=val;
+  document.querySelectorAll('#task-fb .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTasks();
+}
+
+function openTaskModal(){
+  MC = {type:'task'};
+  const coOpts = '<option value="">なし</option>'+S.companies.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  openModal('タスクを追加',
+    `<div class="form-group"><label class="form-label">タスク内容</label><input class="form-input" id="t-text" placeholder="例：ワークス QA — 面接Q&Aの見直し"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">カテゴリ</label>
+        <select class="form-select" id="t-tag">${['応募準備','面接対策','エージェント','スキルアップ','その他'].map(v=>`<option>${v}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label class="form-label">関連企業</label>
+        <select class="form-select" id="t-co">${coOpts}</select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">期限</label><input class="form-input" id="t-due" type="date"></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
+     <button class="btn btn-primary" onclick="saveTask()">追加</button>`
+  );
+}
+function saveTask(){
+  const text = document.getElementById('t-text').value.trim();
+  if(!text)return;
+  const cid = document.getElementById('t-co').value;
+  S.tasks.push({id:uid(),text,tag:document.getElementById('t-tag').value,
+    cid:cid?Number(cid):null,done:false,due:document.getElementById('t-due').value});
+  save(); closeModal(); renderTasks(); renderDashboard();
+}
+
+// ============================================================
+// SNIPPETS
+// ============================================================
+function renderSnippets(){
+  // rebuild company filter buttons
+  const fb = document.getElementById('sn-co-filters');
+  if(fb){
+    fb.innerHTML = S.companies.map(c=>`
+      <div style="display:inline-flex;align-items:center;gap:0;flex-shrink:0">
+        <button class="filter-btn ${snFilter===String(c.id)?'active':''}" style="border-radius:20px 0 0 20px;padding-right:6px" onclick="setSnFilter('${c.id}',this)">${esc(c.name)}</button>
+        <button onclick="rmCompanyFromSnippets(${c.id})" style="padding:4px 7px;border-radius:0 20px 20px 0;cursor:pointer;font-size:11px;font-weight:700;border:1px solid var(--border);border-left:none;background:var(--card);color:var(--dim);font-family:inherit;transition:all .15s" onmouseover="this.style.color='var(--danger)';this.style.background='var(--danger-dim)'" onmouseout="this.style.color='var(--dim)';this.style.background='var(--card)'">×</button>
+      </div>`).join('');
+  }
+  const el = document.getElementById('snippet-grid');
+  let list = S.snippets;
+  if(snFilter==='common') list = list.filter(s=>!s.cid);
+  else if(snFilter!=='all') list = list.filter(s=>String(s.cid)===snFilter);
+  if(!list.length){ el.innerHTML='<div class="empty" style="grid-column:1/-1">スニペットがありません</div>'; return; }
+  el.innerHTML = list.map(s=>{
+    const co = s.cid ? S.companies.find(x=>x.id===s.cid) : null;
+    return `
+    <div class="snippet-card" style="cursor:pointer" onclick="viewSnippet(${s.id})">
+      <div class="snippet-title">${esc(s.title)}</div>
+      <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+        <span style="font-size:10px;color:var(--muted)">${esc(s.cat)}</span>
+        ${co?`<span class="badge bp" style="font-size:9px">${esc(co.name)}</span>`:'<span class="badge bm" style="font-size:9px">共通</span>'}
+      </div>
+      <div class="snippet-preview">${esc(s.content)}</div>
+      <div class="snippet-actions" onclick="event.stopPropagation()">
+        <button class="btn btn-primary btn-sm" onclick="copySnippet(${s.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          コピー
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="openSnippetModal(${s.id})">編集</button>
+        <button class="btn btn-danger btn-sm" onclick="rmSnippet(${s.id})">削除</button>
+      </div>
+    </div>`}).join('');
+}
+function setSnFilter(val, btn){
+  snFilter = val;
+  document.querySelectorAll('#sn-fb .filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderSnippets();
+}
+
+function quickAddCompanyForSnippet(){
+  const name = prompt('企業名を入力してください');
+  if(!name||!name.trim())return;
+  const newCo = {id:uid(),name:name.trim(),role:'',priority:'検討中',agentIds:[],status:0,
+    memo:'',salary:'',conditions:'',docUrl:'',interviewLogs:[],clDone:Array(7).fill(false),rejectedReason:''};
+  S.companies.push(newCo);
+  save();
+  // セレクトに追加して選択状態にする
+  const sel = document.getElementById('sn-co');
+  if(sel){
+    const opt = document.createElement('option');
+    opt.value = newCo.id; opt.textContent = newCo.name; opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+function viewSnippet(id){
+  const s = S.snippets.find(x=>x.id===id); if(!s)return;
+  openModal(
+    s.title,
+    `<div style="font-size:11px;color:var(--muted);margin-bottom:12px">${esc(s.cat)}</div>
+     <div style="background:rgba(13,7,24,.5);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text)">${esc(s.content)}</div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">閉じる</button>
+     <button class="btn btn-primary" onclick="copySnippet(${s.id});closeModal()">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+       コピーして閉じる
+     </button>`
+  );
+}
+function copySnippet(id){
+  const s = S.snippets.find(x=>x.id===id); if(!s)return;
+  navigator.clipboard.writeText(s.content).then(()=>showToast('コピーしました')).catch(()=>{
+    // fallback
+    const ta=document.createElement('textarea');
+    ta.value=s.content;document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);showToast('コピーしました');
+  });
+}
+function rmSnippet(id){ S.snippets=S.snippets.filter(x=>x.id!==id); save(); renderSnippets(); }
+
+function openSnippetModal(id){
+  const s = id ? S.snippets.find(x=>x.id===id) : null;
+  MC = {type:'snippet', editId:id||null};
+  const coOpts = '<option value="">共通（企業指定なし）</option>'+S.companies.map(c=>`<option value="${c.id}" ${s&&s.cid===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
+  openModal(
+    s?'スニペットを編集':'スニペットを追加',
+    `<div class="form-row">
+      <div class="form-group"><label class="form-label">タイトル</label><input class="form-input" id="sn-title" value="${esc(s?s.title:'')}"></div>
+      <div class="form-group"><label class="form-label">カテゴリ</label><input class="form-input" id="sn-cat" placeholder="例：面接用" value="${esc(s?s.cat:'')}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">関連企業</label>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select class="form-select" id="sn-co" style="flex:1">${coOpts}</select>
+        <button class="btn btn-ghost btn-sm" style="flex-shrink:0;white-space:nowrap" onclick="quickAddCompanyForSnippet()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          企業を追加
+        </button>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">本文</label><textarea class="form-textarea" id="sn-content" style="min-height:130px">${esc(s?s.content:'')}</textarea></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
+     <button class="btn btn-primary" onclick="saveSnippet()">保存</button>`
+  );
+}
+function saveSnippet(){
+  const title = document.getElementById('sn-title').value.trim();
+  if(!title)return;
+  const coval = document.getElementById('sn-co').value;
+  const data = {title,cat:document.getElementById('sn-cat').value.trim(),
+    cid: coval ? Number(coval) : null,
+    content:document.getElementById('sn-content').value.trim()};
+  if(MC.editId){ Object.assign(S.snippets.find(x=>x.id===MC.editId),data); }
+  else { S.snippets.push({id:uid(),...data}); }
+  save(); closeModal(); renderSnippets();
+}
+
+// ============================================================
+// MODAL SYSTEM
+// ============================================================
+function openModal(title, body, actions){
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal-actions').innerHTML = actions;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  MC = {};
+}
+function handleOverlay(e){
+  if(e.target===document.getElementById('modal-overlay')) closeModal();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+load();
+renderAll();
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+</script>
+</body>
+</html>
