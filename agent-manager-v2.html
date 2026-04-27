@@ -261,7 +261,7 @@ main{padding:20px 16px;max-width:980px;margin:0 auto}
   </button>
   <button class="nav-tab" onclick="showTab('kanban',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
-    進捗ボード
+    カンバン
   </button>
   <button class="nav-tab" onclick="showTab('companies',this)">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 11h2m8 0h2M6 15h2m8 0h2M10 21v-4h4v4M3 7l9-4 9 4"/></svg>
@@ -1059,6 +1059,38 @@ function setTFilter(val, btn){
   renderTasks();
 }
 
+function quickAddCompanyForNewTask(){
+  const name = prompt('企業名を入力してください');
+  if(!name||!name.trim())return;
+  const newCo = {id:uid(),name:name.trim(),role:'',priority:'検討中',agentIds:[],status:0,
+    memo:'',salary:'',conditions:'',docUrl:'',interviewLogs:[],clDone:Array(7).fill(false),rejectedReason:''};
+  S.companies.push(newCo);
+  save();
+  const sel = document.getElementById('t-co');
+  if(sel){
+    const opt = document.createElement('option');
+    opt.value = newCo.id; opt.textContent = newCo.name; opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+function quickAddCompanyForTask(){
+  const name = prompt('企業名を入力してください');
+  if(!name||!name.trim())return;
+  const newCo = {id:uid(),name:name.trim(),role:'',priority:'検討中',agentIds:[],status:0,
+    memo:'',salary:'',conditions:'',docUrl:'',interviewLogs:[],clDone:Array(7).fill(false),rejectedReason:''};
+  S.companies.push(newCo);
+  save();
+  const sel = document.getElementById('te-co');
+  if(sel){
+    const opt = document.createElement('option');
+    opt.value = newCo.id; opt.textContent = newCo.name; opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+function removeCompanyFromTask(){
+  const sel = document.getElementById('te-co');
+  if(sel) sel.value = '';
+}
 function openTaskEditModal(id){
   const t = S.tasks.find(x=>x.id===id); if(!t)return;
   MC = {type:'taskEdit', editId:id};
@@ -1070,7 +1102,17 @@ function openTaskEditModal(id){
         <select class="form-select" id="te-tag">${['応募準備','面接対策','エージェント','スキルアップ','その他'].map(v=>`<option ${t.tag===v?'selected':''}>${v}</option>`).join('')}</select>
       </div>
       <div class="form-group"><label class="form-label">関連企業</label>
-        <select class="form-select" id="te-co">${coOpts}</select>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select class="form-select" id="te-co" style="flex:1">${coOpts}</select>
+          <button class="btn btn-ghost btn-sm" style="flex-shrink:0;white-space:nowrap" onclick="quickAddCompanyForTask()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            企業を追加
+          </button>
+          <button class="btn btn-danger btn-sm" style="flex-shrink:0;white-space:nowrap" onclick="removeCompanyFromTask()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            削除
+          </button>
+        </div>
       </div>
     </div>
     <div class="form-group"><label class="form-label">期限</label><input class="form-input" id="te-due" type="date" value="${t.due||''}"></div>`,
@@ -1099,7 +1141,13 @@ function openTaskModal(){
         <select class="form-select" id="t-tag">${['応募準備','面接対策','エージェント','スキルアップ','その他'].map(v=>`<option>${v}</option>`).join('')}</select>
       </div>
       <div class="form-group"><label class="form-label">関連企業</label>
-        <select class="form-select" id="t-co">${coOpts}</select>
+        <div style="display:flex;gap:6px;align-items:center">
+          <select class="form-select" id="t-co" style="flex:1">${coOpts}</select>
+          <button class="btn btn-ghost btn-sm" style="flex-shrink:0;white-space:nowrap" onclick="quickAddCompanyForNewTask()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            追加
+          </button>
+        </div>
       </div>
     </div>
     <div class="form-group"><label class="form-label">期限</label><input class="form-input" id="t-due" type="date"></div>`,
