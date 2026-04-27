@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>アプリポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-s:#1a0a2e;--bg-m:#2d1b69;--bg-e:#6b3fa0;
+  --card:rgba(237,228,255,.10);--card2:rgba(237,228,255,.16);
+  --border:rgba(168,85,247,.22);--border2:rgba(168,85,247,.40);
+  --primary:#A855F7;--primary-dim:rgba(168,85,247,.20);
+  --accent:#E040FB;--accent-dim:rgba(224,64,251,.15);
+  --success:#6ee7b7;--success-dim:rgba(110,231,183,.15);
+  --warn:#fbbf24;
+  --text:#FDFAFF;--muted:rgba(195,155,211,.85);
+  --dim:rgba(195,155,211,.40);--pale:#C39BD3;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1b69 45%,#6b3fa0 100%) fixed;
+  color:var(--text);min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+.wrap{max-width:960px;margin:0 auto;padding:48px 24px 80px}
+
+/* HEADER */
+.hero{text-align:center;margin-bottom:56px}
+.hero-badge{
+  display:inline-block;
+  padding:6px 16px;border-radius:20px;
+  background:var(--primary-dim);border:1px solid var(--border2);
+  font-size:12px;font-weight:700;color:var(--primary);
+  margin-bottom:20px;letter-spacing:.5px;
+}
+.hero h1{
+  font-size:clamp(28px,5vw,44px);font-weight:900;
+  letter-spacing:-1px;line-height:1.1;
+  background:linear-gradient(135deg,#fff 30%,#C39BD3 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:14px;
+}
+.hero p{font-size:15px;color:var(--muted);line-height:1.7}
+
+/* SECTION */
+.section{margin-bottom:48px}
+.sec-head{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:20px;padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.sec-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg,#6B3FA0,#E040FB);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sec-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sec-title{font-size:16px;font-weight:900}
+.sec-sub{font-size:12px;color:var(--dim);margin-top:2px}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+
+/* APP CARD */
+.app-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:20px;
+  transition:border-color .2s,background .2s,transform .2s;
+  position:relative;overflow:hidden;
+}
+.app-card::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(168,85,247,.06);pointer-events:none;
+}
+.app-card:hover{
+  background:var(--card2);border-color:var(--border2);
+  transform:translateY(-2px);
+}
+.app-icon{
+  width:44px;height:44px;border-radius:13px;
+  background:linear-gradient(135deg,rgba(107,63,160,.5),rgba(224,64,251,.3));
+  border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+}
+.app-icon svg{width:22px;height:22px;stroke:var(--primary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app-name{font-size:15px;font-weight:900;margin-bottom:4px}
+.app-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+
+/* LINK BUTTONS */
+.links{display:flex;gap:8px;flex-wrap:wrap}
+.link-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:9px;font-size:12px;font-weight:700;
+  font-family:'Noto Sans JP',sans-serif;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.link-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-mobile{
+  background:var(--primary-dim);color:var(--primary);
+  border:1px solid var(--border2);
+}
+.btn-mobile:hover{background:rgba(168,85,247,.32)}
+.btn-pc{
+  background:var(--accent-dim);color:var(--accent);
+  border:1px solid rgba(224,64,251,.35);
+}
+.btn-pc:hover{background:rgba(224,64,251,.28)}
+
+/* FOOTER */
+.footer{
+  text-align:center;margin-top:64px;
+  font-size:12px;color:var(--dim);line-height:2;
+}
+.footer a{color:var(--primary);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">App Portal</div>
+    <h1>作成アプリリンク</h1>
+    <p>学習・ツール・ランニング管理をまとめたポータル<br>スマホ版・PC版から目的に合わせて選択</p>
+  </div>
+
+  <!-- 学習・トレーニング -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-icon">
+        <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div>
+        <div class="sec-title">学習・トレーニング</div>
+        <div class="sec-sub">スキルアップ・資格対策に</div>
+      </div>
+    </div>
+    <div class="grid">
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="app-name">簿記トレーナー</div>
+        <div class="app-desc">仕訳・勘定科目の反射神経を鍛える練習アプリ</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/boki_trainer.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/rpa-game/boki_trainer_pc.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+        <div class="app-name">HUE / ERP 面接対策</div>
+        <div class="app-desc">ERP・HUE製品知識とQAエンジニアの役割をワークスアプリケーションズ面接に向けて学ぶ</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/hue_trainer.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/rpa-game/hue_trainer_pc.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+        <div class="app-name">VBAトレーナー</div>
+        <div class="app-desc">ExcelマクロとVBAの文法・構文を練習するアプリ</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/vba_trainer.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/rpa-game/vba_trainer_pc.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+        <div class="app-name">RPA Academy</div>
+        <div class="app-desc">RPAの基礎からDX推進に必要な知識を学ぶアプリ</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/rpa-academy.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/rpa-game/rpa-academy-pc.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ツール -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-icon">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <div class="sec-title">ツール</div>
+        <div class="sec-sub">日々の業務・学習をサポート</div>
+      </div>
+    </div>
+    <div class="grid">
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><line x1="9" y1="18" x2="15" y2="12"/><line x1="9" y1="6" x2="15" y2="12"/></svg></div>
+        <div class="app-name">Gitガイド</div>
+        <div class="app-desc">Gitの基本コマンドと操作フローをまとめたリファレンス</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/git-guide.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホのみ
+          </a>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="app-name">TODOリスト</div>
+        <div class="app-desc">タスク管理・進捗トラッキングのシンプルTODOアプリ</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/todo_mobile.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/rpa-game/todo_pc.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="app-name">面接準備ツール</div>
+        <div class="app-desc">回答メモ・チェックリスト・STAR法でAPI不要の面接対策</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/interview_prep.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/rpa-game/interview_prep_pc.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="app-name">面接対策AI</div>
+        <div class="app-desc">AI面接官との模擬面接・企業別カスタム質問・スコア管理（claude.ai限定）</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/rpa-game/interview_app.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>claude.ai限定
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Strideランニング -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 4v16"/><path d="M17 4v16"/><path d="M19 4H9.5a4.5 4.5 0 0 0 0 9H13"/></svg>
+      </div>
+      <div>
+        <div class="sec-title">Strideランニング</div>
+        <div class="sec-sub">熊本城マラソン2027 サブ3:30 目標</div>
+      </div>
+    </div>
+    <div class="grid">
+
+      <div class="app-card">
+        <div class="app-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="app-name">マラソン練習管理</div>
+        <div class="app-desc">熊本城マラソン2027に向けた44週トレーニング管理アプリ</div>
+        <div class="links">
+          <a class="link-btn btn-mobile" href="https://kousuke721.github.io/stride/stride-full.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>スマホ
+          </a>
+          <a class="link-btn btn-pc" href="https://kousuke721.github.io/stride/stride-browser.html" target="_blank">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>PC
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Powered by Claude · データはブラウザにローカル保存<br>
+    <a href="https://kousuke721.github.io/rpa-game/index.html">rpa-game トップ</a>
+  </div>
+
+</div>
+</body>
+</html>
