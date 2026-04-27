@@ -1037,6 +1037,9 @@ function renderTasks(){
         <span class="task-text">${esc(t.text)}</span>
         ${co?`<span class="task-co">${esc(co.name)}</span>`:''}
         ${t.due?`<span class="task-due" style="${overdue?'color:var(--danger)':''}">${fmtD(t.due)}</span>`:''}
+        <button class="btn btn-ghost btn-sm" style="padding:2px 6px;flex-shrink:0" onclick="event.stopPropagation();openTaskEditModal(${t.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
         <button class="btn btn-danger btn-sm" style="padding:2px 6px;flex-shrink:0" onclick="event.stopPropagation();rmTask(${t.id})">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -1056,6 +1059,36 @@ function setTFilter(val, btn){
   renderTasks();
 }
 
+function openTaskEditModal(id){
+  const t = S.tasks.find(x=>x.id===id); if(!t)return;
+  MC = {type:'taskEdit', editId:id};
+  const coOpts = '<option value="">なし</option>'+S.companies.map(c=>`<option value="${c.id}" ${t.cid===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
+  openModal('タスクを編集',
+    `<div class="form-group"><label class="form-label">タスク内容</label><input class="form-input" id="te-text" value="${esc(t.text)}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">カテゴリ</label>
+        <select class="form-select" id="te-tag">${['応募準備','面接対策','エージェント','スキルアップ','その他'].map(v=>`<option ${t.tag===v?'selected':''}>${v}</option>`).join('')}</select>
+      </div>
+      <div class="form-group"><label class="form-label">関連企業</label>
+        <select class="form-select" id="te-co">${coOpts}</select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">期限</label><input class="form-input" id="te-due" type="date" value="${t.due||''}"></div>`,
+    `<button class="btn btn-ghost" onclick="closeModal()">キャンセル</button>
+     <button class="btn btn-primary" onclick="saveTaskEdit()">保存</button>`
+  );
+}
+function saveTaskEdit(){
+  const t = S.tasks.find(x=>x.id===MC.editId); if(!t)return;
+  const text = document.getElementById('te-text').value.trim();
+  if(!text)return;
+  const cid = document.getElementById('te-co').value;
+  t.text = text;
+  t.tag = document.getElementById('te-tag').value;
+  t.cid = cid ? Number(cid) : null;
+  t.due = document.getElementById('te-due').value;
+  save(); closeModal(); renderTasks(); renderDashboard();
+}
 function openTaskModal(){
   MC = {type:'task'};
   const coOpts = '<option value="">なし</option>'+S.companies.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
