@@ -124,12 +124,12 @@ main{padding:20px 16px;max-width:980px;margin:0 auto}
 
 /* PIPELINE */
 .pipeline{display:flex;margin:10px 0;border-radius:6px;overflow:hidden}
-.pipe-step{flex:1;text-align:center;padding:5px 2px;font-size:9px;font-weight:500;color:var(--dim);cursor:pointer;transition:all .15s;border-right:1px solid rgba(168,85,247,.1)}
+.pipe-step{flex:1;text-align:center;padding:6px 2px;font-size:9.5px;font-weight:700;color:rgba(220,190,255,.7);cursor:pointer;transition:all .15s;border-right:1px solid rgba(168,85,247,.15);background:rgba(168,85,247,.05);letter-spacing:.02em}
 .pipe-step:last-child{border-right:none}
-.pipe-step:hover{background:var(--primary-dim);color:var(--primary)}
-.pipe-step.done{background:var(--primary-dim);color:var(--primary)}
-.pipe-step.current{background:linear-gradient(135deg,rgba(168,85,247,.35),rgba(224,64,251,.3));color:var(--accent);font-weight:700}
-.pipe-step.rejected-step{background:var(--danger-dim);color:var(--danger)}
+.pipe-step:hover{background:rgba(168,85,247,.22);color:#e0c4ff}
+.pipe-step.done{background:rgba(168,85,247,.22);color:#d8b4fe;border-bottom:2px solid #a855f7}
+.pipe-step.current{background:linear-gradient(135deg,rgba(168,85,247,.5),rgba(224,64,251,.45));color:#fff;font-weight:800;letter-spacing:.03em;text-shadow:0 0 10px rgba(224,64,251,.7);border-bottom:2px solid #e040fb}
+.pipe-step.rejected-step{background:rgba(248,113,113,.18);color:#fca5a5;border-bottom:2px solid #f87171}
 
 /* EXPAND */
 .expand-content{display:none;margin-top:10px;animation:fadeIn .2s ease}
@@ -675,8 +675,22 @@ function renderCompanyCard(c){
       </div>
       <div class="cc-body">
         <div class="pipeline">${pipeHtml}</div>
-        ${c.salary?`<div style="font-size:11px;color:var(--muted);margin-bottom:6px"><span style="color:var(--pale);font-weight:700">給与：</span>${esc(c.salary)}</div>`:''}
-        ${c.conditions?`<div style="font-size:11px;color:var(--muted);margin-bottom:6px"><span style="color:var(--pale);font-weight:700">勤務条件：</span>${esc(c.conditions)}</div>`:''}
+        ${c.salary||c.conditions?`
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          ${c.salary?`
+          <div style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25);border-radius:8px;padding:6px 12px;display:flex;align-items:center;gap:6px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span style="font-size:10px;color:var(--pale);font-weight:700">給与</span>
+            <span style="font-size:12px;color:var(--text);font-weight:600">${esc(c.salary)}</span>
+          </div>`:''}
+          ${c.conditions?`
+          <div style="background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.2);border-radius:8px;padding:6px 12px;display:flex;align-items:center;gap:6px">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            <span style="font-size:10px;color:var(--success);font-weight:700;opacity:.8">勤務条件</span>
+            <span style="font-size:12px;color:var(--text)">${esc(c.conditions)}</span>
+          </div>`:''}
+        </div>`:''}
+
         <textarea class="memo-box" onchange="updCMemo(${c.id},this.value)">${esc(c.memo)}</textarea>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
           <button class="btn btn-ghost btn-sm" onclick="toggleExpand('ecl-${c.id}',this)">
