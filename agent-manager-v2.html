@@ -1335,6 +1335,36 @@ function showToast(msg){
 load();
 renderAll();
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+// favicon
+(function(){
+  const c = document.createElement('canvas');
+  c.width = c.height = 32;
+  const x = c.getContext('2d');
+  // bg
+  const r = 7;
+  x.beginPath();
+  x.moveTo(r,0); x.lineTo(32-r,0); x.quadraticCurveTo(32,0,32,r);
+  x.lineTo(32,32-r); x.quadraticCurveTo(32,32,32-r,32);
+  x.lineTo(r,32); x.quadraticCurveTo(0,32,0,32-r);
+  x.lineTo(0,r); x.quadraticCurveTo(0,0,r,0);
+  x.closePath();
+  x.fillStyle='#2d1b69'; x.fill();
+  // briefcase body
+  x.strokeStyle='#A855F7'; x.lineWidth=2; x.fillStyle='rgba(100,50,160,0.6)';
+  x.beginPath(); x.roundRect(7,14,18,13,2); x.fill(); x.stroke();
+  // handle
+  x.strokeStyle='#E040FB'; x.lineWidth=2;
+  x.beginPath(); x.roundRect(11,9,10,6,2); x.stroke();
+  // plus
+  x.strokeStyle='#ffffff'; x.lineWidth=2.5; x.lineCap='round';
+  x.beginPath(); x.moveTo(16,18); x.lineTo(16,24); x.stroke();
+  x.beginPath(); x.moveTo(13,21); x.lineTo(19,21); x.stroke();
+  // apply
+  const lnk = document.createElement('link');
+  lnk.rel='icon'; lnk.type='image/png'; lnk.href=c.toDataURL();
+  document.head.appendChild(lnk);
+})();
 </script>
 </body>
 </html>
