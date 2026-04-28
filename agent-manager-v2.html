@@ -676,6 +676,7 @@ function renderCompanyCard(c){
       <div class="cc-body">
         <div class="pipeline">${pipeHtml}</div>
         ${c.salary?`<div style="font-size:11px;color:var(--muted);margin-bottom:6px"><span style="color:var(--pale);font-weight:700">給与：</span>${esc(c.salary)}</div>`:''}
+        ${c.conditions?`<div style="font-size:11px;color:var(--muted);margin-bottom:6px"><span style="color:var(--pale);font-weight:700">勤務条件：</span>${esc(c.conditions)}</div>`:''}
         <textarea class="memo-box" onchange="updCMemo(${c.id},this.value)">${esc(c.memo)}</textarea>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
           <button class="btn btn-ghost btn-sm" onclick="toggleExpand('ecl-${c.id}',this)">
