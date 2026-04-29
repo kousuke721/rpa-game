@@ -684,7 +684,7 @@ function renderCompanyCard(c){
           <div style="background:rgba(110,231,183,.08);border:1px solid rgba(110,231,183,.2);border-radius:8px;padding:6px 12px;display:flex;align-items:flex-start;gap:6px;flex:1">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" style="flex-shrink:0;margin-top:2px"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
             <span style="font-size:10px;color:var(--success);font-weight:700;opacity:.8;white-space:nowrap">勤務条件</span>
-            <span style="font-size:12px;color:var(--text);line-height:1.5">${esc(c.conditions)}</span>
+            <span style="font-size:12px;color:var(--text);line-height:1.5;white-space:pre-wrap">${esc(c.conditions)}</span>
           </div>`:''}
         </div>`:''}
 
