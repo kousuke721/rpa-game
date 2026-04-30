@@ -221,7 +221,9 @@ main{padding:20px 16px;max-width:980px;margin:0 auto}
 .form-label{font-size:10px;color:var(--pale);font-weight:700;margin-bottom:5px;display:block;letter-spacing:.05em;text-transform:uppercase}
 .form-input,.form-select,.form-textarea{width:100%;padding:8px 10px;border-radius:7px;background:rgba(13,7,24,.6);border:1px solid var(--border2);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none}
 .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-dim)}
-.form-select option{background:#1a0a2e}
+.form-select option{background:#1a0a2e;color:var(--text);padding:4px}
+.form-select option:checked,.form-select option:hover{background:linear-gradient(0deg,rgba(168,85,247,.4),rgba(168,85,247,.4)),#1a0a2e;color:#fff}
+select[multiple]:focus option:checked{background:linear-gradient(0deg,rgba(224,64,251,.5),rgba(224,64,251,.5)),#1a0a2e;color:#fff}
 .form-textarea{resize:vertical;min-height:70px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form-hint{font-size:10px;color:var(--dim);margin-top:3px}
@@ -327,6 +329,10 @@ main{padding:20px 16px;max-width:980px;margin:0 auto}
         <button class="filter-btn" onclick="setCFilter('rejected',this)">お見送り</button>
       </div>
       <div class="toolbar-right">
+        <button class="btn btn-ghost btn-sm" onclick="sortCompaniesByPriority()" title="優先度順に並び替え">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+          優先度順
+        </button>
         <button class="btn btn-ghost btn-sm" onclick="openSalaryCompare()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           給与比較
@@ -488,7 +494,7 @@ function load(){
     S = d ? JSON.parse(d) : DEFAULT();
     if(!S.agentClDone) S.agentClDone = Array(7).fill(false);
     // ensure backward compat fields
-    S.snippets.forEach(s=>{ if(s.cid===undefined) s.cid=null; });
+    S.snippets.forEach(s=>{ if(s.cid===undefined) s.cid=null; if(s.aid===undefined) s.aid=null; });
     S.companies.forEach(c=>{      if(!c.interviewLogs) c.interviewLogs=[];
       if(!c.clDone) c.clDone=Array(7).fill(false);
       if(!c.agentIds) c.agentIds=[];
@@ -648,8 +654,13 @@ function renderCompanyCard(c){
     return `<div class="pipe-step ${cls}" onclick="setCS(${c.id},${i})" title="${s}">${s}</div>`;
   }).join('');
   return `
-    <div class="company-card" id="cc-${c.id}">
+    <div class="company-card" id="cc-${c.id}" draggable="true"
+      ondragstart="onDragStart(event,${c.id})" ondragover="onDragOver(event)"
+      ondrop="onDrop(event,${c.id})" ondragend="onDragEnd(event)" ondragleave="onDragLeave(event)">
       <div class="cc-header">
+        <div style="display:flex;align-items:center;color:var(--dim);cursor:grab;padding:4px 2px;flex-shrink:0" title="ドラッグで並び替え">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1.2"/><circle cx="9" cy="12" r="1.2"/><circle cx="9" cy="18" r="1.2"/><circle cx="15" cy="6" r="1.2"/><circle cx="15" cy="12" r="1.2"/><circle cx="15" cy="18" r="1.2"/></svg>
+        </div>
         <div class="cc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 7v14M21 7v14M6 11h2m8 0h2M6 15h2m8 0h2M10 21v-4h4v4M3 7l9-4 9 4"/></svg></div>
         <div style="flex:1">
           <div class="cc-name">${esc(c.name)}</div>
@@ -746,6 +757,64 @@ function rmCompanyFromSnippets(id){
   if(snFilter===String(id)) snFilter='all';
   save();renderAll();
 }
+function sortCompaniesByPriority(){
+  const order = {'主軸':0,'副軸':1,'検討中':2};
+  S.companies.sort((a,b)=>{
+    const oa = order[a.priority] ?? 99;
+    const ob = order[b.priority] ?? 99;
+    if(oa!==ob) return oa-ob;
+    return a.status - b.status;
+  });
+  save(); renderCompanies(); renderKanban(); renderDashboard();
+  showToast('優先度順に並び替えました');
+}
+
+// ============================================================
+// DRAG & DROP (company reorder)
+// ============================================================
+let _dragId = null;
+function onDragStart(e, id){
+  _dragId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.style.opacity = '0.4';
+}
+function onDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const card = e.currentTarget;
+  if(card.id !== `cc-${_dragId}`){
+    card.style.borderColor = 'var(--accent)';
+    card.style.boxShadow = '0 0 18px rgba(224,64,251,.35)';
+  }
+  return false;
+}
+function onDragLeave(e){
+  e.currentTarget.style.borderColor = '';
+  e.currentTarget.style.boxShadow = '';
+}
+function onDrop(e, targetId){
+  e.preventDefault();
+  e.stopPropagation();
+  e.currentTarget.style.borderColor = '';
+  e.currentTarget.style.boxShadow = '';
+  if(_dragId === null || _dragId === targetId) return false;
+  const fromIdx = S.companies.findIndex(c=>c.id===_dragId);
+  const toIdx = S.companies.findIndex(c=>c.id===targetId);
+  if(fromIdx<0||toIdx<0) return false;
+  const [moved] = S.companies.splice(fromIdx,1);
+  S.companies.splice(toIdx,0,moved);
+  save(); renderCompanies(); renderKanban(); renderDashboard();
+  return false;
+}
+function onDragEnd(e){
+  e.currentTarget.style.opacity = '';
+  document.querySelectorAll('.company-card').forEach(c=>{
+    c.style.borderColor='';
+    c.style.boxShadow='';
+  });
+  _dragId = null;
+}
+
 function rmCompany(id){
   if(!confirm('この企業を削除しますか？'))return;
   S.companies=S.companies.filter(x=>x.id!==id);
@@ -857,16 +926,17 @@ function openSalaryCompare(){
   const rows = S.companies.filter(c=>c.status!==6).map(c=>`
     <tr>
       <td><strong>${esc(c.name)}</strong><br><span style="font-size:10px;color:var(--muted)">${esc(c.role)}</span></td>
-      <td>${esc(c.salary)||'—'}</td>
+      <td style="white-space:nowrap;font-weight:600;color:var(--text)">${esc(c.salary)||'—'}</td>
       <td style="font-size:11px;color:var(--muted)">${esc(c.conditions)||'—'}</td>
       <td><span class="badge ${PBADGE[c.priority]||'bm'}">${c.priority}</span></td>
     </tr>`).join('');
   openModal('給与・条件比較',
     `<table class="compare-table">
-      <thead><tr><th>企業</th><th>給与</th><th>条件</th><th>優先度</th></tr></thead>
+      <thead><tr><th style="width:18%">企業</th><th style="width:14%">給与</th><th style="width:58%">条件</th><th style="width:10%">優先度</th></tr></thead>
       <tbody>${rows||'<tr><td colspan="4" style="text-align:center;color:var(--dim)">データなし</td></tr>'}</tbody>
     </table>`,
-    `<button class="btn btn-ghost" onclick="closeModal()">閉じる</button>`
+    `<button class="btn btn-ghost" onclick="closeModal()">閉じる</button>`,
+    {wide:true}
   );
 }
 
@@ -932,6 +1002,8 @@ function updAMemo(id, val){ const a=S.agents.find(x=>x.id===id); if(a){a.memo=va
 function rmAgent(id){
   if(!confirm('このエージェントを削除しますか？'))return;
   S.agents=S.agents.filter(x=>x.id!==id);
+  S.snippets.forEach(s=>{ if(s.aid===id) s.aid=null; });
+  S.companies.forEach(c=>{ if(c.agentIds) c.agentIds=c.agentIds.filter(aid=>aid!==id); });
   save();renderAll();
 }
 
@@ -1180,28 +1252,39 @@ function saveTask(){
 // SNIPPETS
 // ============================================================
 function renderSnippets(){
-  // rebuild company filter buttons
+  // rebuild filter buttons (agents + companies)
   const fb = document.getElementById('sn-co-filters');
   if(fb){
-    fb.innerHTML = S.companies.map(c=>`
+    const agentBtns = S.agents.map(a=>`
+      <button class="filter-btn ${snFilter===('a:'+a.id)?'active':''}" style="background:var(--accent-dim);border-color:rgba(224,64,251,.3);color:var(--accent)" onclick="setSnFilter('a:${a.id}',this)">
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:3px;vertical-align:-1px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>${esc(a.name)}
+      </button>`).join('');
+    const coBtns = S.companies.map(c=>`
       <div style="display:inline-flex;align-items:center;gap:0;flex-shrink:0">
-        <button class="filter-btn ${snFilter===String(c.id)?'active':''}" style="border-radius:20px 0 0 20px;padding-right:6px" onclick="setSnFilter('${c.id}',this)">${esc(c.name)}</button>
+        <button class="filter-btn ${snFilter===('c:'+c.id)?'active':''}" style="border-radius:20px 0 0 20px;padding-right:6px" onclick="setSnFilter('c:${c.id}',this)">${esc(c.name)}</button>
         <button onclick="rmCompanyFromSnippets(${c.id})" style="padding:4px 7px;border-radius:0 20px 20px 0;cursor:pointer;font-size:11px;font-weight:700;border:1px solid var(--border);border-left:none;background:var(--card);color:var(--dim);font-family:inherit;transition:all .15s" onmouseover="this.style.color='var(--danger)';this.style.background='var(--danger-dim)'" onmouseout="this.style.color='var(--dim)';this.style.background='var(--card)'">×</button>
       </div>`).join('');
+    fb.innerHTML = agentBtns + coBtns;
   }
   const el = document.getElementById('snippet-grid');
   let list = S.snippets;
-  if(snFilter==='common') list = list.filter(s=>!s.cid);
-  else if(snFilter!=='all') list = list.filter(s=>String(s.cid)===snFilter);
+  if(snFilter==='common') list = list.filter(s=>!s.cid && !s.aid);
+  else if(snFilter && snFilter.startsWith('a:')) list = list.filter(s=>String(s.aid)===snFilter.slice(2));
+  else if(snFilter && snFilter.startsWith('c:')) list = list.filter(s=>String(s.cid)===snFilter.slice(2));
   if(!list.length){ el.innerHTML='<div class="empty" style="grid-column:1/-1">スニペットがありません</div>'; return; }
   el.innerHTML = list.map(s=>{
     const co = s.cid ? S.companies.find(x=>x.id===s.cid) : null;
+    const ag = s.aid ? S.agents.find(x=>x.id===s.aid) : null;
+    let badge = '';
+    if(ag) badge = `<span class="badge ba" style="font-size:9px">▸ ${esc(ag.name)}</span>`;
+    else if(co) badge = `<span class="badge bp" style="font-size:9px">${esc(co.name)}</span>`;
+    else badge = '<span class="badge bm" style="font-size:9px">共通</span>';
     return `
     <div class="snippet-card" style="cursor:pointer" onclick="viewSnippet(${s.id})">
       <div class="snippet-title">${esc(s.title)}</div>
       <div style="display:flex;gap:5px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
         <span style="font-size:10px;color:var(--muted)">${esc(s.cat)}</span>
-        ${co?`<span class="badge bp" style="font-size:9px">${esc(co.name)}</span>`:'<span class="badge bm" style="font-size:9px">共通</span>'}
+        ${badge}
       </div>
       <div class="snippet-preview">${esc(s.content)}</div>
       <div class="snippet-actions" onclick="event.stopPropagation()">
@@ -1263,12 +1346,17 @@ function rmSnippet(id){ S.snippets=S.snippets.filter(x=>x.id!==id); save(); rend
 function openSnippetModal(id){
   const s = id ? S.snippets.find(x=>x.id===id) : null;
   MC = {type:'snippet', editId:id||null};
-  const coOpts = '<option value="">共通（企業指定なし）</option>'+S.companies.map(c=>`<option value="${c.id}" ${s&&s.cid===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
+  const coOpts = '<option value="">なし</option>'+S.companies.map(c=>`<option value="${c.id}" ${s&&s.cid===c.id?'selected':''}>${esc(c.name)}</option>`).join('');
+  const agOpts = '<option value="">なし</option>'+S.agents.map(a=>`<option value="${a.id}" ${s&&s.aid===a.id?'selected':''}>${esc(a.name)}</option>`).join('');
   openModal(
     s?'スニペットを編集':'スニペットを追加',
     `<div class="form-row">
       <div class="form-group"><label class="form-label">タイトル</label><input class="form-input" id="sn-title" value="${esc(s?s.title:'')}"></div>
       <div class="form-group"><label class="form-label">カテゴリ</label><input class="form-input" id="sn-cat" placeholder="例：面接用" value="${esc(s?s.cat:'')}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">関連エージェント</label>
+      <select class="form-select" id="sn-ag">${agOpts}</select>
+      <div class="form-hint">エージェント別のスニペット（退職理由・志望動機等）を絞り込めます</div>
     </div>
     <div class="form-group"><label class="form-label">関連企業</label>
       <div style="display:flex;gap:6px;align-items:center">
@@ -1288,8 +1376,10 @@ function saveSnippet(){
   const title = document.getElementById('sn-title').value.trim();
   if(!title)return;
   const coval = document.getElementById('sn-co').value;
+  const agval = document.getElementById('sn-ag').value;
   const data = {title,cat:document.getElementById('sn-cat').value.trim(),
     cid: coval ? Number(coval) : null,
+    aid: agval ? Number(agval) : null,
     content:document.getElementById('sn-content').value.trim()};
   if(MC.editId){ Object.assign(S.snippets.find(x=>x.id===MC.editId),data); }
   else { S.snippets.push({id:uid(),...data}); }
@@ -1299,10 +1389,15 @@ function saveSnippet(){
 // ============================================================
 // MODAL SYSTEM
 // ============================================================
-function openModal(title, body, actions){
+function openModal(title, body, actions, opts){
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').innerHTML = body;
   document.getElementById('modal-actions').innerHTML = actions;
+  const modal = document.querySelector('#modal-overlay .modal');
+  if(modal){
+    if(opts && opts.wide) modal.style.maxWidth = '900px';
+    else modal.style.maxWidth = '';
+  }
   document.getElementById('modal-overlay').classList.add('open');
 }
 function closeModal(){
