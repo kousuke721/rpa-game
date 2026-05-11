@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>木村グループ 面接対策アプリ</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%231a6121'/><ellipse cx='31' cy='18' rx='14' ry='8' fill='%23ffffff' opacity='.92' transform='rotate(-18 31 18)'/><ellipse cx='33' cy='33' rx='16' ry='7' fill='%23f5d040' opacity='.9' transform='rotate(4 33 33)'/><ellipse cx='34' cy='46' rx='17' ry='6' fill='%234ab0e8' opacity='.88'/></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@700&display=swap');
+:root{
+  --gd1:#0e4015;--gd2:#1a6121;--gd3:#26862e;--gd4:#35a83e;
+  --green:#1a6121;--green-mid:#26862e;
+  --green-light:#e5f4e6;--green-pale:#f1faf1;
+  --gold:#b87e00;--gold-light:#fff3cc;--gold-pale:#fffaee;
+  --blue:#1a5ca8;--blue-light:#e3eff8;
+  --red:#c0392b;--red-light:#fdecea;
+  --white:#fff;--bg:#f5f7f4;--text:#1a1c19;--muted:#606860;--border:#dde3da;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+.site-header{background:linear-gradient(140deg,var(--gd1) 0%,var(--gd2) 38%,var(--gd3) 68%,var(--gd4) 100%);position:sticky;top:0;z-index:300;box-shadow:0 2px 14px rgba(0,0,0,.28);}
+.header-inner{max-width:800px;margin:0 auto;padding:0 1.5rem;height:92px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.h-left{display:flex;align-items:center;gap:14px;}
+.h-logobox{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.h-en{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:700;color:#fff;letter-spacing:.1em;line-height:1;}
+.h-jp{font-size:11px;color:rgba(255,255,255,.6);margin-top:4px;letter-spacing:.05em;}
+.h-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.h-badge{font-size:11px;padding:4px 13px;border-radius:20px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);color:#fff;letter-spacing:.04em;white-space:nowrap;}
+.h-message{font-size:11px;color:rgba(255,255,255,.48);font-style:italic;text-align:right;line-height:1.4;}
+
+/* NAV */
+.site-nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:92px;z-index:200;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.nav-inner{max-width:800px;margin:0 auto;display:flex;}
+.nav-btn{flex:1;height:50px;border:none;background:none;font-family:'Noto Sans JP',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;padding:0 .5rem;}
+.nav-btn svg{width:14px;height:14px;flex-shrink:0;}
+.nav-btn:hover{color:var(--green);background:var(--green-pale);}
+.nav-btn.active{color:var(--green);border-bottom-color:var(--green);background:var(--green-pale);}
+.step-pill{font-size:9px;padding:2px 6px;border-radius:8px;background:var(--green-light);color:var(--green);font-weight:700;margin-left:2px;}
+.nav-btn.active .step-pill{background:var(--green);color:#fff;}
+
+/* LAYOUT */
+.page{display:none;max-width:800px;margin:0 auto;padding:1.25rem 1rem 3rem;}
+.page.active{display:block;}
+
+/* BANNER */
+.banner{background:linear-gradient(135deg,var(--gd1) 0%,var(--gd2) 45%,var(--gd3) 100%);border-radius:14px;padding:1.4rem 1.5rem;margin-bottom:14px;color:#fff;position:relative;overflow:hidden;}
+.banner::before{content:'';position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.04);}
+.banner-eye{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:5px;}
+.banner-title{font-family:'Noto Serif JP',serif;font-size:16px;font-weight:700;line-height:1.55;margin-bottom:7px;}
+.banner-sub{font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;}
+.banner-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px;}
+.banner-tag{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:11px;padding:5px 11px;border-radius:7px;display:flex;align-items:center;gap:6px;}
+.banner-tag svg{width:12px;height:12px;}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:12px;}
+.card-head{font-size:13px;font-weight:700;color:var(--text);margin-bottom:11px;display:flex;align-items:center;gap:8px;}
+.card-head svg{width:16px;height:16px;stroke:var(--green);}
+
+/* BADGE */
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;}
+.bg-green{background:var(--green-light);color:var(--green);}
+.bg-gold{background:var(--gold-light);color:#7a5500;}
+.bg-blue{background:var(--blue-light);color:var(--blue);}
+.bg-red{background:var(--red-light);color:var(--red);}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px;}
+.metric{background:var(--bg);border-radius:8px;padding:10px 12px;}
+.metric-label{font-size:11px;color:var(--muted);margin-bottom:3px;}
+.metric-val{font-size:19px;font-weight:700;}
+.mv-g{color:var(--green);}
+.mv-b{color:var(--blue);}
+
+/* BIZ */
+.biz-item{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);}
+.biz-item:last-child{border-bottom:none;padding-bottom:0;}
+.biz-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.biz-icon svg{width:18px;height:18px;}
+.biz-name{font-size:13px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.biz-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* WORK TAGS */
+.work-tag{display:flex;gap:10px;align-items:flex-start;padding:10px 11px;border-radius:8px;font-size:12px;line-height:1.6;margin-bottom:7px;}
+.work-tag:last-child{margin-bottom:0;}
+.work-tag svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;}
+.wt-title{font-weight:700;font-size:12px;margin-bottom:2px;}
+.wt-g{background:var(--green-pale);border-left:3px solid var(--green);}
+.wt-a{background:var(--gold-pale);border-left:3px solid var(--gold);}
+.wt-b{background:var(--blue-light);border-left:3px solid var(--blue);}
+
+/* AUDIT */
+.audit-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px;}
+.audit-item{background:var(--bg);border-radius:8px;padding:10px 8px;text-align:center;}
+.audit-item svg{width:18px;height:18px;margin:0 auto 5px;display:block;}
+.audit-title{font-size:12px;font-weight:700;margin-bottom:4px;}
+.audit-list{font-size:11px;color:var(--muted);line-height:1.7;text-align:left;}
+
+/* COMPANIES */
+.co-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.co-card{background:var(--bg);border-radius:8px;padding:10px 12px;}
+.co-cat{font-size:10px;color:var(--muted);margin-bottom:3px;}
+.co-name{font-size:12px;font-weight:700;}
+
+/* FLOW */
+.flow-item{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
+.flow-item:last-child{border-bottom:none;}
+.flow-num{width:26px;height:26px;border-radius:50%;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.flow-now-wrap{background:var(--green-pale);border:1px solid var(--green-light);border-radius:8px;margin:8px -1.25rem;padding:10px 1.25rem;}
+
+/* ===== Q&A ===== */
+.interview-banner{background:linear-gradient(135deg,var(--gd1) 0%,var(--gd2) 50%,var(--gd3) 100%);border-radius:14px;padding:1.4rem 1.5rem;margin-bottom:14px;color:#fff;position:relative;overflow:hidden;}
+.interview-banner::before{content:'';position:absolute;right:-15px;bottom:-15px;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.05);}
+.ib-eye{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:5px;}
+.ib-title{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;line-height:1.5;margin-bottom:8px;}
+.ib-themes{display:flex;flex-direction:column;gap:6px;}
+.ib-theme{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 12px;font-size:12px;display:flex;align-items:center;gap:8px;line-height:1.5;}
+.ib-theme svg{width:14px;height:14px;flex-shrink:0;}
+
+.qa-item{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:9px;}
+.qa-header{padding:13px 1.1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;background:var(--white);transition:background .12s;gap:8px;}
+.qa-header:hover{background:var(--green-pale);}
+.qa-left{display:flex;align-items:flex-start;gap:10px;flex:1;}
+.qa-num{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--gd1),var(--gd3));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.qa-meta{font-size:10px;color:var(--muted);margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase;}
+.qa-q{font-size:13px;font-weight:500;line-height:1.55;}
+.qa-chev{width:16px;height:16px;color:var(--muted);transition:transform .2s;flex-shrink:0;margin-top:4px;}
+.qa-item.open .qa-chev{transform:rotate(180deg);}
+.qa-body{display:none;padding:13px 1.1rem 15px;background:var(--bg);border-top:1px solid var(--border);}
+.qa-item.open .qa-body{display:block;}
+.qa-answer{font-size:13px;line-height:1.85;color:var(--text);white-space:pre-wrap;}
+.qa-tip{margin-top:11px;background:var(--gold-light);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:9px 11px;font-size:12px;color:#5c3e00;line-height:1.6;}
+.qa-tip-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;}
+.qa-steps{margin-top:11px;}
+.qa-steps-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:7px;}
+.qa-step{display:flex;gap:9px;align-items:flex-start;padding:7px 10px;background:var(--green-pale);border-radius:7px;margin-bottom:5px;font-size:12px;line-height:1.55;}
+.qa-step:last-child{margin-bottom:0;}
+.step-n{width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+/* ===== QUIZ ===== */
+.filter-bar{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:10px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.fl-label{font-size:12px;color:var(--muted);}
+.fl-btn{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:var(--white);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;color:var(--muted);transition:all .12s;font-weight:500;}
+.fl-btn:hover{border-color:var(--green);color:var(--green);}
+.fl-all{background:var(--green)!important;color:#fff!important;border-color:var(--green)!important;}
+.fl-high{background:var(--red)!important;color:#fff!important;border-color:var(--red)!important;}
+.fl-mid{background:var(--gold)!important;color:#fff!important;border-color:var(--gold)!important;}
+.fl-low{background:var(--blue)!important;color:#fff!important;border-color:var(--blue)!important;}
+
+.prog-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:10px;}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.prog-text{font-size:12px;font-weight:500;}
+.prog-num{font-size:12px;color:var(--muted);}
+.prog-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gd2),var(--gd4));border-radius:3px;transition:width .4s ease;width:0%;}
+
+.quiz-card{background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.quiz-card.hidden{display:none;}
+.qcard-head{padding:12px 1.1rem 10px;border-bottom:1px solid var(--border);display:flex;gap:9px;align-items:flex-start;}
+.qnum{width:22px;height:22px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.qn-h{background:var(--red);}
+.qn-m{background:var(--gold);}
+.qn-l{background:var(--blue);}
+.qmeta{display:flex;gap:5px;align-items:center;margin-bottom:5px;flex-wrap:wrap;}
+.imp{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:700;}
+.imp-h{background:var(--red-light);color:var(--red);}
+.imp-m{background:var(--gold-light);color:#7a5500;}
+.imp-l{background:var(--blue-light);color:var(--blue);}
+.catb{font-size:10px;padding:2px 7px;border-radius:10px;background:var(--bg);color:var(--muted);}
+.qtext{font-size:13px;font-weight:500;line-height:1.6;}
+.quiz-opts{padding:10px 1.1rem 12px;display:flex;flex-direction:column;gap:6px;}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-family:'Noto Sans JP',sans-serif;background:var(--white);color:var(--text);transition:all .12s;text-align:left;line-height:1.55;}
+.opt:hover:not(.disabled){background:var(--green-pale);border-color:var(--green-mid);}
+.opt.correct{background:var(--green-light);border-color:var(--green);color:var(--green);font-weight:500;}
+.opt.wrong{background:var(--red-light);border-color:var(--red);color:var(--red);}
+.opt.disabled{cursor:default;}
+.opt-c{width:21px;height:21px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .12s;margin-top:1px;}
+.opt.correct .opt-c{background:var(--green);border-color:var(--green);color:#fff;}
+.opt.wrong .opt-c{background:var(--red);border-color:var(--red);color:#fff;}
+.qfb{margin:0 1.1rem 12px;padding:9px 11px;border-radius:8px;font-size:12px;line-height:1.6;display:none;}
+.qfb.ok{background:var(--green-light);color:var(--green);border:1px solid #a8d8a0;display:block;}
+.qfb.ng{background:var(--red-light);color:#7a1010;border:1px solid #f5c4c4;display:block;}
+
+/* RESULT */
+.result-panel{display:none;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:2rem 1.5rem;text-align:center;margin-top:12px;}
+.result-panel.show{display:block;}
+.result-ring{width:100px;height:100px;margin:0 auto 1.25rem;position:relative;}
+.result-ring svg{width:100px;height:100px;}
+.ring-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.ring-score{font-size:26px;font-weight:700;color:var(--green);}
+.ring-denom{font-size:11px;color:var(--muted);}
+.result-title{font-size:17px;font-weight:700;margin-bottom:6px;}
+.result-comment{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1.25rem;}
+.result-bd{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.rb{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:500;}
+.rb-h{background:var(--red-light);color:var(--red);}
+.rb-m{background:var(--gold-light);color:#7a5500;}
+.rb-l{background:var(--blue-light);color:var(--blue);}
+.reset-btn{background:linear-gradient(135deg,var(--gd2),var(--gd3));color:#fff;border:none;padding:11px 30px;border-radius:8px;font-size:14px;font-family:'Noto Sans JP',sans-serif;font-weight:500;cursor:pointer;transition:opacity .15s;}
+.reset-btn:hover{opacity:.88;}
+
+/* TOOLTIP - ホバー/タップで注釈表示 */
+.tip-word{position:relative;cursor:help;border-bottom:1px dotted var(--green);color:var(--green);font-weight:500;display:inline-block;}
+.tip-word::before{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:-2px;border:5px solid transparent;border-top-color:var(--text);visibility:hidden;opacity:0;transition:opacity .15s;z-index:1000;pointer-events:none;}
+.tip-word::after{content:attr(data-tip);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:5px;background:var(--text);color:#fff;padding:8px 11px;border-radius:6px;font-size:11px;font-weight:400;line-height:1.6;width:240px;visibility:hidden;opacity:0;transition:opacity .15s;z-index:1000;pointer-events:none;white-space:normal;text-align:left;letter-spacing:.02em;}
+.tip-word:hover::before,.tip-word:hover::after,.tip-word.active::before,.tip-word.active::after{visibility:visible;opacity:1;}
+@media (max-width:600px){.tip-word::after{width:200px;}}
+
+/* 代表メッセージ */
+.message-card{background:linear-gradient(135deg,#fdfaf2 0%,#fff 60%);border:1px solid var(--border);border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:12px;position:relative;overflow:hidden;}
+.message-card::before{content:'';position:absolute;right:-20px;top:-20px;width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,var(--green-light),transparent);opacity:.5;}
+.message-eye{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:6px;font-weight:700;}
+.message-lead{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:700;line-height:1.7;color:var(--text);margin-bottom:11px;position:relative;}
+.message-body{font-size:12px;line-height:1.85;color:var(--text);margin-bottom:11px;position:relative;}
+.message-sign{text-align:right;font-size:12px;color:var(--muted);margin-top:8px;position:relative;}
+.message-sign strong{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--text);margin-left:6px;}
+
+/* 社長プロフィール */
+.president-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.25rem;margin-bottom:12px;}
+.pres-timeline{display:flex;flex-direction:column;gap:0;margin-top:11px;}
+.pres-item{display:flex;gap:11px;align-items:flex-start;padding:7px 0;position:relative;}
+.pres-item:not(:last-child)::before{content:'';position:absolute;left:31px;top:18px;bottom:-7px;width:1px;background:var(--green-light);}
+.pres-year{font-size:10px;font-weight:700;color:var(--green);min-width:55px;padding-top:2px;}
+.pres-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;border:2px solid var(--green-light);}
+.pres-text{font-size:12px;line-height:1.6;flex:1;}
+
+/* 重要キーワード強調ボックス */
+.keyword-box{background:linear-gradient(135deg,var(--green) 0%,var(--green-mid) 100%);border-radius:12px;padding:1rem 1.2rem;color:#fff;margin:11px 0;}
+.kb-eye{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:5px;}
+.kb-text{font-family:'Noto Serif JP',serif;font-size:14px;font-weight:700;line-height:1.55;}
+.kb-sub{font-size:11px;color:rgba(255,255,255,.75);line-height:1.6;margin-top:6px;}
+
+/* 最新ニュース */
+.news-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px;line-height:1.55;}
+.news-item:last-child{border-bottom:none;}
+.news-date{color:var(--muted);font-size:11px;min-width:65px;font-weight:500;}
+.news-cat{font-size:10px;padding:2px 7px;border-radius:9px;background:var(--green-light);color:var(--green);font-weight:700;flex-shrink:0;margin-right:4px;}
+.news-text{flex:1;color:var(--text);}
+
+/* インタビューハイライト */
+.iv-highlight{background:var(--gold-pale);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:10px 13px;margin:11px 0;font-size:12px;line-height:1.7;color:#5c3e00;}
+.iv-highlight-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.iv-highlight-q{font-style:italic;margin-bottom:3px;color:#6b4d00;font-size:11px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="h-left">
+      <div class="h-logobox">
+        <svg viewBox="0 0 40 40" fill="none">
+          <ellipse cx="19" cy="11" rx="10" ry="5.5" fill="#fff" opacity=".92" transform="rotate(-18 19 11)"/>
+          <ellipse cx="20" cy="21" rx="12" ry="5" fill="#f5d040" opacity=".88" transform="rotate(4 20 21)"/>
+          <ellipse cx="21" cy="29" rx="13" ry="4.2" fill="#4ab0e8" opacity=".85"/>
+        </svg>
+      </div>
+      <div>
+        <div class="h-en">KIMURA GROUP</div>
+        <div class="h-jp">株式会社 木村グループ本社 ／ 面接対策アプリ</div>
+      </div>
+    </div>
+    <div class="h-right">
+      <div class="h-badge">1次・2次面接 完全対策</div>
+      <div class="h-message">違う失敗は100回していい。挑む人であれ。</div>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showPage('overview',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      企業概要
+    </button>
+    <button class="nav-btn" onclick="showPage('step2',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      1次面接 <span class="step-pill">STEP2</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('step3',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      2次面接 <span class="step-pill">STEP3</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('memorize',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      暗記
+    </button>
+    <button class="nav-btn" onclick="showPage('quiz',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      理解度テスト
+    </button>
+  </div>
+</nav>
+
+<!-- ==================== PAGE: OVERVIEW ==================== -->
+<div id="page-overview" class="page active">
+
+  <div class="banner">
+    <div class="banner-eye">Company Overview</div>
+    <div class="banner-title">「日々の豊かな"くらし"を創る」ことに挑戦し、<br>地域社会に貢献します</div>
+    <div class="banner-sub">1954年創業。製造・卸売・物流の3事業7社からなる「食」を中心とした地域総合商社グループ</div>
+    <div class="banner-tags">
+      <div class="banner-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>熊本市南区流通団地</div>
+      <div class="banner-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>連結1,617名</div>
+      <div class="banner-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>売上高360億円</div>
+    </div>
+  </div>
+
+  <div class="message-card">
+    <div class="message-eye">President's Message ／ 代表メッセージ</div>
+    <div class="message-lead">「日々の豊かな"くらし"を創る」ことに、全従業員で誠実に取り組みます。</div>
+    <div class="message-body">
+      当社グループは、1954年に米菓の製造で創業いたしました。その後、お得意先さまのニーズや時流に応える形で事業を拡大し、現在では「製造事業」「卸売事業」「物流事業」の3つの事業を軸としています。「豊かな」の定義は人それぞれですが、当社グループはこれまでも、そしてこれからも、誰もが「日々の"くらし"」を安心して、健康に過ごせる社会を継続的に支えること、を大切にしたいと考えています。
+    </div>
+    <div class="message-body">
+      様々な環境が変化し、これまで通りに営むことが難しくなる昨今ですが、大切な「これまで通りの日々の"くらし"」を支えていけるように、全従業員で誠実に事業に取り組んで参ります。
+    </div>
+    <div class="message-sign">代表取締役社長 <strong>木村 寿孝</strong><span style="font-size:10px;color:var(--muted);margin-left:6px;">（きむら としたか）</span></div>
+  </div>
+
+  <div class="keyword-box">
+    <div class="kb-eye">面接で必ず押さえるべき社長の想い</div>
+    <div class="kb-text">「誠実」をベースに、「食」だけではなく「日常生活」すべてを対象とした事業展開に挑戦する</div>
+    <div class="kb-sub">社長は「コンプライアンス」や「正直さ」を何よりも優先すると公言。新企業理念で最も想いを込めた言葉が「誠実」（ココクマ社長インタビューより）</div>
+  </div>
+
+  <div class="president-card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M6.5 19a6 6 0 0 1 11 0"/></svg>
+      社長プロフィール（木村 寿孝氏 ／ きむら としたか）
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;padding:7px 10px;background:var(--red-light);border-radius:7px;border-left:3px solid var(--red);">
+      <strong style="color:var(--red);">★読み方注意：「としたか」</strong>（「ひさたか」ではない）。面接で間違えると致命的なので必ず正しく覚える。
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:8px;padding:7px 10px;background:var(--gold-pale);border-radius:7px;border-left:3px solid var(--gold);">
+      2次面接（社長面接）では、社長の経歴を踏まえた話題を出せると「企業研究の深さ」が伝わる。
+    </div>
+    <div class="pres-timeline">
+      <div class="pres-item"><div class="pres-dot"></div><div class="pres-year">京大卒</div><div class="pres-text">京都大学経済学部卒業</div></div>
+      <div class="pres-item"><div class="pres-dot"></div><div class="pres-year">新卒〜</div><div class="pres-text">JFEスチール株式会社入社、人事部で6年間勤務</div></div>
+      <div class="pres-item"><div class="pres-dot"></div><div class="pres-year">2017</div><div class="pres-text">熊本へUターン、株式会社木村入社</div></div>
+      <div class="pres-item"><div class="pres-dot"></div><div class="pres-year">2019</div><div class="pres-text">取締役就任</div></div>
+      <div class="pres-item"><div class="pres-dot"></div><div class="pres-year">2020</div><div class="pres-text">取締役専務執行役員</div></div>
+      <div class="pres-item"><div class="pres-dot" style="background:var(--red);border-color:var(--red-light);"></div><div class="pres-year" style="color:var(--red);">2022年7月</div><div class="pres-text"><strong>株式会社木村 代表取締役社長就任（3代目）</strong></div></div>
+      <div class="pres-item"><div class="pres-dot" style="background:var(--red);border-color:var(--red-light);"></div><div class="pres-year" style="color:var(--red);">2023年5月〜</div><div class="pres-text"><strong>株式会社木村グループ本社 代表取締役社長を兼任（現任）</strong></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+      社長が就任後に始めた3つの取り組み
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:7px 10px;background:var(--blue-light);border-radius:7px;border-left:3px solid var(--blue);">
+      <strong>出典：</strong>ココクマ社長インタビュー記事（社長ご本人の発言）。2次面接で「社長の取り組みを理解しているか」が問われる可能性大。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;">
+      <div class="work-tag wt-g">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+        <div><div class="wt-title" style="color:var(--green);">1. 日報の徹底</div>上司が毎日確認しコメントを返す。認識のズレを翌日には直接会話で解消する仕組み</div>
+      </div>
+      <div class="work-tag wt-a">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div><div class="wt-title" style="color:var(--gold);">2. 月1回の事業所会議</div>日報から抽出された課題を全員で向き合う場。一体感を生む仕組み</div>
+      </div>
+      <div class="work-tag wt-b">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" width="18" height="18"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <div><div class="wt-title" style="color:var(--blue);">3. 「私が考える企業理念・行動指針」レポート</div>管理職が当番制で毎週イントラに発信。他部署の管理職の考え方を知る場</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      基本情報
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric-label">グループ売上高</div><div class="metric-val mv-g">360億円</div></div>
+      <div class="metric"><div class="metric-label">連結従業員数</div><div class="metric-val mv-b">1,617名</div></div>
+      <div class="metric"><div class="metric-label">グループ本社設立</div><div class="metric-val">2023年2月</div></div>
+      <div class="metric"><div class="metric-label">定年</div><div class="metric-val">65歳</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.9;">
+      所在地：熊本県熊本市南区流通団地2-5<br>
+      代表：木村 寿孝（きむら としたか）<span style="color:var(--green);font-weight:500;">★読み方注意</span>（3代目社長・2022年7月就任、2023年5月よりグループ本社社長を兼任）<br>
+      勤務時間：8:00〜16:45 ／ 年間休日115日 ／ 月1回土曜出社あり<br>
+      定年：65歳 ／ 退職金制度・財形貯蓄あり<br>
+      住宅手当：持ち家ローン残有 22,000〜28,000円/月、賃借契約 27,500〜35,000円/月（職能資格に応じて支給）<br>
+      家族手当：配偶者5,000円、子ども10,000円/1人
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      3つの中核事業
+    </div>
+    <div>
+      <div class="biz-item">
+        <div class="biz-icon" style="background:var(--green-light);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+        </div>
+        <div>
+          <div class="biz-name">卸売事業 <span class="badge bg-green">グループの主軸</span></div>
+          <div class="biz-desc">九州一円・一部中国エリアへ全国菓子メーカーの流通菓子・ブランド米・業務用食材を販売納品。売場レイアウト提案まで担う。担当：㈱木村・㈱九州食糧</div>
+        </div>
+      </div>
+      <div class="biz-item">
+        <div class="biz-icon" style="background:var(--gold-light);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div>
+          <div class="biz-name">製造事業 <span class="badge bg-gold">創業の原点</span></div>
+          <div class="biz-desc">1954年創業のあられ製造から始まる。熊本県産もち米（阿蘇の伏流水育ち）にこだわり、米菓・和洋菓子・土産品を企画製造。担当：㈱木村・㈱きむらのあられファーム</div>
+        </div>
+      </div>
+      <div class="biz-item">
+        <div class="biz-icon" style="background:var(--blue-light);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div>
+          <div class="biz-name">物流事業 <span class="badge bg-blue"><span class="tip-word" data-tip="冷凍（フローズン）・冷蔵（チルド）・定温・常温（ドライ）の4種類の温度管理ができる物流体制。食料品から日用雑貨まで幅広く対応可能。" style="color:var(--blue);">4温度帯対応</span></span></div>
+          <div class="biz-desc">食料品の保管・仕分け・配送に加え重機運搬・家具配送も担う。九州全域をカバーする4温度帯物流インフラ。担当：大福物流・サンエックス・物流春日</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      今回の業務内容（経営企画・管理）
+    </div>
+    <div>
+      <div class="work-tag wt-g">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div><div class="wt-title" style="color:var(--green);">各種会議の運営</div>アジェンダ検討・設定、会議運営、議事録作成、発信 等</div>
+      </div>
+      <div class="work-tag wt-a">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <div><div class="wt-title" style="color:var(--gold);">テーマ活動等への支援</div><span class="tip-word" data-tip="3〜5年単位で会社の経営戦略・目標・具体的施策を定めた計画。日々の業務の指針となり、進捗を会議で管理していく重要な計画。">中期経営計画</span>で設定したテーマ活動の活動推進・優先順位付け、<span class="tip-word" data-tip="課題解決のための具体的な施策・アクションをより効果的なものに改善していくこと。例：研修内容の見直し、業務フロー改善、活動内容のブラッシュアップなど。">打ち手／活動内容の充実化</span>などの<span class="tip-word" data-tip="現場の活動に隣で並走するように寄り添い、課題解決や活動推進を支援する手法。指示を出すのではなく一緒に考え、進めるスタイル。">支援（=伴走）</span></div>
+      </div>
+      <div class="work-tag wt-b">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <div><div class="wt-title" style="color:var(--blue);">内部／業務監査</div>各所属のヒト、カネ、モノの取り扱いの標準化、問題点の抽出と改善に向けた目標設定、活動支援</div>
+      </div>
+    </div>
+    <div class="audit-grid">
+      <div class="audit-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <div class="audit-title" style="color:var(--red);">ヒト</div>
+        <div class="audit-list">人員配置の適正<br>労働時間管理<br>属人化の解消<br>教育・育成体制<br>休暇取得状況</div>
+      </div>
+      <div class="audit-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div class="audit-title" style="color:var(--gold);">カネ</div>
+        <div class="audit-list">経費の適正使用<br>不正支出の有無<br><span class="tip-word" data-tip="予算（事前計画）と実績（実際の結果）を比較・分析し、差異の原因を特定して経営判断に活かす管理手法。経営企画の基本業務の一つ。">予実管理</span><br>稟議・承認フロー<br>請求・支払の正確性</div>
+      </div>
+      <div class="audit-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        <div class="audit-title" style="color:var(--blue);">モノ</div>
+        <div class="audit-list">備品・在庫の管理<br>データ取扱い<br>業務フロー標準化<br>マニュアル整備<br>システム運用状況</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      グループ会社一覧（計7社）
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:7px 10px;background:var(--green-pale);border-radius:7px;border-left:3px solid var(--green);">
+      「7社」は<span class="tip-word" data-tip="他の会社の株式を保有することで、その会社の経営を支配・管理する会社。事業活動は子会社が行い、持株会社はグループ全体の戦略立案・経営支援を担う。">持株会社</span>の㈱木村グループ本社を含む合計数です。事業を展開する6社＋グループ本社＝7社。
+    </div>
+    <div class="co-grid">
+      <div class="co-card" style="border:1px solid var(--green-light);"><div class="co-cat" style="color:var(--green);font-weight:700;">持株会社</div><div class="co-name">㈱木村グループ本社</div></div>
+      <div class="co-card"><div class="co-cat">卸売・製造</div><div class="co-name">㈱木村</div></div>
+      <div class="co-card"><div class="co-cat">卸売</div><div class="co-name">㈱九州食糧</div></div>
+      <div class="co-card"><div class="co-cat">製造（農業法人）</div><div class="co-name">㈱きむらのあられファーム</div></div>
+      <div class="co-card"><div class="co-cat">物流</div><div class="co-name">㈱大福物流</div></div>
+      <div class="co-card"><div class="co-cat">物流</div><div class="co-name">㈱サンエックス</div></div>
+      <div class="co-card"><div class="co-cat">物流</div><div class="co-name">㈱物流春日</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      グループ行動指針（全8条）
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;">
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div><div>法令とルールとマナーを遵守し、公明正大に行動します</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">2</div><div>安全・防災・品質を全てにおいて優先し、対応します</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">3</div><div>相手の立場で考え、よりよい商品・サービスを創ります</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">4</div><div>変化を捉え、迅速に行動します</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">5</div><div>期待を超える成果を出すために、絶えずベストを尽くします</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">6</div><div>仲間を想い、同じ目標に向かって行動します</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">7</div><div>情報の共有を図り、多様な価値観を尊重し、組織作りに取り組みます</div></div>
+      <div style="display:flex;gap:9px;align-items:flex-start;font-size:12px;line-height:1.6;padding:7px 10px;background:var(--green-pale);border-radius:7px;"><div style="width:18px;height:18px;border-radius:50%;background:var(--green);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">8</div><div>無駄な生産・消費・廃棄を無くし、地球環境を守ります</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+      CSV取り組み（Creating Shared Value）
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:11px;padding:9px 11px;background:var(--blue-light);border-radius:8px;border-left:3px solid var(--blue);">
+      <span style="font-weight:700;color:var(--blue);">CSVとはCreating Shared Value（共有価値の創造）の略。</span><br>
+      単なる社会的責任（CSR）にとどまらず、企業と地域社会が共有できる価値を創造することを目指す取り組みです。会社と社員の互助会<span class="tip-word" data-tip="木村グループ社員と会社で構成される互助会組織。社会貢献活動・社員サポート・福利厚生の窓口となる組織。">「善隣会」</span>が共同して積極的に推進しています。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div class="work-tag wt-g">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <div><div class="wt-title" style="color:var(--green);">Action1：持続可能な地域社会の創造</div>小学生のあられ製造・職業体験、高校生との産学連携（食品ロス削減商品開発）など「地域で子どもを育てる」取り組み</div>
+      </div>
+      <div class="work-tag wt-a">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        <div><div class="wt-title" style="color:var(--gold);">Action2：スポーツを通じた地域の活力支援</div>スポーツを通じて健康で充実した日常を支援。女子サッカーチーム「熊本ルネサンスFC」を支援</div>
+      </div>
+      <div class="work-tag wt-b">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" width="18" height="18"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <div><div class="wt-title" style="color:var(--blue);">Action3：ワーク・ライフ・バランスの構築</div>プライベートの充実を起点とした働きやすい環境整備。<span class="tip-word" data-tip="経済産業省が認定する制度。優良な健康経営を実践している大企業・中小企業等の法人に与えられる称号。従業員の健康保持・増進への取り組みが評価される。">経済産業省の「健康経営優良法人」</span>認定取得</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      事業戦略・今後の方向性
+    </div>
+    <div class="iv-highlight">
+      <div class="iv-highlight-label">社長インタビューより</div>
+      <div class="iv-highlight-q">Q. 今後の事業戦略は？</div>
+      これまで『卸売事業』が売上・利益ともにグループの軸でしたが、『製造事業』と『物流事業』を更に成長させていきます。卸売・商社機能にメーカー機能と物流機能も併せ持つことで、自分たちにしか創れないものを創り、自分たちで販売・配送する。当社グループだから手掛けられる製品・サービスを提供し、他社との差別化を図ります。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+      <div style="font-size:12px;padding:8px 11px;background:var(--green-pale);border-radius:7px;line-height:1.6;"><strong style="color:var(--green);">2025年度目標：</strong>グループ売上400億円達成</div>
+      <div style="font-size:12px;padding:8px 11px;background:var(--gold-pale);border-radius:7px;line-height:1.6;"><strong style="color:var(--gold);">経営課題：</strong>業務効率化の促進・グループシナジーの発現・更なる付加価値の創造</div>
+      <div style="font-size:12px;padding:8px 11px;background:var(--blue-light);border-radius:7px;line-height:1.6;"><strong style="color:var(--blue);">差別化戦略：</strong>製造×卸売×物流の三位一体で「自社にしか創れない価値」を提供</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      最新ニュース（2026年）
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:7px 10px;background:var(--green-pale);border-radius:7px;border-left:3px solid var(--green);">
+      面接で「直近のニュース見ました」と一言加えると、企業研究の本気度が伝わる。
+    </div>
+    <div class="news-item">
+      <div class="news-date">2026/05/01</div>
+      <div class="news-text"><span class="news-cat">広報</span>小学校あられ収益金寄贈（乙女小・白旗小へ）— 小学校あられ開発プロジェクト</div>
+    </div>
+    <div class="news-item">
+      <div class="news-date">2026/04/10</div>
+      <div class="news-text"><span class="news-cat">広報</span>㈱ヤマチク（熊本の箸メーカー）の「おかえりBOX」企画に参加</div>
+    </div>
+    <div class="news-item">
+      <div class="news-date">2026/04/10</div>
+      <div class="news-text"><span class="news-cat">新商品</span>『奴あられわさび味』『うまからしょうゆ味』『すっぱから梅味』発売</div>
+    </div>
+    <div class="news-item">
+      <div class="news-date">2026/03/13</div>
+      <div class="news-text"><span class="news-cat">新商品</span>『ポキッコクリームソーダ』『ポキッコ果汁20％』発売</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+      求める人物像（採用情報より）
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;padding:7px 10px;background:var(--gold-pale);border-radius:7px;border-left:3px solid var(--gold);">
+      面接で「なぜ自分が活躍できるか」を語る際の核となる3要素。自分の経験と紐付けてアピールできるよう必ず押さえる。
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;">
+      <div class="work-tag wt-g">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" width="18" height="18"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <div><div class="wt-title" style="color:var(--green);">1. 何事にも積極的に挑戦できること</div>自分の仕事だけでなく、他部署・他グループ会社の仕事にも積極的に取り組める姿勢</div>
+      </div>
+      <div class="work-tag wt-a">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" width="18" height="18"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <div><div class="wt-title" style="color:var(--gold);">2. 礼儀を大切にし、仕事相手と信頼関係を築けること</div>挨拶・返事などの礼儀を大切にし、相手と信頼関係を構築して仕事を進められる姿勢</div>
+      </div>
+      <div class="work-tag wt-b">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div><div class="wt-title" style="color:var(--blue);">3. 仕事と私生活を両立させ、日々、自己研鑽ができること</div>ワーク・ライフ・バランスを保ちながら、常に自己研鑽を続けられる姿勢</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- ==================== PAGE: STEP2 ==================== -->
+<div id="page-step2" class="page">
+  <div class="interview-banner">
+    <div class="ib-eye">Step 2 — 1次面接（部門責任者）</div>
+    <div class="ib-title">転職動機・これまでの経験を中心に<br>部門責任者が直接確認する面接</div>
+    <div class="ib-themes">
+      <div class="ib-theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        当社についての説明（企業理解の確認）
+      </div>
+      <div class="ib-theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        転職動機（なぜ転職？なぜ木村グループ？）
+      </div>
+      <div class="ib-theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        これまでの経験（実績・スキルの確認）
+      </div>
+    </div>
+  </div>
+
+  <div id="qa-step2"></div>
+</div>
+
+<!-- ==================== PAGE: STEP3 ==================== -->
+<div id="page-step3" class="page">
+  <div class="interview-banner" style="background:linear-gradient(135deg,#2a3d8f 0%,#1a5ca8 50%,#2878c8 100%);">
+    <div class="ib-eye">Step 3 — 2次面接（社長：木村寿孝氏）</div>
+    <div class="ib-title">当社で実現したいこと・キャリアビジョンを<br>社長が直接確認する面接</div>
+    <div class="ib-themes">
+      <div class="ib-theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        当社で実現したいこと（入社後のビジョン）
+      </div>
+      <div class="ib-theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+        キャリアについて（中長期の目標）
+      </div>
+      <div class="ib-theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        熊本・地域への想い（長期定住の意志）
+      </div>
+    </div>
+  </div>
+
+  <div id="qa-step3"></div>
+</div>
+
+<!-- ==================== PAGE: QUIZ ==================== -->
+<div id="page-quiz" class="page">
+  <div class="filter-bar">
+    <span class="fl-label">絞り込み：</span>
+    <button class="fl-btn" id="fb-all" onclick="setFilter('all')">すべて（41問）</button>
+    <button class="fl-btn" id="fb-high" onclick="setFilter('high')">重要度 大（16問）</button>
+    <button class="fl-btn" id="fb-mid" onclick="setFilter('mid')">重要度 中（16問）</button>
+    <button class="fl-btn" id="fb-low" onclick="setFilter('low')">重要度 小（9問）</button>
+    <button onclick="resetQuiz()" style="margin-left:auto;padding:5px 14px;border-radius:20px;border:1px solid var(--border);background:var(--white);font-size:12px;font-family:'Noto Sans JP',sans-serif;cursor:pointer;color:var(--muted);display:flex;align-items:center;gap:5px;transition:all .12s;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+      リセット
+    </button>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-row"><span class="prog-text">回答進捗</span><span class="prog-num" id="prog-label">0 / 25 問</span></div>
+    <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+  <div id="quiz-container"></div>
+  <div class="result-panel" id="result-panel">
+    <div class="result-ring">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#dde3da" stroke-width="8"/>
+        <circle cx="50" cy="50" r="42" fill="none" stroke="var(--green)" stroke-width="8" stroke-dasharray="264" stroke-dashoffset="264" id="result-arc" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+      </svg>
+      <div class="ring-text"><div class="ring-score" id="r-score">0</div><div class="ring-denom" id="r-denom">/ 25</div></div>
+    </div>
+    <div class="result-title" id="r-title"></div>
+    <div class="result-comment" id="r-comment"></div>
+    <div class="result-bd" id="r-bd"></div>
+    <button class="reset-btn" onclick="resetQuiz()">もう一度挑戦する</button>
+  </div>
+</div>
+
+<!-- ==================== PAGE: MEMORIZE ==================== -->
+<div id="page-memorize" class="page">
+  <div class="banner" style="background:linear-gradient(135deg,#5a3d8c 0%,#7551b8 50%,#9670d8 100%);">
+    <div class="banner-eye">Memorization ／ キーワード暗記</div>
+    <div class="banner-title">面接回答を「キーワード」で覚える<br>短期集中・高効率の暗記法</div>
+    <div class="banner-sub">回答を丸暗記するより、要点キーワードを覚える方が本番で自然に話せます。穴埋め形式で繰り返し練習しましょう。</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      効率的な暗記のための5つのコツ
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;">
+      <div style="font-size:12px;padding:9px 11px;background:var(--green-pale);border-radius:7px;line-height:1.6;border-left:3px solid var(--green);"><strong>1. キーワードだけ覚える</strong>：丸暗記は本番で詰まる原因。「3事業」「7社」「2022年7月」「誠実」などの単語を骨組みとして覚える。</div>
+      <div style="font-size:12px;padding:9px 11px;background:var(--gold-pale);border-radius:7px;line-height:1.6;border-left:3px solid var(--gold);"><strong>2. 声に出して練習</strong>：黙読の3倍記憶に残る。音声読み上げ機能を使って耳でも覚える。</div>
+      <div style="font-size:12px;padding:9px 11px;background:var(--blue-light);border-radius:7px;line-height:1.6;border-left:3px solid var(--blue);"><strong>3. 1日3回・3日連続</strong>：朝・昼・夜の3回×3日で長期記憶に定着。一気に詰め込むより効果的。</div>
+      <div style="font-size:12px;padding:9px 11px;background:var(--red-light);border-radius:7px;line-height:1.6;border-left:3px solid var(--red);"><strong>4. 間違えた箇所だけ復習</strong>：覚えた部分は飛ばし、苦手な箇所に時間を集中。</div>
+      <div style="font-size:12px;padding:9px 11px;background:var(--green-pale);border-radius:7px;line-height:1.6;border-left:3px solid var(--green);"><strong>5. ストーリーで繋げる</strong>：「ピッコマで300時間→誠実な木村グループに貢献」のように因果関係で記憶。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+      音声読み上げで覚える
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:11px;padding:7px 10px;background:var(--green-pale);border-radius:7px;border-left:3px solid var(--green);">
+      面接対策ページの各回答に「再生」ボタンを設置済みです。聴きながら覚えると記憶定着が大幅にUPします。<br>
+      <strong>※ブラウザの音声合成機能を使用</strong>（インターネット接続不要）
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      キーワード穴埋め練習
+    </div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:11px;padding:7px 10px;background:var(--gold-pale);border-radius:7px;border-left:3px solid var(--gold);">
+      下の穴埋めをタップして答えを表示。すべて空欄で言えるようになれば暗記完了です。
+    </div>
+    <div id="memorize-container"></div>
+  </div>
+</div>
+<script>
+/* ---- PAGE SWITCH ---- */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ---- FLOW STEP ---- */
+const flowColors = { 1:'#aaa', 2:'var(--red)', 3:'var(--gold)', 4:'var(--blue)' };
+const flowBgColors = { 1:'#f5f5f5', 2:'var(--red-light)', 3:'var(--gold-light)', 4:'var(--blue-light)' };
+let currentStep = 2;
+function setFlowStep(step) {
+  currentStep = step;
+  [1,2,3,4].forEach(s => {
+    const nm = document.getElementById('nm'+s);
+    const ft = document.getElementById('ft'+s);
+    const fn = document.getElementById('fn'+s);
+    const row = document.querySelector(`.flow-step[data-step="${s}"]`);
+    if (nm) nm.style.display = s===step ? 'inline' : 'none';
+    if (fn) fn.style.background = s<=step ? flowColors[s] : '#ccc';
+    if (row) row.style.background = s===step ? flowBgColors[s] : '';
+  });
+}
+
+/* ---- Q&A DATA ---- */
+const step2QA = [
+  {
+    cat:'自己紹介',
+    q:'Q1. 自己紹介をお願いします',
+    answer:`光橋広祐と申します。中学から大学までの10年間、陸上長距離に打ち込み、駅伝メンバーとしてチームの目標達成のために仲間と切磋琢磨してまいりました。この経験から、困難に直面しても諦めずに目標へ向かう粘り強さと、組織の中で自分の役割を果たす責任感を培いました。
+
+大学卒業後は株式会社ピッコマ熊本に入社し、約4年間、電子書籍コンテンツの品質管理・配信運用を担当してまいりました。業務の中で検閲業務が組織全体のボトルネックになっていることに気づき、生成AIを活用した業務支援ツールを自ら設計・導入することで、作業時間を約50%削減、月間約300時間規模の工数削減効果を実現いたしました。
+
+本日はお時間をいただきありがとうございます。どうぞよろしくお願いいたします。`,
+    tip:'1分以内を目安に。「陸上で培った粘り強さ」→「ピッコマでの実績」→「結びの挨拶」の3段構成。最後に必ず「よろしくお願いいたします」で締める。',
+    steps:['10年間の陸上競技で培った粘り強さ・責任感','ピッコマでの4年間の品質管理経験','AI活用による300時間削減の実績','結びの挨拶']
+  },
+  {
+    cat:'転職理由',
+    q:'Q2. 転職理由を教えてください',
+    answer:`前職のCENTRIC株式会社では、入社前に提示された研修内容と実際の内容に大きな乖離がありました。予定されていた3ヶ月の研修が1週間に短縮され、研修担当の先輩社員も入社1ヶ月未満の方でした。自己学習で対応しようとしましたが、このままでは目指すキャリアを築けないと判断し退職を決意しました。より成長できる環境で、長期的に貢献できる会社を探したいと考えております。`,
+    tip:'事実ベースで淡々と話す。感情的にならず、最後は「より成長できる環境を求めた前向きな判断」で締める。「ネガティブな退職ではなく」という言葉は逆効果なので使わない。',
+    steps:[]
+  },
+  {
+    cat:'志望動機',
+    q:'Q3. 志望動機を教えてください',
+    answer:`月間300時間の工数削減を実現した業務改善の経験と、10年間の陸上競技で培った粘り強さを強みとしております。
+
+前職の電子書籍運営では、検閲業務が組織全体のボトルネックになっていることを自ら特定し、生成AIを活用した業務支援ツールおよびAI活用の社内FAQシステムを設計・導入いたしました。作業時間を50%削減し月間約300時間の工数削減を実現したことで、代表取締役から他部門への横展開を打診される評価をいただきました。
+
+学生時代は10年間陸上長距離に打ち込み、駅伝メンバーとしてチームの目標達成に向けて仲間と切磋琢磨した経験から、困難に直面しても諦めずに目標へ向かう姿勢と、組織の中で自分の役割を果たす力を培いました。
+
+貴社経営支援本部においては、グループ各社の業務標準化・改善を企画から定着まで推進し、組織の仕組みづくりを支える存在として長期的に貢献したいと考えております。`,
+    tip:'履歴書記載の志望動機を基準に作成。「実績→陸上経験→貴社で実現したいこと」の構成。「企画から定着まで推進」は経営支援本部の伴走業務と完全に呼応するキーワード。',
+    steps:['実績の提示（300時間削減・代表評価）','人物像の根拠（10年間の陸上経験・粘り強さ）','貴社で実現したいこと（業務標準化・改善の企画から定着まで）','長期貢献の意志']
+  },
+  {
+    cat:'企業理解',
+    q:'Q4. 当社についてどのように理解していますか？',
+    answer:`木村グループは1954年に熊本で米菓（あられ）の製造会社として創業され、現在は製造・卸売・物流の3事業7社からなる「食」を中心とした地域総合商社グループだと理解しております。
+
+2022年7月に3代目・木村寿孝（としたか）社長が㈱木村に就任され、2023年2月にグループ本社を設立。社長は「誠実」を最も大切な言葉として掲げられ、「食」だけでなく「日常生活」全般を対象とした事業展開を進めるフェーズにあると理解しております。
+
+製造事業では熊本県産もち米にこだわった米菓・土産品を製造し、卸売事業では九州一円への商品提供と売場提案を担い、物流事業では4温度帯対応の配送網でグループを支えていらっしゃいます。
+
+経営支援本部として私が携わるポジションは、この3事業を横断的に把握しながら、会議運営・テーマ活動の伴走・内部監査を通じてグループ全体を支える重要な役割だと認識しております。`,
+    tip:'3事業＋社長名（読み方も）＋ホールディングス化＋「誠実」のキーワードを必ず入れる。「誠実」への言及は社長への共感を示す決め手。',
+    steps:[]
+  },
+  {
+    cat:'経験・実績',
+    q:'Q5. これまでの経験・実績を教えてください',
+    answer:`ピッコマ熊本での約4年間、電子書籍コンテンツの品質管理・配信運用を担当いたしました。出版社ごとの厳格なルール遵守が求められるノベル業務を担当した際は、徹底した現場理解に努め、3ヶ月で業務対応実績1位を達成し、その後も退職まで維持いたしました。
+
+社内でAI活用の機運が高まった際には、自発的に情報収集と検証を行い、実務への導入を率先して進めました。検閲業務が組織全体のボトルネックになっていることを自ら特定し、Geminiのカスタム機能（カスタムGem）を活用したQ&A Botを設計・構築することで属人化を解消。さらにプロンプトエンジニアリングにより判断補助ツールを構築・導入し、1案件あたりの作業時間を約30分から15分へ50%削減、月間約300時間規模の工数削減を実現いたしました。
+
+この取り組みは代表取締役から他部門への横展開を打診される評価をいただき、現場起点で課題を発見し仕組みとして改善を実装・定着させる経験を積むことができました。`,
+    tip:'履歴書記載の内容をベースに作成。「3ヶ月で実績1位」「カスタムGem」「プロンプトエンジニアリング」「代表からの横展開打診」が決め手のキーワード。',
+    steps:['配属後の早期成果（3ヶ月で実績1位）','自発的なAI活用導入','具体的な実装（カスタムGem＋プロンプトエンジニアリング）','成果と横展開の評価']
+  },
+  {
+    cat:'強み',
+    q:'Q6. 自分の強みを教えてください',
+    answer:`私の強みは2つございます。
+
+1つ目は、現場の課題を自ら発見し、テクノロジーで仕組みとして解決する実行力です。前職では組織全体の課題となっていた検閲業務のボトルネックを自ら特定し、生成AIを活用したツールを構築することで月間約300時間の工数削減を実現いたしました。
+
+2つ目は、10年間の陸上競技で培った粘り強さと、組織の中で自分の役割を果たす責任感です。駅伝メンバーとしてチームの目標達成のために仲間と切磋琢磨した経験から、困難に直面しても諦めずに目標へ向かう姿勢が身についております。`,
+    tip:'「業務面の強み」と「人物面の強み」を2軸で語ると深みが出る。陸上経験は社長が体育会系を高評価する可能性を踏まえて必ず盛り込む。',
+    steps:['業務面の強み（課題発見＋AI活用）','人物面の強み（陸上で培った粘り強さ・責任感）']
+  },
+  {
+    cat:'弱み・短所',
+    q:'Q7. 自分の短所・改善点を教えてください',
+    answer:`私の短所は、物事に取り組む際に細部まで確認しないと気が済まないところです。前職の品質管理業務では不備の見逃しが許されない環境でしたので、この性格は強みとして機能しておりましたが、業務によってはスピードを犠牲にしてしまう場面もございました。
+
+そのため現在は、業務の重要度を見極めて「絶対に外せない確認ポイント」と「ある程度の判断で進める部分」を分けて取り組むよう意識しております。AIツールの構築においても、まず最小限の機能でプロトタイプを作って動かし、フィードバックを得てから磨き込む進め方に切り替えることで、スピードと精度の両立を図ってまいりました。`,
+    tip:'短所は「強みの裏返し」を選び、改善のために実践している行動をセットで語る。「品質管理で活きた一面・改善のために何をしているか」の構成。',
+    steps:['短所（細部まで確認しすぎる）','短所が強みに転じる文脈（品質管理での貢献）','現在の改善行動（重要度の見極め・プロトタイプ駆動）']
+  },
+  {
+    cat:'スポーツ経験',
+    q:'Q8. 学生時代の陸上経験について教えてください',
+    answer:`中学から大学までの10年間、陸上競技の長距離に打ち込んでまいりました。
+
+特に印象に残っているのは、駅伝メンバーとしてチームで一つのタスキを繋ぐ経験です。個人競技でありながらチーム競技でもある駅伝では、自分の走りがチーム全体の結果に直結いたします。その責任感から、毎日の練習を妥協せず積み重ねる粘り強さと、自分の役割を確実に果たす責任感を培いました。
+
+また、思うようにタイムが伸びない時期も多くございましたが、仲間と励まし合い、コーチからのアドバイスを素直に受け入れて改善を繰り返すことで、必ず壁を越えられるという経験を何度もしてまいりました。この経験は、社会人になってからの業務改善の取り組みにも活きていると感じております。`,
+    tip:'体育会系出身者として「粘り強さ」「責任感」「素直さ」「努力の継続」を伝えるエピソード。社長が日報・コミュニケーションを重視する企業文化と合致する。',
+    steps:['10年間の継続（中学〜大学）','駅伝経験から学んだ責任感','壁を越えた経験（仲間と素直さ）','業務での再現性']
+  },
+  {
+    cat:'スキル活用',
+    q:'Q9. 前職のスキルをこのポジションでどう活かせますか？',
+    answer:`大きく3つの観点で貢献できると考えております。
+
+1点目は、生成AIを活用した業務標準化の経験です。各部署の業務フローを可視化してマニュアル化したり、定型業務を効率化したりする取り組みは、テーマ活動の伴走支援に直接活かせます。
+
+2点目は、品質管理で培った「基準を作って運用する」経験です。出版社ごとの厳格なルール遵守が求められる環境で培った「不備を見逃さない精度管理」の視点は、内部・業務監査のヒト・カネ・モノの標準化にも直結いたします。
+
+3点目は、CENTRICでの研修期間中に習得したDX関連スキルです。Power Automate Desktop、Azure OpenAI、Dify等の生成AIプラットフォームに触れた経験は、グループ全体の業務効率化を企画する際の引き出しとして活かせると考えております。`,
+    tip:'「AI活用」「品質管理」「DXスキル」の3軸で語る。CENTRICの研修も貴重な経験として前向きに位置づける。',
+    steps:[]
+  },
+  {
+    cat:'勤務条件',
+    q:'Q10. 中国地方・九州全域での勤務も可能ですか？',
+    answer:`はい、問題なく対応可能でございます。
+
+私は熊本に長く根ざしてキャリアを築きたいという想いを持っておりますが、業務の必要性に応じて中国地方・九州各地の支店で勤務することは前向きに捉えております。
+
+むしろ、グループ各社の現場を実際に見て回ることで、経営支援本部としての業務理解が深まり、より的確な伴走支援ができるようになると考えております。`,
+    tip:'求人票に「中国地方、九州全域にて勤務ができる方」と記載あり。前向きな姿勢を明確に示すことで採用ハードルが大きく下がる。熊本への愛着は強調しつつ柔軟性を併せ持つ印象を与える。',
+    steps:[]
+  },
+  {
+    cat:'逆質問',
+    q:'Q11. 何か質問はありますか？（逆質問 5選）',
+    answer:`以下の中から、会話の流れで自然なものを1〜2問選んで使いましょう。
+
+【質問1：業務の優先課題】
+「経営支援本部として、現在最も優先度が高い課題はどのような領域でしょうか。入社後に早期に貢献できるよう、事前に意識しておきたいと思っています。」
+
+【質問2：入社後の立ち上がり】
+「入社後、最初の3ヶ月でどのような業務からお任せいただくことが多いでしょうか。準備できることがあれば、事前に取り組んでおきたいと思っています。」
+
+【質問3：チーム構成】
+「経営支援本部のチーム構成・メンバー数を教えていただけますか。どのような方々と一緒に仕事をさせていただくのか、イメージを持っておきたいと思いまして。」
+
+【質問4：活躍する人材の特徴】
+「このポジションで活躍されている方に、共通する特徴や仕事のスタイルがあれば教えていただけますか。」
+
+【質問5：監査の現状課題】
+「内部・業務監査において、現在グループ全体で特に改善に力を入れている領域があれば、差し支えない範囲でお聞かせいただけますか。」`,
+    tip:'1次面接の逆質問は「業務理解・入社への熱意」を示す質問が最適。待遇・条件に関する質問はこの場では避ける。1〜2問に絞って自然に聞くのがベスト。',
+    steps:[]
+  }
+];
+
+const step3QA = [
+  {
+    cat:'入社後のビジョン',
+    q:'Q1. 当社で実現したいことを教えてください',
+    answer:`入社後はまず経営支援本部の一員として、グループ7社の業務実態を深く理解することに集中したいと思っています。各事業の現場を理解した上で、会議運営や内部監査を通じて「現場が動きやすくなる仕組み」を作ることが短期的な目標です。
+
+中期的には、前職で経験した生成AIを活用した業務効率化の手法を、グループ各社の業務標準化に応用したいと考えています。製造・卸売・物流という異なる性質の事業を横断する経営支援本部だからこそ、グループ全体の底上げに貢献できると感じています。
+
+木村グループが目指す「価値ある企業グループ」の実現に向けて、経営と現場をつなぐ存在として長期的に貢献していきたいと思っています。`,
+    tip:'「短期（業務理解・現場把握）→中期（AI活用・標準化）→長期（グループ全体への貢献）」の時間軸で話すと説得力が増す。会社のビジョン「日々の豊かなくらしを創る」に触れると印象が良い。',
+    steps:['短期：グループ7社の業務実態を深く理解する','中期：AI活用・業務標準化をグループ全体に展開','長期：経営と現場をつなぐ存在として継続貢献']
+  },
+  {
+    cat:'キャリアビジョン',
+    q:'Q2. 5年後・10年後のキャリアビジョンを教えてください',
+    answer:`5年後には、グループ全社の業務フローを深く理解した上で、内部監査・改善支援のプロフェッショナルとして自立して業務を推進できる存在になりたいと考えています。
+
+10年後には、経営支援本部のリーダーとして、グループの経営戦略の立案や推進に関わる役割を担いたいと思っています。木村グループが地域に根ざした企業として持続的に成長していくために、経営基盤の強化に貢献できる存在でありたいです。
+
+熊本で長期的にキャリアを築きたいという強い意志があります。御社のように地域に根ざしながら着実に成長している企業で、自分の成長と会社の成長を重ねていきたいと考えています。`,
+    tip:'社長面接では「この人は長く続けてくれるか」を見ている。熊本への長期定住の意志と、会社の成長への貢献意欲を明確に示すことが重要。',
+    steps:['5年後：監査・改善支援のプロとして自立','10年後：経営支援本部のリーダーとして経営に関与','一貫した軸：熊本での長期定住・会社の成長への貢献']
+  },
+  {
+    cat:'地域・定住',
+    q:'Q3. なぜ熊本で長期的に働きたいのですか？',
+    answer:`私は熊本県上益城郡で生まれ育ち、現在も同地に居住しております。生まれ育った熊本でキャリアを築き、地域に根ざした働き方を続けたいという想いが、転職活動における最も大切な軸の一つでございます。
+
+木村グループは熊本に本社を置き、地域の食と暮らしを支える企業として70年以上の歴史を持っていらっしゃいます。社長が掲げられている「日々の豊かな"くらし"を創る」という理念は、私が日常生活で目にする御社の商品や物流の姿そのものであり、自分が生活する地域社会への貢献を実感しながら仕事ができる環境だと感じております。
+
+単に職場が熊本にあるというだけでなく、御社の事業そのものが地域の「くらし」を支えているという点に、強い共感を覚えております。`,
+    tip:'履歴書に「熊本県上益城郡嘉島町犬渕」と記載あり。熊本への愛着を「生まれ育った地」として具体的に語ると説得力UP。「日々の豊かなくらしを創る」理念への共感も自然に組み込む。',
+    steps:[]
+  },
+  {
+    cat:'企業理念',
+    q:'Q4. 当社の企業理念についてどう思いますか？',
+    answer:`「日々の豊かな"くらし"を創る」という理念は、食を通じて地域の人々の生活を支えるという御社の事業そのものを体現していると感じます。
+
+特に感銘を受けたのは、採用ページにある「違う失敗は100回していい。挑む人であれ。」というメッセージです。失敗を恐れずに挑戦を推奨する文化は、私がこれまで業務改善に取り組んできた姿勢とも重なります。前職でも、誰もやっていないAIツールの構築に挑戦し、試行錯誤を重ねた結果として成果を出すことができました。
+
+その挑戦を歓迎してくれる文化の中で、自分の力を発揮したいと思っています。`,
+    tip:'採用メッセージ「違う失敗は100回していい。挑む人であれ。」を引用できると、企業研究の深さが伝わる。自分の経験と接続させると説得力が増す。',
+    steps:[]
+  },
+  {
+    cat:'逆質問',
+    q:'Q5. 何か質問はありますか？（逆質問 5選）',
+    answer:`社長面接では「会社・社長の考えへの興味と共感」を示す質問が最も効果的です。以下から1〜2問選びましょう。
+
+【質問1：経営ビジョン】
+「木村社長がこれからのグループをどのような方向に成長させていきたいとお考えか、社長ご自身の言葉でお聞かせいただけますか。」
+
+【質問2：採用メッセージへの共感】
+「採用ページの『違う失敗は100回していい。挑む人であれ。』というメッセージに大変共感しました。このメッセージに込めた思いや背景を教えていただけますか。」
+
+【質問3：成長戦略】
+「2025年度にグループ売上400億円を目標とされているとのことですが、そのためにグループ全体でどのような取り組みを進めていらっしゃいますか。」
+
+【質問4：期待する人物像】
+「木村社長ご自身が、このポジションに入社される方に最も期待されることは何でしょうか。」
+
+【質問5：新たな挑戦領域】
+「木村グループが『くらし』全般を支える企業グループとして、今後新しく挑戦したい領域や事業があれば教えていただけますか。」`,
+    tip:'社長面接の逆質問は「会社の未来・社長の考え」への興味を示すものが最適。採用メッセージへの言及は企業研究の深さをアピールできる一番の見せ場。',
+    steps:[]
+  },
+  {
+    cat:'企業理念への共感',
+    q:'Q6. 当社の企業理念で最も共感する部分は？',
+    answer:`私が最も共感したのは「誠実さを第一に」という言葉です。
+
+社長がインタビューで「コンプライアンスや正直さを何よりも優先する」と公言されているように、誠実さは事業の土台になる最も大切な姿勢だと感じています。
+
+前職での業務改善でも、表面的な効率化を追うのではなく、現場の課題と真摯に向き合い、関係者と誠実に対話を重ねることで月間300時間の効率化という実績につながりました。誠実さこそが、長期的な成果と信頼を生むという経験を私自身も持っています。
+
+また「『食』だけでなく『日常生活』全体を対象とする」という事業領域の広がりに、お客様の暮らしを多面的に支える企業としての覚悟と挑戦心を感じました。`,
+    tip:'社長は新企業理念で「誠実」に最も想いを込めたと公言。これに触れると社長の想いを正確に理解していると伝わる。自分の経験と接続させると説得力UP。',
+    steps:[]
+  },
+  {
+    cat:'取り組みの理解',
+    q:'Q7. 社長就任後の取り組みについてどう思いますか？',
+    answer:`社長就任後に始められた3つの取り組み——「日報の徹底」「月1回の事業所会議」「企業理念・行動指針レポートの管理職持ち回り発信」——を拝見し、徹底的にコミュニケーションと一体感を重視されている経営姿勢に強く共感しました。
+
+特に、上司が毎日日報にコメントを返し、認識のズレを翌日には直接会話で解消する仕組みは、現場の課題が経営層まで届く健全な組織を作る基盤だと感じます。
+
+私自身、前職で現場の課題を可視化することで300時間の効率化を実現した経験があります。経営と現場をつなぐ「情報の流れ」を整える仕事に、強く共感し貢献していきたいと考えています。`,
+    tip:'2次面接でこれを話せると企業研究の深さが圧倒的に伝わる。社長自身が語った3つの取り組みを正確に把握していることを示すことが鍵。',
+    steps:[]
+  }
+];
+
+function buildQA(data, containerId) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = data.map((item, i) => `
+    <div class="qa-item" id="${containerId}-${i}">
+      <div class="qa-header" onclick="toggleQA('${containerId}-${i}')">
+        <div class="qa-left">
+          <div class="qa-num">${i+1}</div>
+          <div>
+            <div class="qa-meta">${item.cat}</div>
+            <div class="qa-q">${item.q}</div>
+          </div>
+        </div>
+        <svg class="qa-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-body">
+        <div class="qa-answer">${item.answer}</div>
+        ${item.steps && item.steps.length > 0 ? `
+          <div class="qa-steps">
+            <div class="qa-steps-label">回答の構成</div>
+            ${item.steps.map((s,si) => `<div class="qa-step"><div class="step-n">${si+1}</div><div>${s}</div></div>`).join('')}
+          </div>` : ''}
+        <div class="qa-tip"><div class="qa-tip-label">面接官へのアピールポイント</div>${item.tip}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleQA(id) { document.getElementById(id).classList.toggle('open'); }
+
+buildQA(step2QA, 'qa-step2');
+buildQA(step3QA, 'qa-step3');
+
+/* ---- QUIZ ---- */
+const Q = [
+  {imp:'high',cat:'企業理念',q:'グループ企業理念として正しいものはどれ？',o:['「美味しい未来を熊本から届ける」','「日々の豊かな"くらし"を創る」ことに挑戦し、地域社会に貢献する','「食の安全を九州から全国へ」広める','「誠実な商いで、地域の食を守る」'],a:1,exp:'企業理念は「私たちは誠実さを第一に、日々の豊かな"くらし"を創ることに挑戦し、地域社会に貢献します」です。'},
+  {imp:'high',cat:'事業概要',q:'木村グループの3つの中核事業の正しい組み合わせは？',o:['製造・小売・物流','製造・卸売・物流','農業・製造・卸売','卸売・物流・不動産'],a:1,exp:'製造事業・卸売事業・物流事業の3つが中核です。経営支援本部はこの3事業を横断的に支援します。'},
+  {imp:'high',cat:'会社情報',q:'グループ創業年と創業事業の組み合わせで正しいものは？',o:['1934年・食品問屋','1954年・米菓（あられ）製造','1964年・物流倉庫','1974年・菓子卸売'],a:1,exp:'1954年に熊本で米菓（あられ）の製造会社として創業。これがグループの原点です。'},
+  {imp:'high',cat:'会社情報',q:'代表取締役社長の名前は？',o:['木村正弘','木村寿孝','木村健一','木村浩二'],a:1,exp:'代表取締役社長は木村寿孝（きむら としたか）氏。2022年7月に㈱木村の3代目社長として就任し、2023年5月よりグループ本社の社長を兼任しています。'},
+  {imp:'high',cat:'経営数値',q:'グループ売上高（2024年4月期実績）は？',o:['約200億円','約280億円','約360億円','約450億円'],a:2,exp:'2024年4月期実績で360億円です。2025年度400億円達成を目標に掲げています。'},
+  {imp:'high',cat:'会社情報',q:'グループ本社の設立年月は？',o:['2022年5月','2023年2月','2023年5月','2024年1月'],a:1,exp:'2023年2月に㈱木村の親会社として事業持株会社「㈱木村グループ本社」を設立しました。'},
+  {imp:'high',cat:'職務内容',q:'今回の経営企画・管理ポジションに含まれる業務として正しいものは？',o:['新商品のパッケージ開発','各種会議の運営・議事録作成','配送ルートの設計','米菓製造工程の管理'],a:1,exp:'アジェンダ検討・会議運営・議事録作成・発信が業務のひとつです。他にテーマ活動支援・内部監査も含まれます。'},
+  {imp:'high',cat:'職務内容',q:'内部・業務監査の「ヒト」に該当するのは？',o:['経費の適正使用の確認','備品・在庫の管理状況','適切な人員配置・労働時間管理','業務フローの標準化'],a:2,exp:'ヒト＝人材・組織。人員配置・労働時間管理・属人化の有無などを確認します。'},
+  {imp:'high',cat:'選考',q:'1次面接（STEP2）で聞かれる主な内容は？',o:['筆記試験と適性検査','当社の説明・転職動機・これまでの経験','役員による最終面接','社長によるキャリア面談'],a:1,exp:'STEP2は部門責任者による面接。「当社についての説明、転職動機やこれまでの経験」が主なテーマです。'},
+  {imp:'high',cat:'選考',q:'2次面接（STEP3）で主に聞かれる内容は？',o:['筆記試験','転職理由の再確認','当社で実現したいこと・キャリアについて','給与交渉'],a:2,exp:'STEP3は社長面接。「当社で実現したいことやキャリアについて」が主なテーマです。'},
+  {imp:'mid',cat:'事業詳細',q:'製造事業でこだわる「もち米」の産地は？',o:['宮崎県産','鹿児島県産','熊本県産','福岡県産'],a:2,exp:'熊本県産のもち米にこだわり、阿蘇の伏流水で育まれたもち米を使用。近年はグループ会社の農業法人で自社栽培も行っています。'},
+  {imp:'mid',cat:'事業詳細',q:'物流事業の倉庫・物流の特徴は？',o:['2温度帯対応','3温度帯対応','4温度帯対応','常温のみ'],a:2,exp:'4温度帯に対応できる倉庫と物流網を持ちます。食料品の保管・仕分け・配送から重機運搬まで担い、九州全域をカバーします。'},
+  {imp:'mid',cat:'グループ会社',q:'卸売事業を担うグループ会社の組み合わせは？',o:['大福物流・サンエックス','木村・九州食糧','きむらのあられファーム・物流春日','木村・大福物流'],a:1,exp:'卸売事業は㈱木村と㈱九州食糧が担います。製造は木村・あられファーム、物流は大福物流・サンエックス・物流春日です。'},
+  {imp:'mid',cat:'グループ会社',q:'物流事業のグループ会社として含まれないのは？',o:['大福物流','サンエックス','物流春日','九州食糧'],a:3,exp:'九州食糧は卸売事業のグループ会社です。物流事業は大福物流・サンエックス・物流春日の3社です。'},
+  {imp:'mid',cat:'会社情報',q:'本社所在地として正しいものは？',o:['熊本市中央区水前寺','熊本市南区流通団地2-5','熊本市東区健軍','熊本市西区島崎'],a:1,exp:'〒862-0967 熊本県熊本市南区流通団地2-5 が本社所在地です。'},
+  {imp:'mid',cat:'経営支援',q:'経営支援本部の業務として含まれないのは？',o:['経営企画','人事労務','経理財務','製品の品質検査'],a:3,exp:'経営支援本部は経営企画・人事労務・経理財務・システムのシェアードサービスを担います。製品品質検査は製造事業の業務です。'},
+  {imp:'mid',cat:'待遇',q:'住宅手当の説明として正しいのは？',o:['全社員に一律2万円支給','持ち家ローン残有・賃借など一定要件を満たした場合に支給','入社3年目以降に支給','管理職のみ対象'],a:1,exp:'持ち家ローン残有：22,000〜28,000円/月、賃借契約：27,500〜35,000円/月。職能資格に応じて支給されます。'},
+  {imp:'mid',cat:'待遇',q:'年間休日数と勤務時間の組み合わせで正しいのは？',o:['年100日・9:00〜18:00','年115日・8:00〜16:45','年120日・8:30〜17:30','年110日・9:00〜17:45'],a:1,exp:'年間休日115日、勤務時間は8:00〜16:45（標準）。月1回土曜出社あり。残業手当なし（管理監督者）。'},
+  {imp:'mid',cat:'企業方針',q:'木村グループのCSVにおける「CSV」とは何の略？',o:['Corporate Social Volunteer','Creating Shared Value','Community Service Vision','Company Sustainability Value'],a:1,exp:'Creating Shared Value（共有価値の創造）の略。単なるCSRにとどまらず、企業と地域社会が共有できる価値を創造することを目指しています。'},
+  {imp:'low',cat:'行動指針',q:'グループ行動指針に含まれないものはどれ？',o:['変化を捉え、迅速に行動します','法令とルールとマナーを遵守します','利益を最大化するために効率を優先します','無駄な生産・消費・廃棄をなくし、地球環境を守ります'],a:2,exp:'「利益を最大化するために効率を優先します」は行動指針に含まれません。誠実さ・安全・品質・変化対応・環境保護などが柱です。'},
+  {imp:'low',cat:'社会貢献',q:'木村グループのCSV活動として取り組んでいないものは？',o:['小学生のあられ製造・職業体験','高校生との産学連携（食品ロス削減）','外国人観光客向けの土産品開発支援','スポーツを通じた地域活力の支援'],a:2,exp:'CSV活動は①持続可能な地域社会への支援②スポーツ支援③ワークライフバランスの3軸です。'},
+  {imp:'low',cat:'グループ会社',q:'「きむらのあられファーム」が担う主な役割は？',o:['物流の仕分け・配送','農業法人として米菓原料「もち米」を栽培','九州全域への食品配達','菓子の企画・卸売'],a:1,exp:'きむらのあられファームは農業法人として、製造事業で使う「もち米」を自社栽培しています。製造の垂直統合の要です。'},
+  {imp:'low',cat:'製造事業',q:'人吉エリアの工場で製造している土産品は？',o:['熊本城かりんとう・太平燕せんべい','焼酎もなか・椿まんじゅう','いきなり団子・辛子蓮根せんべい','阿蘇草原あられ・馬刺しジャーキー'],a:1,exp:'人吉エリアの工場では「焼酎もなか」「椿まんじゅう」など郷土に根ざした土産品を企画・製造しています。'},
+  {imp:'low',cat:'待遇',q:'定年は何歳？',o:['60歳','63歳','65歳','70歳'],a:2,exp:'定年は65歳です。'},
+  {imp:'low',cat:'会社情報',q:'グループ連結従業員数（2026年3月時点）はおよそ何名？',o:['約400名','約800名','約1,600名','約3,000名'],a:2,exp:'連結1,617名（2026年3月1日時点）。グループ本社単体は36名と小規模ですが、グループ全体は大きな規模です。'},
+  {imp:'high',cat:'採用メッセージ',q:'木村グループの採用ページに掲げられているメッセージは？',o:['失敗を恐れず、前に進め。','違う失敗は100回していい。挑む人であれ。','挑戦なくして成長なし。','一歩一歩、着実に。'],a:1,exp:'「違う失敗は100回していい。挑む人であれ。」が採用ページのメッセージです。2次面接（社長面接）でこのメッセージに触れると企業研究の深さを示せます。'},
+  {imp:'high',cat:'社長プロフィール',q:'木村寿孝社長の出身大学は？',o:['東京大学','京都大学','早稲田大学','九州大学'],a:1,exp:'京都大学経済学部卒業。卒業後はJFEスチール株式会社の人事部で6年間勤務されました。'},
+  {imp:'high',cat:'社長プロフィール',q:'木村寿孝社長の前職は？',o:['住友商事','JFEスチール','三菱重工業','日本郵船'],a:1,exp:'京都大学卒業後、JFEスチール株式会社に入社。人事部で6年間勤務した後、2017年に熊本へUターンし㈱木村に入社しました。'},
+  {imp:'high',cat:'社長就任年',q:'木村寿孝社長が㈱木村の代表取締役社長に就任した年月は？',o:['2020年5月','2022年5月','2022年7月','2023年5月'],a:2,exp:'2022年7月に㈱木村代表取締役社長として就任（3代目）。その後2023年5月から㈱木村グループ本社の社長も兼任しています。'},
+  {imp:'high',cat:'企業理念キーワード',q:'木村社長が新企業理念で「最も想いを込めた」と公言している言葉は？',o:['挑戦','革新','誠実','貢献'],a:2,exp:'社長はインタビューで「誠実」に最も想いを込めたと明言。コンプライアンスや正直さを何よりも優先すると公言しています。'},
+  {imp:'high',cat:'経営目標',q:'2025年度のグループ売上目標は？',o:['300億円','400億円','500億円','600億円'],a:1,exp:'2025年度にはグループ売上400億円達成を目標としています。現在の360億円から約11%の成長を目指しています。'},
+  {imp:'mid',cat:'社長の取り組み',q:'社長就任後に始めた取り組みに含まれないものは？',o:['日報の徹底（上司が毎日コメント）','月1回の事業所会議','管理職持ち回りの企業理念レポート','TOEIC 800点取得の必須化'],a:3,exp:'社長就任後の3つの取り組みは①日報の徹底②月1事業所会議③「私が考える企業理念・行動指針」レポート（管理職持ち回り発信）です。'},
+  {imp:'mid',cat:'事業戦略',q:'これまでグループの売上・利益の軸となってきた事業は？',o:['製造事業','卸売事業','物流事業','農業事業'],a:1,exp:'これまでは卸売事業が売上・利益ともにグループの軸でした。今後は製造事業と物流事業を更に成長させていく方針が示されています。'},
+  {imp:'mid',cat:'物流事業',q:'4温度帯物流の組み合わせとして正しいのは？',o:['冷凍・冷蔵・温水・常温','冷凍・冷蔵・定温・常温','冷凍・常温・暖温・氷温','冷蔵・氷温・定温・恒温'],a:1,exp:'冷凍（フローズン）・冷蔵（チルド）・定温・常温（ドライ）の4温度帯対応で、九州全域をカバーしています。'},
+  {imp:'low',cat:'最新ニュース',q:'2026年5月、木村グループが収益金を寄贈した先は？',o:['熊本城復興基金','乙女小学校・白旗小学校','熊本県赤十字社','熊本ルネサンスFC'],a:1,exp:'2026年5月1日に小学校あられ開発プロジェクトの収益金を乙女小学校・白旗小学校へ寄贈。CSV活動「持続可能な地域社会の創造」の一環です。'},
+  {imp:'low',cat:'最新ニュース',q:'2026年3月に発売された新商品「ポキッコ」シリーズの味は？',o:['アイスクリーム・チョコ','クリームソーダ・果汁20％','カレー・ラーメン','日本酒・ウイスキー'],a:1,exp:'2026年3月13日に『ポキッコクリームソーダ』『ポキッコ果汁20％』を発売。製造事業の主力商品ラインの新味です。'},
+  {imp:'mid',cat:'行動指針',q:'グループ行動指針の第1条として正しいのは？',o:['変化を捉え、迅速に行動します','法令とルールとマナーを遵守し、公明正大に行動します','期待を超える成果を出すために、絶えずベストを尽くします','安全・防災・品質を全てにおいて優先し、対応します'],a:1,exp:'第1条は「法令とルールとマナーを遵守し、公明正大に行動します」。社長が最も重視する「コンプライアンス・正直さ」を体現した条文です。'},
+  {imp:'mid',cat:'行動指針',q:'グループ行動指針において「全てにおいて優先する」と記載されているものは？',o:['利益と効率','売上と顧客満足','安全・防災・品質','スピードと変化対応'],a:2,exp:'第2条「安全・防災・品質を全てにおいて優先し、対応します」。商品を扱う企業として安全と品質を経営の最優先事項と位置付けています。'},
+  {imp:'mid',cat:'行動指針',q:'グループ行動指針において、よりよい商品・サービスを創るために大切にすべきことは？',o:['自社の利益最大化','相手の立場で考える','早期の市場投入','低価格の追求'],a:1,exp:'第3条「相手の立場で考え、よりよい商品・サービスを創ります」。お得意先様視点での価値創造を重視します。'},
+  {imp:'mid',cat:'行動指針',q:'グループ行動指針の第8条として正しいのは？',o:['情報の共有を図り、多様な価値観を尊重します','変化を捉え、迅速に行動します','無駄な生産・消費・廃棄を無くし、地球環境を守ります','期待を超える成果を出すために、絶えずベストを尽くします'],a:2,exp:'第8条は「無駄な生産・消費・廃棄を無くし、地球環境を守ります」。SDGsを意識した経営姿勢が明示されています。'},
+  {imp:'low',cat:'行動指針',q:'グループ行動指針において「組織作り」に関する条文の内容は？',o:['情報の共有・多様な価値観の尊重','利益優先のチーム作り','上司主導のトップダウン','スピード重視の意思決定'],a:0,exp:'第7条「情報の共有を図り、多様な価値観を尊重し、組織作りに取り組みます」。社長が就任後に強化した日報制度や事業所会議もこの理念に基づいています。'}
+];
+
+let state = { filter:'all', answers:{}, visible:[] };
+
+function buildQuiz() {
+  state.answers = {};
+  document.getElementById('quiz-container').innerHTML = Q.map((item, i) => {
+    const impLabel = item.imp==='high'?'重要度 大':item.imp==='mid'?'重要度 中':'重要度 小';
+    const qnClass = item.imp==='high'?'qn-h':item.imp==='mid'?'qn-m':'qn-l';
+    const impClass = item.imp==='high'?'imp-h':item.imp==='mid'?'imp-m':'imp-l';
+    const opts = item.o.map((o,oi) =>
+      `<button class="opt" id="op${i}-${oi}" onclick="pick(${i},${oi})">
+        <span class="opt-c">${String.fromCharCode(65+oi)}</span>${o}
+       </button>`).join('');
+    const hidden = (state.filter !== 'all' && item.imp !== state.filter) ? ' hidden' : '';
+    return `<div class="quiz-card${hidden}" id="qc${i}" data-imp="${item.imp}">
+      <div class="qcard-head">
+        <div class="qnum ${qnClass}">${i+1}</div>
+        <div style="flex:1;">
+          <div class="qmeta"><span class="imp ${impClass}">${impLabel}</span><span class="catb">${item.cat}</span></div>
+          <div class="qtext">${item.q}</div>
+        </div>
+      </div>
+      <div class="quiz-opts">${opts}</div>
+      <div class="qfb" id="qf${i}"></div>
+    </div>`;
+  }).join('');
+  updateVisible();
+  updateProg();
+  document.getElementById('result-panel').classList.remove('show');
+  document.querySelectorAll('.fl-btn').forEach(b => b.className = 'fl-btn');
+  document.getElementById('fb-' + state.filter).classList.add('fl-' + state.filter);
+}
+
+function updateVisible() {
+  state.visible = Q.map((_,i)=>i).filter(i => state.filter==='all' || Q[i].imp===state.filter);
+}
+
+function pick(qi, chosen) {
+  if (state.answers[qi] !== undefined) return;
+  state.answers[qi] = chosen;
+  const item = Q[qi];
+  for (let i = 0; i < item.o.length; i++) {
+    const btn = document.getElementById('op'+qi+'-'+i);
+    btn.classList.add('disabled');
+    if (i===item.a) btn.classList.add('correct');
+    else if (i===chosen) btn.classList.add('wrong');
+  }
+  const fb = document.getElementById('qf'+qi);
+  fb.textContent = (chosen===item.a ? '正解。  ' : '不正解。  ') + item.exp;
+  fb.className = 'qfb ' + (chosen===item.a ? 'ok' : 'ng');
+  updateProg();
+  const done = state.visible.filter(i => state.answers[i] !== undefined).length;
+  if (done === state.visible.length) setTimeout(showResult, 500);
+}
+
+function updateProg() {
+  const total = state.visible.length;
+  const done = state.visible.filter(i => state.answers[i] !== undefined).length;
+  document.getElementById('prog-label').textContent = done + ' / ' + total + ' 問';
+  document.getElementById('prog-fill').style.width = (total>0 ? done/total*100 : 0) + '%';
+}
+
+function showResult() {
+  let score=0, hc=0,ht=0,mc=0,mt=0,lc=0,lt=0;
+  state.visible.forEach(i => {
+    const ok = state.answers[i]===Q[i].a;
+    if(Q[i].imp==='high'){ht++;if(ok)hc++;}
+    else if(Q[i].imp==='mid'){mt++;if(ok)mc++;}
+    else{lt++;if(ok)lc++;}
+    if(ok)score++;
+  });
+  const total = state.visible.length;
+  const pct = Math.round(score/total*100);
+  document.getElementById('r-score').textContent = score;
+  document.getElementById('r-denom').textContent = '/ ' + total;
+  document.getElementById('result-arc').setAttribute('stroke-dashoffset', 264 - 264*pct/100);
+  const titles=['もう少し復習が必要です','基礎はOKです','優秀！あと少し。','完璧です！'];
+  const comments=[
+    '企業概要タブで基礎から見直しましょう。特に重要度「大」の問題から確認を。',
+    '基本的な理解はできています。重要度「大」を全問正解できるよう復習しましょう。',
+    '十分な理解度があります。間違えた問題を重点的に復習すれば万全です。',
+    '全問正解！面接本番も自信を持って臨んでください。'
+  ];
+  const idx = pct===100?3:pct>=80?2:pct>=60?1:0;
+  document.getElementById('r-title').textContent = titles[idx];
+  document.getElementById('r-comment').textContent = comments[idx];
+  let bd='';
+  if(state.filter==='all'||state.filter==='high') bd+=`<div class="rb rb-h">重要度 大：${hc} / ${ht} 問</div>`;
+  if(state.filter==='all'||state.filter==='mid') bd+=`<div class="rb rb-m">重要度 中：${mc} / ${mt} 問</div>`;
+  if(state.filter==='all'||state.filter==='low') bd+=`<div class="rb rb-l">重要度 小：${lc} / ${lt} 問</div>`;
+  document.getElementById('r-bd').innerHTML = bd;
+  const panel = document.getElementById('result-panel');
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function setFilter(f) {
+  state.filter = f;
+  document.querySelectorAll('.quiz-card').forEach(card => {
+    const imp = card.dataset.imp;
+    card.classList.toggle('hidden', f !== 'all' && imp !== f);
+  });
+  updateVisible();
+  updateProg();
+  document.querySelectorAll('.fl-btn').forEach(b => b.className = 'fl-btn');
+  document.getElementById('fb-' + f).classList.add('fl-' + f);
+  const panel = document.getElementById('result-panel');
+  if (panel.classList.contains('show')) panel.classList.remove('show');
+}
+
+function resetQuiz() {
+  buildQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuiz();
+
+/* ---- 暗記データ：キーワード穴埋め ---- */
+const memorizeData = [
+  {
+    cat:'企業基本情報',
+    sentences:[
+      { text:'木村グループは{1954}年に米菓（あられ）の製造で創業し、現在は{製造}・{卸売}・{物流}の3事業{7}社からなる地域総合商社グループ。' },
+      { text:'グループ売上高は{360}億円（2024年4月期実績）、連結従業員数は{1,617}名。' },
+      { text:'本社所在地は熊本県熊本市{南区流通団地2-5}。' },
+      { text:'代表取締役社長は{木村寿孝}（{としたか}）氏。{2022年7月}に㈱木村に就任、{2023年5月}よりグループ本社社長を兼任。' }
+    ]
+  },
+  {
+    cat:'企業理念・キーワード',
+    sentences:[
+      { text:'企業理念：「私たちは{誠実さ}を第一に、日々の豊かな"くらし"を創ることに挑戦し、地域社会に貢献します」' },
+      { text:'社長が最も想いを込めた言葉は「{誠実}」。コンプライアンスや正直さを何よりも優先すると公言。' },
+      { text:'採用メッセージ：「違う失敗は{100}回していい。{挑む人}であれ。」' },
+      { text:'2025年度のグループ売上目標は{400}億円。' }
+    ]
+  },
+  {
+    cat:'業務内容（求人票）',
+    sentences:[
+      { text:'各種会議の運営：{アジェンダ}検討・設定、会議運営、{議事録}作成、発信 等' },
+      { text:'テーマ活動への支援：{中期経営計画}で設定したテーマの活動推進・{優先順位}付け・打ち手／活動内容の{充実化}などの支援（=伴走）' },
+      { text:'内部／業務監査：各所属の{ヒト}・{カネ}・{モノ}の取り扱いの{標準化}、問題点の抽出と改善に向けた目標設定・活動支援' }
+    ]
+  },
+  {
+    cat:'3つの中核事業',
+    sentences:[
+      { text:'卸売事業：九州一円・一部中国エリアへ流通菓子・ブランド米・業務用食材を販売。担当は㈱{木村}・㈱{九州食糧}。' },
+      { text:'製造事業：1954年創業の原点。熊本県産{もち米}（阿蘇の伏流水）にこだわる。担当は㈱木村・㈱{きむらのあられファーム}。' },
+      { text:'物流事業：{4}温度帯対応の九州全域カバー網。担当は㈱{大福物流}・㈱{サンエックス}・㈱{物流春日}。' }
+    ]
+  },
+  {
+    cat:'自己PR キーワード',
+    sentences:[
+      { text:'前職ピッコマで{300}時間/月の工数削減を実現（作業時間を{50}%削減）。代表取締役から他部門への{横展開}を打診される評価。' },
+      { text:'使用ツール：{Gemini}のカスタム機能（カスタムGem）、{プロンプトエンジニアリング}による判断補助ツール構築。' },
+      { text:'ノベル業務担当時、{3}ヶ月で業務対応実績{1}位を達成し、退職まで維持。' },
+      { text:'中学から大学までの{10}年間、陸上長距離に取り組み、{駅伝}メンバーとしてチームの目標達成に貢献。' }
+    ]
+  },
+  {
+    cat:'社長プロフィール',
+    sentences:[
+      { text:'社長は{京都}大学経済学部卒業後、{JFEスチール}株式会社で{人事部}に6年間勤務。' },
+      { text:'{2017}年に熊本へUターンし㈱木村入社。{2022年7月}に3代目社長就任。' },
+      { text:'社長が就任後に始めた3つの取り組み：①{日報}の徹底、②{月1回の事業所会議}、③{私が考える企業理念・行動指針}レポート（管理職持ち回り）' }
+    ]
+  },
+  {
+    cat:'求める人物像',
+    sentences:[
+      { text:'1. 何事にも{積極的}に挑戦できること（他部署・他グループ会社の仕事にも積極的）' },
+      { text:'2. {礼儀}を大切にし、仕事相手と{信頼関係}を築けること' },
+      { text:'3. 仕事と私生活を両立させ、日々、{自己研鑽}ができること' }
+    ]
+  }
+];
+
+function buildMemorize() {
+  const c = document.getElementById('memorize-container');
+  c.innerHTML = memorizeData.map((cat, ci) => `
+    <div style="margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--green);margin-bottom:7px;text-transform:uppercase;">${cat.cat}</div>
+      ${cat.sentences.map((s, si) => {
+        const id = `m${ci}-${si}`;
+        return `<div style="font-size:13px;line-height:2.1;padding:8px 11px;background:var(--bg);border-radius:7px;margin-bottom:5px;color:var(--text);">${
+          s.text.replace(/\{([^}]+)\}/g, (_, ans) => `<span class="memo-blank" data-ans="${ans}" onclick="toggleBlank(this)" style="display:inline-block;min-width:50px;padding:1px 8px;margin:0 2px;background:var(--gold-light);color:transparent;border-bottom:2px solid var(--gold);border-radius:4px;cursor:pointer;font-weight:700;transition:all .15s;">${ans}</span>`)
+        }</div>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+function toggleBlank(el) {
+  if (el.style.color === 'transparent') {
+    el.style.color = 'var(--gold)';
+    el.style.background = 'var(--gold-pale)';
+  } else {
+    el.style.color = 'transparent';
+    el.style.background = 'var(--gold-light)';
+  }
+}
+
+buildMemorize();
+
+/* ---- 音声読み上げ（Web Speech API） ---- */
+let currentSpeech = null;
+let currentSpeakBtn = null;
+
+function speakAnswer(btn, text) {
+  if (currentSpeech && currentSpeakBtn === btn) {
+    speechSynthesis.cancel();
+    btn.innerHTML = playIconSVG() + '<span style="margin-left:5px;">再生</span>';
+    currentSpeech = null;
+    currentSpeakBtn = null;
+    return;
+  }
+  if (currentSpeech) {
+    speechSynthesis.cancel();
+    if (currentSpeakBtn) currentSpeakBtn.innerHTML = playIconSVG() + '<span style="margin-left:5px;">再生</span>';
+  }
+  const cleanText = text.replace(/【[^】]*】/g, '').replace(/\n+/g, '。');
+  const utter = new SpeechSynthesisUtterance(cleanText);
+  utter.lang = 'ja-JP';
+  utter.rate = 1.0;
+  utter.pitch = 1.0;
+  const voices = speechSynthesis.getVoices();
+  const jaVoice = voices.find(v => v.lang.startsWith('ja'));
+  if (jaVoice) utter.voice = jaVoice;
+  utter.onend = () => {
+    btn.innerHTML = playIconSVG() + '<span style="margin-left:5px;">再生</span>';
+    currentSpeech = null;
+    currentSpeakBtn = null;
+  };
+  speechSynthesis.speak(utter);
+  currentSpeech = utter;
+  currentSpeakBtn = btn;
+  btn.innerHTML = stopIconSVG() + '<span style="margin-left:5px;">停止</span>';
+}
+
+function playIconSVG() {
+  return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+}
+function stopIconSVG() {
+  return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>';
+}
+
+/* QA答えに再生ボタンを追加 */
+function attachSpeakButtons() {
+  document.querySelectorAll('.qa-answer').forEach(el => {
+    if (el.dataset.btn) return;
+    el.dataset.btn = '1';
+    const btn = document.createElement('button');
+    btn.style.cssText = 'background:var(--green);color:#fff;border:none;padding:6px 12px;border-radius:18px;font-size:11px;font-family:inherit;cursor:pointer;margin-bottom:10px;display:inline-flex;align-items:center;transition:opacity .15s;';
+    btn.onmouseover = () => btn.style.opacity = '.85';
+    btn.onmouseout = () => btn.style.opacity = '1';
+    btn.innerHTML = playIconSVG() + '<span style="margin-left:5px;">再生</span>';
+    btn.onclick = (e) => { e.stopPropagation(); speakAnswer(btn, el.textContent); };
+    el.parentNode.insertBefore(btn, el);
+  });
+}
+
+// 初期化時に音声ボタンを追加
+setTimeout(attachSpeakButtons, 100);
+// 音声リスト読み込み待ち
+if (typeof speechSynthesis !== 'undefined') {
+  speechSynthesis.onvoiceschanged = () => {};
+}
+
+/* ページ切替時に音声停止 */
+const origShowPage = showPage;
+showPage = function(id, btn) {
+  if (currentSpeech) {
+    speechSynthesis.cancel();
+    if (currentSpeakBtn) currentSpeakBtn.innerHTML = playIconSVG() + '<span style="margin-left:5px;">再生</span>';
+    currentSpeech = null;
+    currentSpeakBtn = null;
+  }
+  origShowPage(id, btn);
+};
+
+/* ---- TOOLTIP TAP SUPPORT (mobile) ---- */
+document.addEventListener('click', e => {
+  const tip = e.target.closest('.tip-word');
+  if (tip) {
+    e.stopPropagation();
+    document.querySelectorAll('.tip-word.active').forEach(other => {
+      if (other !== tip) other.classList.remove('active');
+    });
+    tip.classList.toggle('active');
+  } else {
+    document.querySelectorAll('.tip-word.active').forEach(el => el.classList.remove('active'));
+  }
+});
+</script>
+</body>
+</html>
